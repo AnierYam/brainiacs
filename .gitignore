@@ -1,0 +1,17 @@
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Virtual environment
+env/
+venv/
+
+# SQLite database
+*.sqlite3
+
+# VSCode settings (optional)
+.vscode/
+
+# Django migrations cache
+**/migrations/*.py[cod]
+!**/migrations/__init__.py
