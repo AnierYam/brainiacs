@@ -1,9 +1,11 @@
-# brainiacs_site/urls.py
-
 from django.contrib import admin
-from django.urls import path, include
-from levels.admin import custom_admin_site  # Import this
+from django.urls import path
+from levels.views import system_detail, learning_path
+from levels.admin import custom_admin_site
 
 urlpatterns = [
-    path('admin/', custom_admin_site.urls),  # Use custom admin site
+    path('admin/', custom_admin_site.urls),
+    path('system/<int:system_id>/', system_detail, name='system_detail'),
+    path('learning-path/', learning_path, name='learning_path'),
+
 ]

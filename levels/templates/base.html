@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Brainiacs</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f9f9fb;
+      display: flex;
+    }
+
+    .sidebar {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 240px;
+      height: 100vh;
+      background-color: #1f2937;
+      color: white;
+      padding: 1rem;
+      overflow-y: auto;
+    }
+
+    .sidebar h2 {
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+    }
+
+    .sidebar a {
+      display: block;
+      color: white;
+      text-decoration: none;
+      margin: 10px 0;
+      padding: 6px;
+      border-radius: 6px;
+    }
+
+    .sidebar a:hover {
+      background-color: #374151;
+    }
+
+    .content {
+      margin-left: 240px;
+      padding: 2rem;
+      width: calc(100% - 240px);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="sidebar">
+    <h2>Systems</h2>
+    <a href="#">Pedro's Body</a>
+    <a href="#">Pedro's Head</a>
+    <a href="#">Pedro's Arms</a>
+  </div>
+
+  <div class="content">
+    {% block content %}
+    <!-- Your page-specific content will show here -->
+    {% endblock %}
+  </div>
+</body>
+</html>
