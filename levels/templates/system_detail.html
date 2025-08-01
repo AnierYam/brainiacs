@@ -1,6 +1,22 @@
-{% extends 'base.html' %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ system.title }}</title>
+</head>
+<body>
+    <h1>{{ system.title }}</h1>
 
-{% block content %}
-  <h1>Welcome to Pedro’s Body</h1>
-  <p>This is a test of the fixed sidebar layout.</p>
-{% endblock %}
+    {% if system.description %}
+        <p><strong>Description:</strong> {{ system.description }}</p>
+    {% endif %}
+
+    {% if system.video_url %}
+        <p><strong>Build Video:</strong></p>
+        <iframe width="560" height="315" 
+            src="{{ system.video_url }}"
+            frameborder="0" allowfullscreen></iframe>
+    {% endif %}
+
+    <p><a href="{% url 'system_list' %}">← Back to System List</a></p>
+</body>
+</html>

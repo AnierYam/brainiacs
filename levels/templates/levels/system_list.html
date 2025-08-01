@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Brainiacs Systems</title>
+</head>
+<body>
+    <h1>All Systems in Level 1</h1>
+    <ul>
+        {% for system in systems %}
+            <li>
+                <a href="{% url 'system_detail' system.id %}">{{ system.title }}</a>
+            </li>
+        {% empty %}
+            <li>No systems available yet.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
