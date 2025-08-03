@@ -18,27 +18,38 @@
       top: 0;
       width: 240px;
       height: 100vh;
-      background-color: #1f2937;
-      color: white;
+      background-color: #f9f9fb; /* Match page background */
+      border-right: 2px solid royalblue;
+      border-top-right-radius: 12px;
+      border-bottom-right-radius: 12px;
       padding: 1rem;
       overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
     }
 
-    .sidebar h2 {
-      font-size: 1.2rem;
-      margin-bottom: 1rem;
+    .sidebar img.logo {
+      max-width: 160px;
+      height: auto;
+      margin-bottom: 1.5rem;
+      margin-left: 15px;
+
     }
 
     .sidebar a {
       display: block;
-      color: white;
+      color: #6b7280; /* Grey */
       text-decoration: none;
       margin: 10px 0;
       padding: 6px;
       border-radius: 6px;
+      text-align: left;
+      width: 100%;
     }
 
     .sidebar a:hover {
+      color: white;
       background-color: #374151;
     }
 
@@ -52,10 +63,11 @@
 
 <body>
   <div class="sidebar">
-    <h2>Systems</h2>
-    <a href="#">Pedro's Body</a>
-    <a href="#">Pedro's Head</a>
-    <a href="#">Pedro's Arms</a>
+    <img src="/media/systems/brainiacs_logo.png" alt="Brainiacs Logo" class="logo" />
+    <a href="#">Build</a>
+    <a href="#">Practice</a>
+    <a href="#">Leaderboard</a>
+    <a href="#">Profile</a>
   </div>
 
   <div class="content">

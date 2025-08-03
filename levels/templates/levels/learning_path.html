@@ -1,47 +1,87 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <h1 style="margin-bottom: 40px; text-align: center;">🧠 Brainiacs Level 1: Pedro the Dog</h1>
 
-  <div style="
-      display: flex;
-      flex-direction: column;
-      gap: 40px;
-      align-items: center;
-  ">
-    {% for system in systems %}
-      <div style="
-          display: flex;
-          justify-content: {% if forloop.counter|divisibleby:2 %}flex-end{% else %}flex-start{% endif %};
-          width: 40%;
-          padding: 0 20px;
-      ">
-        <a href="{% url 'system_detail' system.id %}" style="
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            width: 160px;
-            height: 160px;
-            padding: 20px;
-            border-radius: 50%;
-            background: #fff;
-            text-align: center;
-            text-decoration: none;
-            color: #1f2937;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            border: 4px solid #3b82f6;
-            transition: transform 0.2s;
-            position: relative;
-            margin: 0 20px;
-        " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-          
-          <!-- Dynamically load system image -->
-          <img src="/media/systems/system{{ forloop.counter }}.png" alt="System {{ forloop.counter }}" style="width: 110px; height: 110px; object-fit: contain; margin-bottom: 20px;" />
+<!-- Inline CSS to avoid style errors -->
+<style>
+  .learning-container {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    align-items: center;
+  }
 
-          <strong style="font-size: 14px; position: relative; top: -15px ">System {{ forloop.counter }}:<br>{{ system.title }}</strong>
-        </a>
-      </div>
-    {% endfor %}
-  </div>
+  .system-wrapper {
+    width: 40%;
+    padding: 0 20px;
+  }
+
+  .system-row-left {
+    justify-content: flex-start;
+    display: flex;
+  }
+
+  .system-row-right {
+    justify-content: flex-end;
+    display: flex;
+  }
+
+  .system-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 160px;
+    height: 160px;
+    padding: 20px;
+    border-radius: 50%;
+    background: #fff;
+    text-align: center;
+    text-decoration: none;
+    color: #1f2937;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    border: 4px solid #3b82f6;
+    transition: transform 0.2s;
+    position: relative;
+    margin: 0 20px;
+  }
+
+  .system-card:hover {
+    transform: scale(1.05);
+  }
+
+  .system-image {
+    width: 110px;
+    height: 110px;
+    object-fit: contain;
+    margin-bottom: 20px;
+  }
+
+  .system-title {
+    font-size: 14px;
+    position: relative;
+    top: -15px;
+  }
+
+  .page-title {
+    margin-bottom: 40px;
+    text-align: center;
+  }
+</style>
+
+<!-- Title -->
+<h1 class="page-title">🧠 Brainiacs Level 1: Pedro the Dog</h1>
+
+<!-- Systems Grid -->
+<div class="learning-container">
+  {% for system in systems %}
+    <div class="system-wrapper {% if forloop.counter|divisibleby:2 %}system-row-right{% else %}system-row-left{% endif %}">
+      <a href="{% url 'system_detail' system.id %}" class="system-card">
+        <img src="/media/systems/system{{ forloop.counter }}.png" alt="System {{ forloop.counter }}" class="system-image" />
+        <strong class="system-title">System {{ forloop.counter }}:<br>{{ system.title }}</strong>
+      </a>
+    </div>
+  {% endfor %}
+</div>
+
 {% endblock %}
