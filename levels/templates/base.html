@@ -3,86 +3,95 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Brainiacs</title>
+  <title>Brainiacs Academy</title>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
   <style>
     body {
       margin: 0;
-      padding: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #f9f9fb;
-      display: flex;
+      font-family: Arial, sans-serif;
+      background-color: #f7f7f7;
     }
 
     .sidebar {
-      position: fixed;
-      left: 0;
-      top: 0;
       width: 240px;
       height: 100vh;
-      background-color: #f9f9fb;
-      border-right: 2px solid royalblue;
-      border-top-right-radius: 12px;
-      border-bottom-right-radius: 12px;
-      padding: 1rem;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
+      background-color: #fff;
+      border-right: 2px solid #4c2fff;
+      padding: 20px 10px;
+      position: fixed;
     }
 
     .sidebar img.logo {
-      max-width: 160px;
-      height: auto;
-      margin-bottom: 1.5rem;
-      margin-left: 15px;
+      width: 150px;
+      display: block;
+      margin: 0 auto 30px auto;
     }
 
-    .sidebar a {
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .sidebar ul li {
       display: flex;
       align-items: center;
-      gap: 10px;
-      color: #6b7280;
-      text-decoration: none;
-      margin: 10px 0;
-      padding: 6px;
+      padding: 12px 10px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .sidebar ul li:hover {
+      background-color: #f0f0ff;
       border-radius: 6px;
-      text-align: left;
-      width: 100%;
-      transition: background-color 0.2s, color 0.2s;
     }
 
-    .sidebar a:hover {
-      color: white;
-      background-color: #374151;
+    .sidebar-icon {
+      width: 28px;
+      height: auto;
+      margin-right: 12px;
+      vertical-align: middle;
+      transform: translateY(1px);
     }
 
-    .sidebar img.icon {
-      width: 24px;
-      height: 24px;
+    .sidebar ul li span {
+      font-size: 16px;
+      color: #222;
     }
 
-    .content {
+    .main-content {
       margin-left: 240px;
-      padding: 2rem;
-      width: calc(100% - 240px);
+      padding: 20px;
     }
   </style>
 </head>
-
 <body>
-  <div class="sidebar">
-    <img src="{% static 'icons/brainiacs_logo.png' %}" alt="Brainiacs Logo" class="logo" />
 
-    <a href="#"><img src="{% static 'icons/build.png' %}" alt="Build Icon" class="icon"> Build</a>
-    <a href="#"><img src="{% static 'icons/practice.png' %}" alt="Practice Icon" class="icon"> Practice</a>
-    <a href="#"><img src="{% static 'icons/leaderboard.png' %}" alt="Leaderboard Icon" class="icon"> Leaderboard</a>
-    <a href="#"><img src="{% static 'icons/profile.png' %}" alt="Profile Icon" class="icon"> Profile</a>
-  </div>
+<div class="sidebar">
+  <img src="{% static 'icons/brainiacs_logo.png' %}" alt="Brainiacs Logo" class="logo">
+  <ul>
+    <li>
+      <img src="{% static 'icons/build.png' %}" alt="Build Icon" class="sidebar-icon">
+      <span>Build</span>
+    </li>
+    <li>
+      <img src="{% static 'icons/practice.png' %}" alt="Practice Icon" class="sidebar-icon">
+      <span>Practice</span>
+    </li>
+    <li>
+      <img src="{% static 'icons/leaderboard.png' %}" alt="Leaderboard Icon" class="sidebar-icon">
+      <span>Leaderboard</span>
+    </li>
+    <li>
+      <img src="{% static 'icons/profile.png' %}" alt="Profile Icon" class="sidebar-icon">
+      <span>Profile</span>
+    </li>
+  </ul>
+</div>
 
-  <div class="content">
-    {% block content %}
-    <!-- Page-specific content will go here -->
-    {% endblock %}
-  </div>
+<div class="main-content">
+  {% block content %}
+  {% endblock %}
+</div>
+
 </body>
 </html>
