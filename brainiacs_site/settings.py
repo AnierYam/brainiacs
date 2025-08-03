@@ -1,13 +1,11 @@
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-from django.conf import settings
-from django.conf.urls.static import static
-
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-tqv^u29z-(8oy$344ajo*_#3l4c7&5fpla9vxko-^zy80_7gh$'
+SECRET_KEY = 'your-secret-key'  # Replace with your actual key
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -22,7 +20,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'levels',
+    'levels',  # Replace with your actual app name
 ]
 
 MIDDLEWARE = [
@@ -35,15 +33,16 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'brainiacs_site.urls'
+ROOT_URLCONF = 'brainiacs_site.urls'  # Make sure this matches your project folder
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [],  # If you have custom template dirs, add them here
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
+                'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
@@ -55,6 +54,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'brainiacs_site.wsgi.application'
 
 # Database
+# Default: SQLite
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -84,15 +84,16 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-# Static files (CSS, JavaScript, Images)
-STATIC_URL = 'static/'
+# Static files (CSS, JavaScript, images)
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',
+]
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-# Media files (uploaded images, etc.)
+# Media files (not used for icons anymore, but still good to have)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-
-

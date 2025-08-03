@@ -1,8 +1,8 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
 
-<!-- Inline CSS to avoid style errors -->
 <style>
   .learning-container {
     display: flex;
@@ -69,15 +69,13 @@
   }
 </style>
 
-<!-- Title -->
 <h1 class="page-title">🧠 Brainiacs Level 1: Pedro the Dog</h1>
 
-<!-- Systems Grid -->
 <div class="learning-container">
   {% for system in systems %}
     <div class="system-wrapper {% if forloop.counter|divisibleby:2 %}system-row-right{% else %}system-row-left{% endif %}">
       <a href="{% url 'system_detail' system.id %}" class="system-card">
-        <img src="/media/systems/system{{ forloop.counter }}.png" alt="System {{ forloop.counter }}" class="system-image" />
+        <img src="{% static 'icons/system' %}{{ forloop.counter }}.png" alt="System {{ forloop.counter }}" class="system-image" />
         <strong class="system-title">System {{ forloop.counter }}:<br>{{ system.title }}</strong>
       </a>
     </div>
