@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Level 1 – Pedro the Dog</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 2rem;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #e0f2fe, #f9fafb);
+      color: #1f2937;
+    }
+
+    h1, h2, h3, p {
+      margin: 0;
+    }
+
+    .page-header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+
+    .page-header h1 {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .page-header p {
+      color: #4b5563;
+      font-size: 0.95rem;
+    }
+
+    .section {
+      margin-bottom: 3rem;
+    }
+
+    .section-title {
+      font-size: 1.4rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .section-subtitle {
+      font-size: 0.95rem;
+      color: #4b5563;
+      margin-bottom: 1.5rem;
+    }
+
+    /* vertical path – column of circles */
+    .vertical-path {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .circle-card {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      background: #ffffff;
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, margin 0.2s ease;
+      text-align: center;
+    }
+
+    .circle-card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 14px 28px rgba(15, 23, 42, 0.15);
+    }
+
+    .circle-letter {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #1e3a8a;
+      margin-bottom: 0.3rem;
+    }
+
+    .circle-name {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: #1f2937;
+      width: 90%;
+    }
+
+    .circle-card.quiz {
+      border: 2px dashed #3b82f6;
+      background: #eff6ff;
+    }
+
+    .circle-card.quiz .circle-letter {
+      font-size: 1.2rem;
+      color: #1d4ed8;
+    }
+
+    /* 🔀 subtle S-shape offsets: wiggle left/right */
+    .vertical-path .circle-card:nth-child(odd) {
+      margin-left: -30px;
+      margin-right: 30px;
+    }
+
+    .vertical-path .circle-card:nth-child(even) {
+      margin-left: 30px;
+      margin-right: -30px;
+    }
+
+    /* Keep the last (quiz) circle centered for a nice finish */
+    .vertical-path .circle-card:last-child {
+      margin-left: 0;
+      margin-right: 0;
+    }
+
+    /* On very small screens, reduce the wiggle so it doesn't get cut off */
+    @media (max-width: 600px) {
+      .vertical-path .circle-card:nth-child(odd),
+      .vertical-path .circle-card:nth-child(even) {
+        margin-left: 0;
+        margin-right: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="page-header">
+    <h1>Level 1 – Pedro the Dog</h1>
+    <p>Your first mission: learn the tools and parts to build your robot 🐶🤖</p>
+  </header>
+
+  <!-- STEP 1 -->
+  <section class="section">
+    <h2 class="section-title">Step 1: Know Your Tools</h2>
+    <p class="section-subtitle">Follow the path and learn about each tool 🎮</p>
+
+    <div class="vertical-path">
+      <!-- Cross-head Screwdriver -->
+      <div class="circle-card">
+        <div class="circle-letter">{{ step1_tools.0.name|first }}</div>
+        <div class="circle-name">{{ step1_tools.0.name }}</div>
+      </div>
+      <!-- Combination Wrench -->
+      <div class="circle-card">
+        <div class="circle-letter">{{ step1_tools.1.name|first }}</div>
+        <div class="circle-name">{{ step1_tools.1.name }}</div>
+      </div>
+      <!-- Step 1 Quiz -->
+      <div class="circle-card quiz">
+        <div class="circle-letter">Q1</div>
+        <div class="circle-name">Step 1 Quiz – Tools</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PART 2 -->
+  <section class="section">
+    <h2 class="section-title">
+      Part 2: Assembly Accessories – Tools to assemble your robot
+    </h2>
+    <p class="section-subtitle">
+      Continue along the path to learn the parts that keep everything tight and safe.
+    </p>
+
+    <div class="vertical-path">
+      <!-- Screws -->
+      <div class="circle-card">
+        <div class="circle-letter">{{ assembly_items.0.name|first }}</div>
+        <div class="circle-name">{{ assembly_items.0.name }}</div>
+      </div>
+      <!-- Plain Washers -->
+      <div class="circle-card">
+        <div class="circle-letter">{{ assembly_items.1.name|first }}</div>
+        <div class="circle-name">{{ assembly_items.1.name }}</div>
+      </div>
+      <!-- Spring Washers -->
+      <div class="circle-card">
+        <div class="circle-letter">{{ assembly_items.2.name|first }}</div>
+        <div class="circle-name">{{ assembly_items.2.name }}</div>
+      </div>
+      <!-- Nuts -->
+      <div class="circle-card">
+        <div class="circle-letter">{{ assembly_items.3.name|first }}</div>
+        <div class="circle-name">{{ assembly_items.3.name }}</div>
+      </div>
+      <!-- Torque / Brake Nuts -->
+      <div class="circle-card">
+        <div class="circle-letter">{{ assembly_items.4.name|first }}</div>
+        <div class="circle-name">{{ assembly_items.4.name }}</div>
+      </div>
+      <!-- Part 2 Quiz -->
+      <div class="circle-card quiz">
+        <div class="circle-letter">Q2</div>
+        <div class="circle-name">Part 2 Quiz – Accessories</div>
+      </div>
+    </div>
+  </section>
+</body>
+</html>

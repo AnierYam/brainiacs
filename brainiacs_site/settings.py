@@ -20,7 +20,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'levels',  # Replace with your actual app name
+    'levels',
+    'lessons'  # Replace with your actual app name
 ]
 
 MIDDLEWARE = [
