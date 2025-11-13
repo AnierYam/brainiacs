@@ -7,7 +7,8 @@
     body {
       margin: 0;
       padding: 2rem;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", sans-serif;
       background: radial-gradient(circle at top, #e0f2fe, #f9fafb);
       color: #1f2937;
     }
@@ -38,6 +39,7 @@
     .section-title {
       font-size: 1.4rem;
       margin-bottom: 0.25rem;
+      font-weight: 700;
     }
 
     .section-subtitle {
@@ -46,7 +48,6 @@
       margin-bottom: 1.5rem;
     }
 
-    /* vertical path – column of circles */
     .vertical-path {
       display: flex;
       flex-direction: column;
@@ -100,7 +101,6 @@
       color: #1d4ed8;
     }
 
-    /* 🔀 subtle S-shape offsets: wiggle left/right */
     .vertical-path .circle-card:nth-child(odd) {
       margin-left: -30px;
       margin-right: 30px;
@@ -111,13 +111,11 @@
       margin-right: -30px;
     }
 
-    /* Keep the last (quiz) circle centered for a nice finish */
     .vertical-path .circle-card:last-child {
       margin-left: 0;
       margin-right: 0;
     }
 
-    /* On very small screens, reduce the wiggle so it doesn't get cut off */
     @media (max-width: 600px) {
       .vertical-path .circle-card:nth-child(odd),
       .vertical-path .circle-card:nth-child(even) {
@@ -133,10 +131,17 @@
     <p>Your first mission: learn the tools and parts to build your robot 🐶🤖</p>
   </header>
 
-  <!-- STEP 1 -->
+  <!-- Mission title just above Part 1 -->
+  <h2 class="section-title" style="text-align: center; margin-bottom: 2rem;">
+    Mission 1: Know your Toolbox
+  </h2>
+
+  <!-- PART 1 -->
   <section class="section">
-    <h2 class="section-title">Step 1: Know Your Tools</h2>
-    <p class="section-subtitle">Follow the path and learn about each tool 🎮</p>
+    <h2 class="section-title">Part 1: Your Toolset</h2>
+    <p class="section-subtitle">
+      Follow the path and learn about each tool 🎮
+    </p>
 
     <div class="vertical-path">
       <!-- Cross-head Screwdriver -->
@@ -144,24 +149,24 @@
         <div class="circle-letter">{{ step1_tools.0.name|first }}</div>
         <div class="circle-name">{{ step1_tools.0.name }}</div>
       </div>
+
       <!-- Combination Wrench -->
       <div class="circle-card">
         <div class="circle-letter">{{ step1_tools.1.name|first }}</div>
         <div class="circle-name">{{ step1_tools.1.name }}</div>
       </div>
-      <!-- Step 1 Quiz -->
+
+      <!-- Part 1 Quiz -->
       <div class="circle-card quiz">
         <div class="circle-letter">Q1</div>
-        <div class="circle-name">Step 1 Quiz – Tools</div>
+        <div class="circle-name">Part 1 Quiz – Tools</div>
       </div>
     </div>
   </section>
 
   <!-- PART 2 -->
   <section class="section">
-    <h2 class="section-title">
-      Part 2: Assembly Accessories – Tools to assemble your robot
-    </h2>
+    <h2 class="section-title">Part 2: Fasteners to assemble Pedro</h2>
     <p class="section-subtitle">
       Continue along the path to learn the parts that keep everything tight and safe.
     </p>
@@ -172,26 +177,31 @@
         <div class="circle-letter">{{ assembly_items.0.name|first }}</div>
         <div class="circle-name">{{ assembly_items.0.name }}</div>
       </div>
+
       <!-- Plain Washers -->
       <div class="circle-card">
         <div class="circle-letter">{{ assembly_items.1.name|first }}</div>
         <div class="circle-name">{{ assembly_items.1.name }}</div>
       </div>
+
       <!-- Spring Washers -->
       <div class="circle-card">
         <div class="circle-letter">{{ assembly_items.2.name|first }}</div>
         <div class="circle-name">{{ assembly_items.2.name }}</div>
       </div>
+
       <!-- Nuts -->
       <div class="circle-card">
         <div class="circle-letter">{{ assembly_items.3.name|first }}</div>
         <div class="circle-name">{{ assembly_items.3.name }}</div>
       </div>
+
       <!-- Torque / Brake Nuts -->
       <div class="circle-card">
         <div class="circle-letter">{{ assembly_items.4.name|first }}</div>
         <div class="circle-name">{{ assembly_items.4.name }}</div>
       </div>
+
       <!-- Part 2 Quiz -->
       <div class="circle-card quiz">
         <div class="circle-letter">Q2</div>
