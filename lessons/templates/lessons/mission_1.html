@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Level 1 – Pedro the Dog</title>
+  <title>Mission 1 – Know your Toolbox</title>
   <style>
     body {
       margin: 0;
@@ -77,6 +77,18 @@
       box-shadow: 0 14px 28px rgba(15, 23, 42, 0.15);
     }
 
+    .circle-link,
+    .quiz-link {
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+    }
+
     .circle-letter {
       font-size: 1.8rem;
       font-weight: 700;
@@ -127,39 +139,34 @@
 </head>
 <body>
   <header class="page-header">
-    <h1>Level 1 – Pedro the Dog</h1>
+    <h1>Mission 1: Know your Toolbox</h1>
     <p>Your first mission: learn the tools and parts to build your robot 🐶🤖</p>
   </header>
-
-  <!-- Mission title just above Part 1 -->
-  <h2 class="section-title" style="text-align: center; margin-bottom: 2rem;">
-    Mission 1: Know your Toolbox
-  </h2>
 
   <!-- PART 1 -->
   <section class="section">
     <h2 class="section-title">Part 1: Your Toolset</h2>
     <p class="section-subtitle">
-      Follow the path and learn about each tool 🎮
+      Follow the path and click each circle to open its lesson 🎮
     </p>
 
     <div class="vertical-path">
-      <!-- Cross-head Screwdriver -->
-      <div class="circle-card">
-        <div class="circle-letter">{{ step1_tools.0.name|first }}</div>
-        <div class="circle-name">{{ step1_tools.0.name }}</div>
-      </div>
-
-      <!-- Combination Wrench -->
-      <div class="circle-card">
-        <div class="circle-letter">{{ step1_tools.1.name|first }}</div>
-        <div class="circle-name">{{ step1_tools.1.name }}</div>
-      </div>
+      {% for tool in step1_tools %}
+        <div class="circle-card">
+          <!-- NOTE: namespaced URL -->
+          <a href="{% url 'lessons:mission_1_tool_detail' tool.slug %}" class="circle-link">
+            <div class="circle-letter">{{ tool.name|first }}</div>
+            <div class="circle-name">{{ tool.name }}</div>
+          </a>
+        </div>
+      {% endfor %}
 
       <!-- Part 1 Quiz -->
       <div class="circle-card quiz">
-        <div class="circle-letter">Q1</div>
-        <div class="circle-name">Part 1 Quiz – Tools</div>
+        <a href="{% url 'lessons:mission_1_part_1_quiz' %}" class="quiz-link">
+          <div class="circle-letter">Q1</div>
+          <div class="circle-name">Part 1 Quiz – Tools</div>
+        </a>
       </div>
     </div>
   </section>
@@ -168,44 +175,26 @@
   <section class="section">
     <h2 class="section-title">Part 2: Fasteners to assemble Pedro</h2>
     <p class="section-subtitle">
-      Continue along the path to learn the parts that keep everything tight and safe.
+      Click each circle to open its lesson page.
     </p>
 
     <div class="vertical-path">
-      <!-- Screws -->
-      <div class="circle-card">
-        <div class="circle-letter">{{ assembly_items.0.name|first }}</div>
-        <div class="circle-name">{{ assembly_items.0.name }}</div>
-      </div>
-
-      <!-- Plain Washers -->
-      <div class="circle-card">
-        <div class="circle-letter">{{ assembly_items.1.name|first }}</div>
-        <div class="circle-name">{{ assembly_items.1.name }}</div>
-      </div>
-
-      <!-- Spring Washers -->
-      <div class="circle-card">
-        <div class="circle-letter">{{ assembly_items.2.name|first }}</div>
-        <div class="circle-name">{{ assembly_items.2.name }}</div>
-      </div>
-
-      <!-- Nuts -->
-      <div class="circle-card">
-        <div class="circle-letter">{{ assembly_items.3.name|first }}</div>
-        <div class="circle-name">{{ assembly_items.3.name }}</div>
-      </div>
-
-      <!-- Torque / Brake Nuts -->
-      <div class="circle-card">
-        <div class="circle-letter">{{ assembly_items.4.name|first }}</div>
-        <div class="circle-name">{{ assembly_items.4.name }}</div>
-      </div>
+      {% for item in assembly_items %}
+        <div class="circle-card">
+          <!-- NOTE: namespaced URL -->
+          <a href="{% url 'lessons:mission_1_fastener_detail' item.slug %}" class="circle-link">
+            <div class="circle-letter">{{ item.name|first }}</div>
+            <div class="circle-name">{{ item.name }}</div>
+          </a>
+        </div>
+      {% endfor %}
 
       <!-- Part 2 Quiz -->
       <div class="circle-card quiz">
-        <div class="circle-letter">Q2</div>
-        <div class="circle-name">Part 2 Quiz – Accessories</div>
+        <a href="{% url 'lessons:mission_1_part_2_quiz' %}" class="quiz-link">
+          <div class="circle-letter">Q2</div>
+          <div class="circle-name">Part 2 Quiz – Accessories</div>
+        </a>
       </div>
     </div>
   </section>

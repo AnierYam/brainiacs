@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Mission 3 – Building Pedro</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 2rem;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #e0f2fe, #f9fafb);
+      color: #1f2937;
+    }
+    h1, h2, h3, p { margin: 0; }
+
+    .page-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .page-header h1 {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .page-header p {
+      color: #4b5563;
+      font-size: 0.95rem;
+    }
+
+    .system-block {
+      margin-bottom: 3rem;
+    }
+
+    .system-title {
+      font-size: 1.3rem;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+
+    .vertical-path {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .circle-card {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      background: #ffffff;
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, margin 0.2s ease;
+      text-align: center;
+    }
+
+    .circle-card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 14px 28px rgba(15, 23, 42, 0.15);
+    }
+
+    .circle-link {
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+    }
+
+    .circle-label {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #1e3a8a;
+      margin-bottom: 0.25rem;
+    }
+
+    .circle-sub {
+      font-size: 0.8rem;
+      color: #4b5563;
+      width: 90%;
+    }
+
+    .vertical-path .circle-card:nth-child(odd) {
+      margin-left: -30px;
+      margin-right: 30px;
+    }
+    .vertical-path .circle-card:nth-child(even) {
+      margin-left: 30px;
+      margin-right: -30px;
+    }
+
+    .vertical-path .circle-card:last-child {
+      margin-left: 0;
+      margin-right: 0;
+    }
+
+    @media (max-width: 600px) {
+      .vertical-path .circle-card:nth-child(odd),
+      .vertical-path .circle-card:nth-child(even) {
+        margin-left: 0;
+        margin-right: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="page-header">
+    <h1>Mission 3: Building Pedro</h1>
+    <p>For each system, complete the lessons in order: build, electronics, code, and more.</p>
+  </header>
+
+  {% for system in systems %}
+    <section class="system-block">
+      <h2 class="system-title">{{ system.name }}</h2>
+
+      <div class="vertical-path">
+        {% for lesson in system.lessons %}
+          <div class="circle-card">
+            <!-- namespaced URL with both slugs -->
+            <a href="{% url 'lessons:mission_3_lesson_detail' system.slug lesson.slug %}"
+               class="circle-link">
+              <div class="circle-label">{{ forloop.counter }}. {{ lesson.title }}</div>
+              <div class="circle-sub">
+                Click to open this lesson
+              </div>
+            </a>
+          </div>
+        {% endfor %}
+      </div>
+    </section>
+  {% endfor %}
+
+  <p style="text-align:center; margin-top: 2rem;">
+    <a href="{% url 'lessons:lessons_home' %}">⬅ Back to Missions</a>
+  </p>
+</body>
+</html>

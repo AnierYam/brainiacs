@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Mission 2 – Introduction to Arduino</title>
+</head>
+<body>
+  <h1>Mission 2: Introduction to Arduino</h1>
+  <p>Learn what Arduino is, how to use the IDE, and upload your first sketch.</p>
+
+  <ul>
+    {% for lesson in lessons %}
+      <li>
+        <!-- namespaced URL -->
+        <a href="{% url 'lessons:mission_2_lesson_detail' lesson.slug %}">
+          {{ lesson.title }}
+        </a>
+      </li>
+    {% endfor %}
+  </ul>
+
+  <p>
+    <a href="{% url 'lessons:lessons_home' %}">⬅ Back to Missions</a>
+  </p>
+</body>
+</html>

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Mission 4 – Assemble Pedro</title>
+</head>
+<body>
+  <h1>Mission 4: Assemble Pedro</h1>
+  <p>Assemble all systems and combine the code into one full robot.</p>
+
+  <ul>
+    {% for step in steps %}
+      <li>
+        <!-- namespaced URL -->
+        <a href="{% url 'lessons:mission_4_step_detail' step.slug %}">
+          {{ step.title }}
+        </a>
+      </li>
+    {% endfor %}
+  </ul>
+
+  <p>
+    <a href="{% url 'lessons:lessons_home' %}">⬅ Back to Missions</a>
+  </p>
+</body>
+</html>

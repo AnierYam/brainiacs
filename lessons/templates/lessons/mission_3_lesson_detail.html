@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>{{ system.name }} – {{ lesson.title }}</title>
+</head>
+<body>
+  <h1>{{ system.name }}</h1>
+  <h2>{{ lesson.title }}</h2>
+
+  <p>
+    This is the lesson page for <strong>{{ lesson.title }}</strong> in
+    <strong>{{ system.name }}</strong>.
+  </p>
+
+  <p>
+    Later, you can add:
+  </p>
+  <ul>
+    <li>YouTube embed if this is a build video lesson.</li>
+    <li>Images and diagrams for electronics lessons.</li>
+    <li>Code examples and editors for coding lessons.</li>
+  </ul>
+
+  <p>
+    <a href="{% url 'lessons:mission_3_page' %}">⬅ Back to Mission 3</a>
+  </p>
+</body>
+</html>

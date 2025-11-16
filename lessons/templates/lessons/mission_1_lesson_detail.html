@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Mission 1 – {{ lesson.title }}</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 2rem;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #e0f2fe, #f9fafb);
+      color: #1f2937;
+    }
+
+    a {
+      color: #2563eb;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .page {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .breadcrumb {
+      font-size: 0.85rem;
+      color: #6b7280;
+      margin-bottom: 1rem;
+    }
+
+    .breadcrumb a {
+      color: #2563eb;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .header h1 {
+      font-size: 1.9rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .header p {
+      color: #4b5563;
+      font-size: 0.95rem;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 0.25rem 0.7rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+
+    .badge.tool {
+      background: #dbeafe;
+      color: #1d4ed8;
+    }
+
+    .badge.fastener {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .badge.quiz {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .card {
+      background: #ffffff;
+      border-radius: 1.5rem;
+      box-shadow: 0 15px 40px rgba(15, 23, 42, 0.12);
+      padding: 1.75rem 2rem;
+      margin-bottom: 1.75rem;
+    }
+
+    .card h2 {
+      margin: 0 0 0.75rem 0;
+      font-size: 1.3rem;
+    }
+
+    .card p {
+      margin: 0.25rem 0;
+      color: #4b5563;
+      line-height: 1.5;
+    }
+
+    .actions {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-top: 1.5rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.7rem 1.4rem;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+    }
+
+    .btn-primary {
+      background: #2563eb;
+      color: #ffffff;
+      box-shadow: 0 8px 20px rgba(37, 99, 235, 0.35);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 28px rgba(37, 99, 235, 0.45);
+      background: #1d4ed8;
+    }
+
+    .btn-secondary {
+      background: #e5e7eb;
+      color: #111827;
+    }
+
+    .btn-secondary:hover {
+      background: #d1d5db;
+    }
+
+    .nav-links {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 2rem;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 640px) {
+      .card {
+        padding: 1.25rem 1.2rem;
+      }
+
+      .actions {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .nav-links {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+
+    <!-- Breadcrumb back to Mission 1 path -->
+    <div class="breadcrumb">
+      <a href="{% url 'lessons:mission_1' %}">← Back to Mission 1 path</a>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+      <div
+        class="badge {% if lesson.type == 'tool' %}tool{% elif lesson.type == 'fastener' %}fastener{% else %}quiz{% endif %}">
+        {% if lesson.type == 'tool' %}Tool Lesson
+        {% elif lesson.type == 'fastener' %}Fastener Lesson
+        {% else %}Quiz
+        {% endif %}
+      </div>
+
+      <h1>{{ lesson.title }}</h1>
+      <p>Mission 1 – Know your Toolbox</p>
+    </header>
+
+    <!-- Main lesson card -->
+    <section class="card">
+      <h2>What you'll learn</h2>
+      <p>{{ lesson.description }}</p>
+
+      {% if lesson.type == "tool" %}
+        <p>By the end of this lesson, you should be able to use this tool safely and explain what it is used for
+           when building Pedro the Dog.</p>
+      {% elif lesson.type == "fastener" %}
+        <p>By the end of this lesson, you should be able to describe how this fastener helps keep Pedro strong,
+           stable, and safely assembled.</p>
+      {% else %}
+        <p>Answer each question carefully. This quiz will help you check that you really understand the concepts
+           from the previous lessons.</p>
+      {% endif %}
+
+      <div class="actions">
+        <button class="btn btn-primary">
+          {% if lesson.type == "quiz" %}Start Quiz{% else %}Start Lesson{% endif %}
+        </button>
+
+        <a href="{% url 'lessons:mission_1' %}">
+          <button type="button" class="btn btn-secondary">
+            Back to Mission 1 Path
+          </button>
+        </a>
+      </div>
+    </section>
+
+    <!-- Navigation hint (optional) -->
+    <div class="nav-links">
+      <span>Tip: You can always return to the path and open another circle.</span>
+      <a href="{% url 'lessons:missions_home' %}">← Back to all Missions</a>
+    </div>
+  </div>
+</body>
+</html>

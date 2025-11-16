@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Brainiacs Level 1 – Missions</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 2rem;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #e0f2fe, #f9fafb);
+      color: #111827;
+    }
+
+    h1, h2, p {
+      margin: 0;
+    }
+
+    .page {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .page-header {
+      text-align: left;
+      margin-bottom: 1.5rem;
+    }
+
+    .page-header h1 {
+      font-size: 2.4rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .page-header p {
+      font-size: 1rem;
+      color: #4b5563;
+    }
+
+    ul.mission-list {
+      list-style: none;
+      padding: 0;
+      margin: 2rem 0 0 0;
+    }
+
+    .mission-item {
+      margin-bottom: 1.8rem;
+    }
+
+    .mission-link {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #4b0082;      /* purple like in your screenshot */
+      text-decoration: none;
+    }
+
+    .mission-link:hover {
+      text-decoration: underline;
+    }
+
+    .mission-desc {
+      margin-top: 0.25rem;
+      font-size: 0.98rem;
+      color: #374151;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="page-header">
+      <h1>Brainiacs Level 1 – Missions</h1>
+      <p>Select a mission to start learning.</p>
+    </header>
+
+    <ul class="mission-list">
+      <li class="mission-item">
+        <a href="{% url 'lessons:mission_1' %}" class="mission-link">
+          Mission 1: Know your Toolbox
+        </a>
+        <p class="mission-desc">
+          Learn all the tools and fasteners you’ll use to build Pedro.
+        </p>
+      </li>
+
+      <li class="mission-item">
+        <a href="{% url 'lessons:mission_2_intro' %}" class="mission-link">
+          Mission 2: Introduction to Arduino
+        </a>
+        <p class="mission-desc">
+          Discover what Arduino is, how the IDE works, and upload your first sketches.
+        </p>
+      </li>
+
+      <li class="mission-item">
+        <a href="{% url 'lessons:mission_3_build_pedro' %}" class="mission-link">
+          Mission 3: Building Pedro
+        </a>
+        <p class="mission-desc">
+          Build Pedro system by system: structure, electronics, and code for each part.
+        </p>
+      </li>
+
+      <li class="mission-item">
+        <a href="{% url 'lessons:mission_4_assemble_pedro' %}" class="mission-link">
+          Mission 4: Assemble Pedro
+        </a>
+        <p class="mission-desc">
+          Assemble all systems and combine the code into one full working robot.
+        </p>
+      </li>
+    </ul>
+  </div>
+</body>
+</html>
