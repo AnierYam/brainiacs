@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,21 +7,42 @@
   <style>
     body {
       margin: 0;
-      padding: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont,
-        "Segoe UI", sans-serif;
+      padding: 2rem;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       background: radial-gradient(circle at top, #e0f2fe, #f9fafb);
       color: #1f2937;
     }
 
-    .page {
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 2.5rem 1.5rem 4rem;
-    }
-
     h1, h2, h3, p {
       margin: 0;
+    }
+
+    /* Back to Missions button (fixed) */
+    .back-button {
+      position: fixed;
+      top: 1.2rem;
+      left: 1.6rem;
+      padding: 0.4rem 0.9rem;
+      font-size: 0.85rem;
+      border-radius: 999px;
+      border: 1px solid #cbd5f5;
+      background: #eef2ff;
+      color: #1d4ed8;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      box-shadow: 0 4px 10px rgba(15, 23, 42, 0.12);
+      z-index: 50;
+    }
+
+    .back-button:hover {
+      background: #e0e7ff;
+    }
+
+    .back-arrow {
+      font-size: 1rem;
+      line-height: 1;
     }
 
     .page-header {
@@ -29,7 +51,7 @@
     }
 
     .page-header h1 {
-      font-size: 2.2rem;
+      font-size: 2rem;
       margin-bottom: 0.5rem;
     }
 
@@ -39,23 +61,17 @@
     }
 
     .section {
-      margin-bottom: 3rem;
+      margin-bottom: 3.75rem;
     }
 
     .section-title {
       font-size: 1.4rem;
-      margin-bottom: 0.25rem;
+      margin-bottom: 1.5rem;
       font-weight: 700;
       text-align: center;
     }
 
-    .section-subtitle {
-      font-size: 0.95rem;
-      color: #4b5563;
-      margin-bottom: 1.5rem;
-      text-align: center;
-    }
-
+    /* Vertical S path */
     .vertical-path {
       display: flex;
       flex-direction: column;
@@ -66,8 +82,8 @@
     }
 
     .circle-card {
-      width: 150px;
-      height: 150px;
+      width: 170px;
+      height: 170px;
       border-radius: 50%;
       background: #ffffff;
       box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
@@ -78,6 +94,7 @@
       cursor: pointer;
       transition: transform 0.2s ease, box-shadow 0.2s ease, margin 0.2s ease;
       text-align: center;
+      padding: 0.75rem;
     }
 
     .circle-card:hover {
@@ -96,49 +113,43 @@
       height: 100%;
     }
 
-    .circle-label {
-      font-size: 0.95rem;
-      font-weight: 600;
-      color: #1e3a8a;
-      margin-bottom: 0.25rem;
+    .circle-image-wrapper {
+      width: 90px;
+      height: 90px;
+      margin-bottom: 0.5rem;
+      border-radius: 999px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    .circle-sub {
-      font-size: 0.8rem;
-      color: #4b5563;
-      width: 90%;
+    .circle-image {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
     }
 
-    /* Subtle vertical S shape: odd vs even circles */
+    .circle-name {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: #1f2937;
+      width: 100%;
+    }
+
+    /* subtle S shape */
     .vertical-path .circle-card:nth-child(odd) {
       margin-left: -30px;
       margin-right: 30px;
     }
-
     .vertical-path .circle-card:nth-child(even) {
       margin-left: 30px;
       margin-right: -30px;
     }
-
     .vertical-path .circle-card:last-child {
       margin-left: 0;
       margin-right: 0;
-    }
-
-    .back-link {
-      margin-top: 2rem;
-      text-align: center;
-      font-size: 0.95rem;
-    }
-
-    .back-link a {
-      color: #2563eb;
-      text-decoration: none;
-      font-weight: 600;
-    }
-
-    .back-link a:hover {
-      text-decoration: underline;
     }
 
     @media (max-width: 600px) {
@@ -151,62 +162,80 @@
   </style>
 </head>
 <body>
-  <div class="page">
-    <!-- Header -->
-    <header class="page-header">
-      <h1>Mission 2: Pedro's Brain</h1>
-      <p>
-        Learn the basics of Pedro's electronic brain – first the hardware,
-        then how to program it using the Arduino IDE.
-      </p>
-    </header>
 
-    <!-- PART 1 -->
-    <section class="section">
-      <h2 class="section-title">Part 1: Introduction to Hardware</h2>
-      <p class="section-subtitle">
-        Understand what Pedro's brain is and how it connects to the rest of his body.
-      </p>
+  <!-- Back to missions -->
+  <a href="{% url 'lessons:missions_home' %}" class="back-button">
+    <span class="back-arrow">←</span>
+    Back to Missions
+  </a>
 
-      <div class="vertical-path">
-        <!-- Using your existing lesson slug -->
+  <!-- HEADER -->
+  <header class="page-header">
+    <h1>Mission 2: Pedro's Brain</h1>
+    <p>Learn Pedro’s brain: the Arduino board, hardware, and the Arduino IDE.</p>
+  </header>
+
+  <!-- PART 1: Hardware -->
+  <section class="section">
+    <h2 class="section-title">Part 1: Introduction to Hardware</h2>
+
+    <div class="vertical-path">
+      {% for lesson in part1_lessons %}
         <div class="circle-card">
-          <a href="{% url 'lessons:mission_2_lesson_detail' 'what-is-arduino' %}" class="circle-link">
-            <div class="circle-label">Lesson 1</div>
-            <div class="circle-sub">What is Arduino?</div>
+          <a href="{% url 'lessons:mission_2_lesson_detail' lesson.slug %}" class="circle-link">
+            <div class="circle-image-wrapper">
+              {% if forloop.counter == 1 %}
+                <!-- Intro to Arduino -->
+                <img
+                  src="{% static 'lessons/mission2/arduino_board.png' %}"
+                  alt="{{ lesson.title }}"
+                  class="circle-image"
+                />
+              {% elif forloop.counter == 2 %}
+                <!-- Intro to Breadboard -->
+                <img
+                  src="{% static 'lessons/mission2/breadboard.png' %}"
+                  alt="{{ lesson.title }}"
+                  class="circle-image"
+                />
+              {% else %}
+                <!-- Fallback icon -->
+                <img
+                  src="{% static 'lessons/icons/engineer-hat.png' %}"
+                  alt="{{ lesson.title }}"
+                  class="circle-image"
+                />
+              {% endif %}
+            </div>
+            <div class="circle-name">{{ lesson.title }}</div>
           </a>
         </div>
-      </div>
-    </section>
-
-    <!-- PART 2 -->
-    <section class="section">
-      <h2 class="section-title">Part 2: Introduction to the Arduino IDE</h2>
-      <p class="section-subtitle">
-        Explore the Arduino software and learn how to upload code to Pedro.
-      </p>
-
-      <div class="vertical-path">
-        <div class="circle-card">
-          <a href="{% url 'lessons:mission_2_lesson_detail' 'arduino-ide-tour' %}" class="circle-link">
-            <div class="circle-label">Lesson 2</div>
-            <div class="circle-sub">Tour of the Arduino IDE</div>
-          </a>
-        </div>
-
-        <div class="circle-card">
-          <a href="{% url 'lessons:mission_2_lesson_detail' 'upload-first-sketch' %}" class="circle-link">
-            <div class="circle-label">Lesson 3</div>
-            <div class="circle-sub">Upload Your First Sketch</div>
-          </a>
-        </div>
-      </div>
-    </section>
-
-    <!-- Back to missions -->
-    <div class="back-link">
-      <a href="{% url 'lessons:missions_home' %}">← Back to Missions</a>
+      {% endfor %}
     </div>
-  </div>
+  </section>
+
+  <!-- PART 2: Arduino IDE -->
+  <section class="section">
+    <h2 class="section-title">Part 2: Introduction to the Arduino IDE</h2>
+
+    <div class="vertical-path">
+      {% for lesson in part2_lessons %}
+        <div class="circle-card">
+          <a href="{% url 'lessons:mission_2_lesson_detail' lesson.slug %}" class="circle-link">
+            <div class="circle-image-wrapper">
+              <!-- Intro to Arduino IDE icon -->
+              <img
+                src="{% static 'lessons/mission2/arduino_ide.png' %}"
+                alt="{{ lesson.title }}"
+                class="circle-image"
+              />
+            </div>
+            <div class="circle-name">{{ lesson.title }}</div>
+          </a>
+        </div>
+      {% endfor %}
+    </div>
+  </section>
+
 </body>
 </html>
