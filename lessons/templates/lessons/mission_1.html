@@ -4,6 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <title>Mission 1 – Know your Toolbox</title>
+
   <style>
     body {
       margin: 0;
@@ -17,22 +18,42 @@
       margin: 0;
     }
 
+    /* ====================== */
+    /* TOP BAR */
+    /* ====================== */
+    .top-bar {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      margin-top: -10px;
+      margin-bottom: 0.5rem;
+    }
+
+    .back-button {
+      padding: 0.45rem 0.9rem;
+      border-radius: 999px;
+      border: 1px solid #d1d5db;
+      background: #ffffff;
+      font-size: 0.9rem;
+      text-decoration: none;
+      color: #374151;
+      box-shadow: 0 4px 10px rgba(15, 23, 42, 0.08);
+      cursor: pointer;
+      transition: background 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+    }
+
+    .back-button:hover {
+      background: #eff6ff;
+      box-shadow: 0 6px 14px rgba(15, 23, 42, 0.12);
+      transform: translateY(-1px);
+    }
+
+    /* ====================== */
+    /* PAGE HEADER */
+    /* ====================== */
     .page-header {
       text-align: center;
       margin-bottom: 2.5rem;
-    }
-
-    .page-header-title {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.75rem;
-      justify-content: center;
-    }
-
-    .toolbox-icon {
-      width: 40px;
-      height: 40px;
-      object-fit: contain;
     }
 
     .page-header h1 {
@@ -43,6 +64,14 @@
     .page-header p {
       color: #4b5563;
       font-size: 0.95rem;
+    }
+
+    .toolbox-large {
+      width: 90px;
+      height: 90px;
+      object-fit: contain;
+      display: flex;
+      margin: 0 auto 1rem auto;
     }
 
     .section {
@@ -56,6 +85,14 @@
       text-align: center;
     }
 
+    /* EXTRA SPACING between Part 1 & Part 2 */
+    .big-spacer {
+      height: 3rem;
+    }
+
+    /* ====================== */
+    /* CIRCLES & S PATH */
+    /* ====================== */
     .vertical-path {
       display: flex;
       flex-direction: column;
@@ -76,9 +113,9 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      transition: transform 0.2s ease, box-shadow 0.2s ease, margin 0.2s ease;
-      text-align: center;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
       padding: 0.75rem;
+      text-align: center;
     }
 
     .circle-card:hover {
@@ -99,8 +136,8 @@
     }
 
     .circle-image-wrapper {
-      width: 70px;
-      height: 70px;
+      width: 90px;
+      height: 90px;
       margin-bottom: 0.5rem;
       border-radius: 999px;
       overflow: hidden;
@@ -113,7 +150,6 @@
       width: 100%;
       height: 100%;
       object-fit: contain;
-      display: block;
     }
 
     .circle-name {
@@ -123,9 +159,17 @@
       width: 100%;
     }
 
+    /* QUIZ STYLING */
     .circle-card.quiz {
       border: 2px dashed #3b82f6;
       background: #eff6ff;
+    }
+
+    .quiz-top {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #1d4ed8;
+      margin-bottom: 0.35rem;
     }
 
     .quiz-title {
@@ -135,6 +179,7 @@
       margin-top: 0.25rem;
     }
 
+    /* S SHAPE */
     .vertical-path .circle-card:nth-child(odd) {
       margin-left: -30px;
       margin-right: 30px;
@@ -157,21 +202,28 @@
         margin-right: 0;
       }
     }
+
   </style>
 </head>
+
 <body>
 
-  <!-- HEADER -->
+  <!-- BACK BUTTON -->
+  <header class="top-bar">
+    <a href="/lessons/" class="back-button">← Back to Missions</a>
+  </header>
+
+  <!-- PAGE HEADER -->
   <header class="page-header">
-    <div class="page-header-title">
-      <img src="{% static 'lessons/icons/toolbox.png' %}" alt="Toolbox" class="toolbox-icon" />
-      <h1>Mission 1: Know your Toolbox</h1>
-    </div>
+    <h1>Mission 1: Know your Toolbox</h1>
     <p>Your first mission: learn the tools and parts to build your robot.</p>
   </header>
 
   <!-- PART 1 -->
   <section class="section">
+    <!-- RESTORED TOOLBOX ICON ABOVE PART 1 -->
+    <img src="{% static 'lessons/icons/toolbox.png' %}" class="toolbox-large" alt="Toolbox" />
+
     <h2 class="section-title">Part 1: Your Toolset</h2>
 
     <div class="vertical-path">
@@ -179,32 +231,35 @@
         <div class="circle-card">
           <a href="{% url 'lessons:mission_1_tool_detail' tool.slug %}" class="circle-link">
             <div class="circle-image-wrapper">
-              <img
-                src="{% static 'lessons/tools/'|add:tool.slug|add:'.png' %}"
-                alt="{{ tool.name }}"
-                class="circle-image"
-              />
+
+              {% if forloop.counter == 1 %}
+                <img src="{% static 'lessons/tools/screwdriver_crosshead.png' %}" class="circle-image" />
+              {% elif forloop.counter == 2 %}
+                <img src="{% static 'lessons/tools/combination_wrench.png' %}" class="circle-image" />
+              {% endif %}
+
             </div>
             <div class="circle-name">{{ tool.name }}</div>
           </a>
         </div>
       {% endfor %}
 
-      <!-- Part 1 Quiz -->
+      <!-- QUIZ -->
       <div class="circle-card quiz">
         <a href="{% url 'lessons:mission_1_part_1_quiz' %}" class="quiz-link">
+          <div class="quiz-top">Quiz</div>
           <div class="circle-image-wrapper">
-            <img
-              src="{% static 'lessons/icons/engineer-hat.png' %}"
-              alt="Engineering Quiz"
-              class="circle-image"
-            />
+            <img src="{% static 'lessons/icons/engineer-hat.png' %}" class="circle-image" />
           </div>
-          <div class="quiz-title">Quiz: Tools</div>
+          <div class="quiz-title">Tools</div>
         </a>
       </div>
+
     </div>
   </section>
+
+  <!-- BIG SPACER BETWEEN PART 1 & PART 2 -->
+  <div class="big-spacer"></div>
 
   <!-- PART 2 -->
   <section class="section">
@@ -215,30 +270,40 @@
         <div class="circle-card">
           <a href="{% url 'lessons:mission_1_fastener_detail' item.slug %}" class="circle-link">
             <div class="circle-image-wrapper">
-              <img
-                src="{% static 'lessons/fasteners/'|add:item.slug|add:'.png' %}"
-                alt="{{ item.name }}"
-                class="circle-image"
-              />
+
+              {% if forloop.counter == 1 %}
+                <img src="{% static 'lessons/fasteners/bolt_pan_head.png' %}" class="circle-image" />
+              {% elif forloop.counter == 2 %}
+                <img src="{% static 'lessons/fasteners/washer_plain.png' %}" class="circle-image" />
+              {% elif forloop.counter == 3 %}
+                <img src="{% static 'lessons/fasteners/washer_spring.png' %}" class="circle-image" />
+              {% elif forloop.counter == 4 %}
+                <img src="{% static 'lessons/fasteners/nut_hex.png' %}" class="circle-image" />
+              {% elif forloop.counter == 5 %}
+                <img src="{% static 'lessons/fasteners/nut_torque.png' %}" class="circle-image" />
+              {% endif %}
+
             </div>
-            <div class="circle-name">{{ item.name }}</div>
+
+            <div class="circle-name">
+              {% if item.name == "Screws" %}Bolts{% else %}{{ item.name }}{% endif %}
+            </div>
+
           </a>
         </div>
       {% endfor %}
 
-      <!-- Part 2 Quiz -->
+      <!-- QUIZ -->
       <div class="circle-card quiz">
         <a href="{% url 'lessons:mission_1_part_2_quiz' %}" class="quiz-link">
+          <div class="quiz-top">Quiz</div>
           <div class="circle-image-wrapper">
-            <img
-              src="{% static 'lessons/icons/engineer-hat.png' %}"
-              alt="Engineering Quiz"
-              class="circle-image"
-            />
+            <img src="{% static 'lessons/icons/engineer-hat.png' %}" class="circle-image" />
           </div>
-          <div class="quiz-title">Quiz: Fasteners</div>
+          <div class="quiz-title">Fasteners</div>
         </a>
       </div>
+
     </div>
   </section>
 
