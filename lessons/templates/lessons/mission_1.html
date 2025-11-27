@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,8 +8,7 @@
     body {
       margin: 0;
       padding: 2rem;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont,
-        "Segoe UI", sans-serif;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       background: radial-gradient(circle at top, #e0f2fe, #f9fafb);
       color: #1f2937;
     }
@@ -20,6 +20,19 @@
     .page-header {
       text-align: center;
       margin-bottom: 2.5rem;
+    }
+
+    .page-header-title {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      justify-content: center;
+    }
+
+    .toolbox-icon {
+      width: 40px;
+      height: 40px;
+      object-fit: contain;
     }
 
     .page-header h1 {
@@ -38,14 +51,9 @@
 
     .section-title {
       font-size: 1.4rem;
-      margin-bottom: 0.25rem;
-      font-weight: 700;
-    }
-
-    .section-subtitle {
-      font-size: 0.95rem;
-      color: #4b5563;
       margin-bottom: 1.5rem;
+      font-weight: 700;
+      text-align: center;
     }
 
     .vertical-path {
@@ -58,8 +66,8 @@
     }
 
     .circle-card {
-      width: 150px;
-      height: 150px;
+      width: 170px;
+      height: 170px;
       border-radius: 50%;
       background: #ffffff;
       box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
@@ -70,6 +78,7 @@
       cursor: pointer;
       transition: transform 0.2s ease, box-shadow 0.2s ease, margin 0.2s ease;
       text-align: center;
+      padding: 0.75rem;
     }
 
     .circle-card:hover {
@@ -89,18 +98,29 @@
       height: 100%;
     }
 
-    .circle-letter {
-      font-size: 1.8rem;
-      font-weight: 700;
-      color: #1e3a8a;
-      margin-bottom: 0.3rem;
+    .circle-image-wrapper {
+      width: 70px;
+      height: 70px;
+      margin-bottom: 0.5rem;
+      border-radius: 999px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .circle-image {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
     }
 
     .circle-name {
       font-size: 0.9rem;
       font-weight: 500;
       color: #1f2937;
-      width: 90%;
+      width: 100%;
     }
 
     .circle-card.quiz {
@@ -108,9 +128,11 @@
       background: #eff6ff;
     }
 
-    .circle-card.quiz .circle-letter {
-      font-size: 1.2rem;
+    .quiz-title {
+      font-size: 0.9rem;
+      font-weight: 600;
       color: #1d4ed8;
+      margin-top: 0.25rem;
     }
 
     .vertical-path .circle-card:nth-child(odd) {
@@ -138,24 +160,31 @@
   </style>
 </head>
 <body>
+
+  <!-- HEADER -->
   <header class="page-header">
-    <h1>Mission 1: Know your Toolbox</h1>
-    <p>Your first mission: learn the tools and parts to build your robot 🐶🤖</p>
+    <div class="page-header-title">
+      <img src="{% static 'lessons/icons/toolbox.png' %}" alt="Toolbox" class="toolbox-icon" />
+      <h1>Mission 1: Know your Toolbox</h1>
+    </div>
+    <p>Your first mission: learn the tools and parts to build your robot.</p>
   </header>
 
   <!-- PART 1 -->
   <section class="section">
     <h2 class="section-title">Part 1: Your Toolset</h2>
-    <p class="section-subtitle">
-      Follow the path and click each circle to open its lesson 🎮
-    </p>
 
     <div class="vertical-path">
       {% for tool in step1_tools %}
         <div class="circle-card">
-          <!-- NOTE: namespaced URL -->
           <a href="{% url 'lessons:mission_1_tool_detail' tool.slug %}" class="circle-link">
-            <div class="circle-letter">{{ tool.name|first }}</div>
+            <div class="circle-image-wrapper">
+              <img
+                src="{% static 'lessons/tools/'|add:tool.slug|add:'.png' %}"
+                alt="{{ tool.name }}"
+                class="circle-image"
+              />
+            </div>
             <div class="circle-name">{{ tool.name }}</div>
           </a>
         </div>
@@ -164,8 +193,14 @@
       <!-- Part 1 Quiz -->
       <div class="circle-card quiz">
         <a href="{% url 'lessons:mission_1_part_1_quiz' %}" class="quiz-link">
-          <div class="circle-letter">Q1</div>
-          <div class="circle-name">Part 1 Quiz – Tools</div>
+          <div class="circle-image-wrapper">
+            <img
+              src="{% static 'lessons/icons/engineer-hat.png' %}"
+              alt="Engineering Quiz"
+              class="circle-image"
+            />
+          </div>
+          <div class="quiz-title">Quiz: Tools</div>
         </a>
       </div>
     </div>
@@ -174,16 +209,18 @@
   <!-- PART 2 -->
   <section class="section">
     <h2 class="section-title">Part 2: Fasteners to assemble Pedro</h2>
-    <p class="section-subtitle">
-      Click each circle to open its lesson page.
-    </p>
 
     <div class="vertical-path">
       {% for item in assembly_items %}
         <div class="circle-card">
-          <!-- NOTE: namespaced URL -->
           <a href="{% url 'lessons:mission_1_fastener_detail' item.slug %}" class="circle-link">
-            <div class="circle-letter">{{ item.name|first }}</div>
+            <div class="circle-image-wrapper">
+              <img
+                src="{% static 'lessons/fasteners/'|add:item.slug|add:'.png' %}"
+                alt="{{ item.name }}"
+                class="circle-image"
+              />
+            </div>
             <div class="circle-name">{{ item.name }}</div>
           </a>
         </div>
@@ -192,11 +229,18 @@
       <!-- Part 2 Quiz -->
       <div class="circle-card quiz">
         <a href="{% url 'lessons:mission_1_part_2_quiz' %}" class="quiz-link">
-          <div class="circle-letter">Q2</div>
-          <div class="circle-name">Part 2 Quiz – Accessories</div>
+          <div class="circle-image-wrapper">
+            <img
+              src="{% static 'lessons/icons/engineer-hat.png' %}"
+              alt="Engineering Quiz"
+              class="circle-image"
+            />
+          </div>
+          <div class="quiz-title">Quiz: Fasteners</div>
         </a>
       </div>
     </div>
   </section>
+
 </body>
 </html>

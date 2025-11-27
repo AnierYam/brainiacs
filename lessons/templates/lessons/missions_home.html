@@ -2,33 +2,33 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Brainiacs Level 1 – Missions</title>
+  <title>Brainiacs Level 1 – Building Pedro</title>
+
   <style>
     body {
       margin: 0;
-      padding: 2rem;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", sans-serif;
       background: radial-gradient(circle at top, #e0f2fe, #f9fafb);
-      color: #111827;
-    }
-
-    h1, h2, p {
-      margin: 0;
+      color: #1f2937;
     }
 
     .page {
       max-width: 900px;
       margin: 0 auto;
+      padding: 3rem 1rem 4rem;
     }
 
     .page-header {
-      text-align: left;
-      margin-bottom: 1.5rem;
+      text-align: center;
+      margin-bottom: 3rem;
     }
 
     .page-header h1 {
       font-size: 2.4rem;
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.75rem;
+      font-weight: 800;
     }
 
     .page-header p {
@@ -36,78 +36,106 @@
       color: #4b5563;
     }
 
-    ul.mission-list {
-      list-style: none;
-      padding: 0;
-      margin: 2rem 0 0 0;
-    }
-
-    .mission-item {
-      margin-bottom: 1.8rem;
-    }
-
+    /* CLICKABLE card wrapper */
     .mission-link {
-      font-size: 1.4rem;
-      font-weight: 700;
-      color: #4b0082;      /* purple like in your screenshot */
       text-decoration: none;
+      color: inherit;
     }
 
-    .mission-link:hover {
-      text-decoration: underline;
+    /* Smaller, shorter cards */
+    .mission-card {
+      background: #ffffff;
+      border-radius: 1rem;
+      padding: 0.8rem 1.2rem;     /* reduced padding */
+      width: 500px;
+      height: 90px;               /* much smaller height */
+      margin: 1rem auto;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      text-align: center;
     }
 
-    .mission-desc {
-      margin-top: 0.25rem;
-      font-size: 0.98rem;
-      color: #374151;
+    .mission-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+    }
+
+    .mission-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #5b21b6;
+      margin-bottom: 0.3rem;
+    }
+
+    .mission-description {
+      color: #4b5563;
+      font-size: 0.85rem;
+      line-height: 1.3;
+    }
+
+    @media (max-width: 700px) {
+      .mission-card {
+        width: 90%;
+        height: auto;
+        padding: 1rem;
+      }
     }
   </style>
+
 </head>
+
 <body>
   <div class="page">
+
+    <!-- Header -->
     <header class="page-header">
-      <h1>Brainiacs Level 1 – Missions</h1>
+      <h1>Brainiacs Level 1: Building Pedro</h1>
       <p>Select a mission to start learning.</p>
     </header>
 
-    <ul class="mission-list">
-      <li class="mission-item">
-        <a href="{% url 'lessons:mission_1' %}" class="mission-link">
-          Mission 1: Know your Toolbox
-        </a>
-        <p class="mission-desc">
+    <!-- Mission 1 -->
+    <a class="mission-link" href="{% url 'lessons:mission_1' %}">
+      <div class="mission-card">
+        <div class="mission-title">Mission 1: Know your Toolbox</div>
+        <div class="mission-description">
           Learn all the tools and fasteners you’ll use to build Pedro.
-        </p>
-      </li>
+        </div>
+      </div>
+    </a>
 
-      <li class="mission-item">
-        <a href="{% url 'lessons:mission_2_intro' %}" class="mission-link">
-          Mission 2: Introduction to Arduino
-        </a>
-        <p class="mission-desc">
+    <!-- Mission 2 -->
+    <a class="mission-link" href="{% url 'lessons:mission_2_intro' %}">
+      <div class="mission-card">
+        <div class="mission-title">Mission 2: Pedro's Brain</div>
+        <div class="mission-description">
           Discover what Arduino is, how the IDE works, and upload your first sketches.
-        </p>
-      </li>
+        </div>
+      </div>
+    </a>
 
-      <li class="mission-item">
-        <a href="{% url 'lessons:mission_3_build_pedro' %}" class="mission-link">
-          Mission 3: Building Pedro
-        </a>
-        <p class="mission-desc">
+    <!-- Mission 3 -->
+    <a class="mission-link" href="{% url 'lessons:mission_3_build_pedro' %}">
+      <div class="mission-card">
+        <div class="mission-title">Mission 3: Building Pedro</div>
+        <div class="mission-description">
           Build Pedro system by system: structure, electronics, and code for each part.
-        </p>
-      </li>
+        </div>
+      </div>
+    </a>
 
-      <li class="mission-item">
-        <a href="{% url 'lessons:mission_4_assemble_pedro' %}" class="mission-link">
-          Mission 4: Assemble Pedro
-        </a>
-        <p class="mission-desc">
+    <!-- Mission 4 -->
+    <a class="mission-link" href="{% url 'lessons:mission_4_assemble_pedro' %}">
+      <div class="mission-card">
+        <div class="mission-title">Mission 4: Assembling Pedro</div>
+        <div class="mission-description">
           Assemble all systems and combine the code into one full working robot.
-        </p>
-      </li>
-    </ul>
+        </div>
+      </div>
+    </a>
+
   </div>
 </body>
 </html>
