@@ -123,7 +123,7 @@ def mission_1_part_2_quiz(request):
 # -------------------------------------------------------------------
 
 MISSION2_PART1_LESSONS = [
-    {"slug": "intro-arduino", "title": "Introduction to Arduino", "part": 1},
+    {"slug": "intro-arduino", "title": "Introduction to the Arduino Board", "part": 1},
     {"slug": "intro-breadboard", "title": "Introduction to the Breadboard", "part": 1},
 ]
 
