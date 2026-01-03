@@ -3,6 +3,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <link rel="stylesheet" href="{% static 'css/icons.css' %}" />
   <title>Mission 1 – Know your Toolbox</title>
   <style>
     body {
@@ -161,6 +162,11 @@
       background: #eff6ff;
     }
 
+    .circle-card.quiz .circle-image-wrapper {
+      width: 90px;
+      height: 90px;
+    }
+
     .quiz-label {
       font-size: 0.9rem;
       font-weight: 600;
@@ -229,30 +235,15 @@
         <div class="circle-card">
           <a href="{% url 'lessons:mission_1_tool_detail' tool.slug %}" class="circle-link">
             <div class="circle-image-wrapper">
-              {% if forloop.counter == 1 %}
-                <!-- Cross-head Screwdriver -->
-                <img
-                  src="{% static 'lessons/tools/screwdriver_crosshead.png' %}"
-                  alt="{{ tool.name }}"
-                  class="circle-image"
-                />
-              {% elif forloop.counter == 2 %}
-                <!-- Combination Wrench -->
-                <img
-                  src="{% static 'lessons/tools/combination_wrench.png' %}"
-                  alt="{{ tool.name }}"
-                  class="circle-image"
-                />
-              {% else %}
-                <!-- Fallback (shouldn't be used now) -->
-                <img
-                  src="{% static 'lessons/icons/toolbox.png' %}"
-                  alt="{{ tool.name }}"
-                  class="circle-image"
-                />
-              {% endif %}
+              <img
+                src="{% static 'lessons/icons/lessons-gear.png' %}"
+                alt="{{ tool.name }}"
+                class="circle-image"
+              />
             </div>
-            <div class="circle-name">{{ tool.name }}</div>
+            <div class="circle-name">
+              {{ tool.name }}
+            </div>
           </a>
         </div>
       {% endfor %}
@@ -264,7 +255,7 @@
           <div class="circle-image-wrapper">
             <img
               src="{% static 'lessons/icons/engineer-hat.png' %}"
-              alt="Engineering Quiz"
+              alt="Quiz icon"
               class="circle-image"
             />
           </div>
@@ -284,44 +275,14 @@
           <a href="{% url 'lessons:mission_1_fastener_detail' item.slug %}" class="circle-link">
             <div class="circle-image-wrapper">
               {% if forloop.counter == 1 %}
-                <!-- Bolts (M3 pan-head) -->
                 <img
-                  src="{% static 'lessons/fasteners/bolt_pan_head.png' %}"
+                  src="{% static 'lessons/icons/lessons-gear.png' %}"
                   alt="{{ item.name }}"
                   class="circle-image"
                 />
-              {% elif forloop.counter == 2 %}
-                <!-- Plain washer -->
+              {% elif forloop.counter %}
                 <img
-                  src="{% static 'lessons/fasteners/washer_plain.png' %}"
-                  alt="{{ item.name }}"
-                  class="circle-image"
-                />
-              {% elif forloop.counter == 3 %}
-                <!-- Spring washer -->
-                <img
-                  src="{% static 'lessons/fasteners/washer_spring.png' %}"
-                  alt="{{ item.name }}"
-                  class="circle-image"
-                />
-              {% elif forloop.counter == 4 %}
-                <!-- Hex nut -->
-                <img
-                  src="{% static 'lessons/fasteners/nut_hex.png' %}"
-                  alt="{{ item.name }}"
-                  class="circle-image"
-                />
-              {% elif forloop.counter == 5 %}
-                <!-- Torque / brake nut -->
-                <img
-                  src="{% static 'lessons/fasteners/nut_torque.png' %}"
-                  alt="{{ item.name }}"
-                  class="circle-image"
-                />
-              {% else %}
-                <!-- Fallback -->
-                <img
-                  src="{% static 'lessons/icons/engineer-hat.png' %}"
+                  src="{% static 'lessons/icons/lessons-gear.png' %}"
                   alt="{{ item.name }}"
                   class="circle-image"
                 />
@@ -347,7 +308,7 @@
           <div class="circle-image-wrapper">
             <img
               src="{% static 'lessons/icons/engineer-hat.png' %}"
-              alt="Engineering Quiz"
+              alt="Quiz icon"
               class="circle-image"
             />
           </div>

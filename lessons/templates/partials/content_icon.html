@@ -1,0 +1,16 @@
+{% load static %}
+{% with ct=content_type|default:"lesson" size=size_class|default:"" %}
+  {% if ct == "exercise" %}
+    {% with icon_path="lessons/icons/engineer-hat.png" alt_text="Exercise" %}
+      <span class="content-icon content-icon--exercise{% if size %} {{ size }}{% endif %}" aria-label="{{ alt_text }}">
+        <img src="{% static icon_path %}" alt="{{ alt_text }}">
+      </span>
+    {% endwith %}
+  {% else %}
+    {% with icon_path="lessons/icons/lessons-gear.png" alt_text="Lesson" %}
+      <span class="content-icon content-icon--lesson{% if size %} {{ size }}{% endif %}" aria-label="{{ alt_text }}">
+        <img src="{% static icon_path %}" alt="{{ alt_text }}">
+      </span>
+    {% endwith %}
+  {% endif %}
+{% endwith %}

@@ -122,13 +122,80 @@ def mission_1_part_2_quiz(request):
 # Mission 2 — Pedro's Brain
 # -------------------------------------------------------------------
 
-MISSION2_PART1_LESSONS = [
-    {"slug": "intro-arduino", "title": "Introduction to the Arduino Board", "part": 1},
-    {"slug": "intro-breadboard", "title": "Introduction to the Breadboard", "part": 1},
+MISSION2_LESSON1 = [
+    {
+        "slug": "introduction",
+        "title": "Introduction",
+        "part": 1,
+        "focus": "50% 50%",
+        "zoom": "220%",
+    },
+    {
+        "slug": "usb-input",
+        "title": "USB Input",
+        "part": 1,
+        "focus": "18% 24%",
+        "zoom": "300%",
+        # Use dedicated USB icon instead of board crop
+        "image": "lessons/mission2/usb-logo-black-and-white.png",
+    },
+    {
+        "slug": "power-input",
+        "title": "Power Input",
+        "part": 1,
+        "focus": "30% 48%",
+        "zoom": "300%",
+    },
+    {
+        "slug": "reset-button",
+        "title": "Reset Button",
+        "part": 1,
+        "focus": "47% 16%",
+        "zoom": "260%",
+    },
+    {
+        "slug": "microcontroller",
+        "title": "The Microcontroller",
+        "part": 1,
+        "focus": "55% 52%",
+        "zoom": "170%",
+    },
+    {
+        "slug": "power-output",
+        "title": "Power output",
+        "part": 1,
+        "focus": "78% 34%",
+        "zoom": "280%",
+    },
+    {
+        "slug": "digital-vs-analog",
+        "title": "Digital vs. Analog",
+        "part": 1,
+        "focus": "84% 22%",
+        "zoom": "240%",
+    },
+    {
+        "slug": "arduino-pinout",
+        "title": "The Arduino Pinout",
+        "part": 1,
+        "focus": "60% 48%",
+        "zoom": "160%",
+    },
 ]
 
-MISSION2_PART2_LESSONS = [
-    {"slug": "intro-arduino-ide", "title": "Introduction to the Arduino IDE", "part": 2},
+MISSION2_LESSON2 = [
+    {"slug": "what-is-a-breadboard", "title": "Introduction", "part": 2},
+    {"slug": "breadboard-power-rails", "title": "Power Rails", "part": 2},
+    {"slug": "row-and-column-connections", "title": "Row and Column Connections", "part": 2},
+    {"slug": "connect-your-breadboard", "title": "Connect Your Board", "part": 2},
+    {"slug": "build-your-first-circuit", "title": "Build your First Circuit", "part": 2},
+]
+
+MISSION2_LESSON3 = [
+    {"slug": "installing-the-arduino-ide", "title": "Installation", "part": 3},
+    {"slug": "understand-the-arduino-ide", "title": "Understanding the IDE", "part": 3},
+    {"slug": "the-serial-monitor", "title": "The Serial Monitor", "part": 3},
+    {"slug": "upload-your-first-code", "title": "Upload your First Code", "part": 3},
 ]
 
 
@@ -137,14 +204,15 @@ def mission_2_intro(request):
         request,
         "lessons/mission_2_intro.html",
         {
-            "part1_lessons": MISSION2_PART1_LESSONS,
-            "part2_lessons": MISSION2_PART2_LESSONS,
+            "lesson1_lessons": MISSION2_LESSON1,
+            "lesson2_lessons": MISSION2_LESSON2,
+            "lesson3_lessons": MISSION2_LESSON3,
         },
     )
 
 
 def mission_2_lesson_detail(request, slug):
-    all_lessons = MISSION2_PART1_LESSONS + MISSION2_PART2_LESSONS
+    all_lessons = MISSION2_LESSON1 + MISSION2_LESSON2 + MISSION2_LESSON3
     lesson = next((l for l in all_lessons if l["slug"] == slug), None)
 
     if not lesson:
@@ -162,27 +230,25 @@ MISSION3_SYSTEMS = [
         "slug": "pedro-body",
         "name": "System 1: Pedro’s Body",
         "lessons": [
-            {"slug": "build-structure", "title": "Build the Body Structure"},
-            {"slug": "electronics", "title": "Add Electronics to the Body"},
-            {"slug": "code", "title": "Write the Body System Code"},
+            {"slug": "build-structure", "title": "The Body Structure"},
         ],
     },
     {
         "slug": "pedro-head",
         "name": "System 2: Pedro’s Head",
         "lessons": [
-            {"slug": "build-head", "title": "Build the Head"},
-            {"slug": "head-electronics", "title": "Wire the Head Sensors"},
-            {"slug": "head-code", "title": "Program the Head Movements"},
+            {"slug": "build-head", "title": "The Head"},
+            {"slug": "head-electronics", "title": "Connecting the Eyes"},
+            {"slug": "head-code", "title": "Coding the Eyes"},
         ],
     },
     {
         "slug": "pedro-tail",
         "name": "System 3: Pedro’s Tail",
         "lessons": [
-            {"slug": "tail-structure", "title": "Build the Tail"},
-            {"slug": "tail-electronics", "title": "Wire the Tail Motor"},
-            {"slug": "tail-code", "title": "Program Tail Movement"},
+            {"slug": "tail-structure", "title": "The Tail"},
+            {"slug": "tail-electronics", "title": "Connecting the Tail"},
+            {"slug": "tail-code", "title": "Coding the Tail"},
         ],
     },
     {

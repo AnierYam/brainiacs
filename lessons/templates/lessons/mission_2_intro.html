@@ -3,7 +3,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Mission 2 – Pedro's Brain</title>
+  <link rel="stylesheet" href="{% static 'css/icons.css' %}" />
+  <title>Mission 2 - Pedro's Brain</title>
   <style>
     body {
       margin: 0;
@@ -71,6 +72,45 @@
       text-align: center;
     }
 
+    .lesson1-hero {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 1rem;
+    }
+
+    .lesson1-hero img {
+      width: 170px;
+      max-width: 170px;
+      height: 170px;
+      object-fit: contain;
+    }
+
+    .lesson2-hero {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 1rem;
+    }
+
+    .lesson2-hero img {
+      width: 170px;
+      max-width: 170px;
+      height: 170px;
+      object-fit: contain;
+    }
+
+    .lesson3-hero {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 1rem;
+    }
+
+    .lesson3-hero img {
+      width: 170px;
+      max-width: 170px;
+      height: 170px;
+      object-fit: contain;
+    }
+
     /* Vertical S path */
     .vertical-path {
       display: flex;
@@ -82,8 +122,8 @@
     }
 
     .circle-card {
-      width: 170px;
-      height: 170px;
+      width: 190px;
+      height: 190px;
       border-radius: 50%;
       background: #ffffff;
       box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
@@ -95,6 +135,7 @@
       transition: transform 0.2s ease, box-shadow 0.2s ease, margin 0.2s ease;
       text-align: center;
       padding: 0.75rem;
+      overflow: visible;
     }
 
     .circle-card:hover {
@@ -114,9 +155,10 @@
     }
 
     .circle-image-wrapper {
-      width: 90px;
-      height: 90px;
-      margin-bottom: 0.5rem;
+      width: 110px;
+      height: 110px;
+      margin-bottom: 0.1rem;
+      margin-top: 0;
       border-radius: 999px;
       overflow: hidden;
       display: flex;
@@ -129,6 +171,34 @@
       height: 100%;
       object-fit: contain;
       display: block;
+    }
+
+    .lesson1-icon {
+      width: 95px;
+      height: 95px;
+    }
+
+    .lesson1-icon img {
+      width: 100px;
+      height: 100px;
+      object-fit: contain;
+    }
+
+    .lesson2-icon {
+      margin-top: 0;
+      margin-bottom: 0.2rem;
+    }
+
+    .lesson2-icon img {
+      width: 100px;
+      height: 100px;
+      object-fit: contain;
+    }
+
+    .lesson1-focus {
+      background-repeat: no-repeat;
+      background-size: var(--zoom, 220%);
+      background-position: var(--pos, 50% 50%);
     }
 
     .circle-name {
@@ -172,70 +242,98 @@
   <!-- HEADER -->
   <header class="page-header">
     <h1>Mission 2: Pedro's Brain</h1>
-    <p>Learn Pedro’s brain: the Arduino board, hardware, and the Arduino IDE.</p>
+    <p>Learn the Arduino board, breadboard basics, and the Arduino IDE.</p>
   </header>
 
-  <!-- PART 1: Hardware -->
+  <!-- LESSON 1 -->
   <section class="section">
-    <h2 class="section-title">Part 1: Introduction to Hardware</h2>
-
-    <div class="vertical-path">
-      {% for lesson in part1_lessons %}
-        <div class="circle-card">
-          <a href="{% url 'lessons:mission_2_lesson_detail' lesson.slug %}" class="circle-link">
-            <div class="circle-image-wrapper">
-              {% if forloop.counter == 1 %}
-                <!-- Intro to Arduino -->
-                <img
-                  src="{% static 'lessons/mission2/arduino_board.png' %}"
-                  alt="{{ lesson.title }}"
-                  class="circle-image"
-                />
-              {% elif forloop.counter == 2 %}
-                <!-- Intro to Breadboard -->
-                <img
-                  src="{% static 'lessons/mission2/breadboard.png' %}"
-                  alt="{{ lesson.title }}"
-                  class="circle-image"
-                />
-              {% else %}
-                <!-- Fallback icon -->
-                <img
-                  src="{% static 'lessons/icons/arduino_ide.png' %}"
-                  alt="{{ lesson.title }}"
-                  class="circle-image"
-                />
-              {% endif %}
-            </div>
-            <div class="circle-name">{{ lesson.title }}</div>
-          </a>
-        </div>
-      {% endfor %}
+    <div class="lesson1-hero">
+      <img
+        src="{% static 'lessons/mission2/arduino_board.png' %}"
+        alt="Arduino board"
+      />
     </div>
-  </section>
-
-  <!-- PART 2: Arduino IDE -->
-  <section class="section">
-    <h2 class="section-title">Part 2: Introduction to the Arduino IDE</h2>
+    <h2 class="section-title">Lesson 1: The Arduino Board</h2>
 
     <div class="vertical-path">
-      {% for lesson in part2_lessons %}
-        <div class="circle-card">
+      {% for lesson in lesson1_lessons %}
+            <div class="circle-card">
           <a href="{% url 'lessons:mission_2_lesson_detail' lesson.slug %}" class="circle-link">
-            <div class="circle-image-wrapper">
-              <!-- Intro to Arduino IDE icon -->
+            <div class="circle-image-wrapper lesson1-icon">
               <img
-                src="{% static 'lessons/mission2/arduino_ide.png' %}"
+                src="{% static 'lessons/mission2/arduino_chip_icon.png' %}"
                 alt="{{ lesson.title }}"
                 class="circle-image"
               />
             </div>
-            <div class="circle-name">{{ lesson.title }}</div>
+            <div class="circle-name">
+              {{ lesson.title }}
+            </div>
           </a>
         </div>
       {% endfor %}
     </div>
   </section>
 
+  <!-- LESSON 2 -->
+  <section class="section">
+    <div class="lesson2-hero">
+      <img
+        src="{% static 'lessons/mission2/breadboard.png' %}"
+        alt="Breadboard"
+      />
+    </div>
+    <h2 class="section-title">Lesson 2: The Breadboard</h2>
+
+    <div class="vertical-path">
+        {% for lesson in lesson2_lessons %}
+          <div class="circle-card">
+            <a href="{% url 'lessons:mission_2_lesson_detail' lesson.slug %}" class="circle-link">
+            <div class="circle-image-wrapper lesson2-icon">
+              <img
+                src="{% static 'lessons/mission2/breadboard_icon.png' %}"
+                alt="{{ lesson.title }}"
+                class="circle-image"
+                style="object-position: center;"
+              />
+            </div>
+            <div class="circle-name">
+              {{ lesson.title }}
+            </div>
+          </a>
+        </div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <!-- LESSON 3 -->
+  <section class="section">
+    <div class="lesson3-hero">
+      <img
+        src="{% static 'lessons/mission2/arduino_ide.png' %}"
+        alt="Arduino IDE"
+      />
+    </div>
+    <h2 class="section-title">Lesson 3: The Arduino IDE</h2>
+
+    <div class="vertical-path">
+      {% for lesson in lesson3_lessons %}
+        <div class="circle-card">
+          <a href="{% url 'lessons:mission_2_lesson_detail' lesson.slug %}" class="circle-link">
+            <div class="circle-image-wrapper">
+              <img
+                src="{% static 'lessons/mission2/arduino_ide_icon.png' %}"
+                alt="{{ lesson.title }}"
+                class="circle-image"
+              />
+            </div>
+            <div class="circle-name">
+              {{ lesson.title }}
+            </div>
+          </a>
+        </div>
+      {% endfor %}
+    </div>
+	  </section>
 </body>
-</html>
+	</html>

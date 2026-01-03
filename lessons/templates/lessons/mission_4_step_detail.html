@@ -1,11 +1,16 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <link rel="stylesheet" href="{% static 'css/icons.css' %}" />
   <title>{{ title }} – Mission 4</title>
 </head>
 <body>
-  <h1>{{ title }}</h1>
+  <h1>
+    {% include 'partials/content_icon.html' with content_type="exercise" %}
+    {{ title }}
+  </h1>
   <p>Content for this step will go here (assembly, wiring, combining code, testing, etc.).</p>
 
   <p>

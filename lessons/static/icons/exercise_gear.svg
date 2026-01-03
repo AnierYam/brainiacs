@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Exercise">
+  <title>Exercise</title>
+  <g fill="none" stroke="#1f2937" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M32 22a10 10 0 1 0 0 20a10 10 0 0 0 0-20z" fill="#e5e7eb"/>
+    <path d="M32 8v6M32 50v6M12.5 15.5l4.2 4.2M47.3 47.3l4.2 4.2M8 32h6M50 32h6M12.5 48.5l4.2-4.2M47.3 16.7l4.2-4.2"/>
+  </g>
+</svg>
