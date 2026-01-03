@@ -72,6 +72,29 @@
       text-align: center;
     }
 
+    .section-subtitle {
+      text-align: center;
+      margin: 0 0 1rem 0;
+      color: #4b5563;
+      font-size: 0.95rem;
+      font-weight: 500;
+    }
+
+    .system-hero {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 1rem;
+    }
+
+    .system-hero img {
+      width: 150px;
+      height: 150px;
+      max-width: 150px;
+      max-height: 150px;
+      object-fit: contain;
+      display: block;
+    }
+
     /* Vertical S path */
     .vertical-path {
       display: flex;
@@ -129,8 +152,8 @@
     }
 
     .circle-image {
-      width: 100px;
-      height: 100px;
+      width: 95px;
+      height: 95px;
       max-width: 100%;
       max-height: 100%;
       object-fit: contain;
@@ -138,10 +161,15 @@
     }
 
     .play-icon {
-      width: 100px;
-      height: 100px;
+      width: 95px;
+      height: 95px;
       margin: 0 auto;
       transform: translateX(4px);
+    }
+
+    .code-icon {
+      width: 95px;
+      height: 95px;
     }
 
     .circle-name {
@@ -190,7 +218,61 @@
 
   {% for system in systems %}
     <section class="section">
-      <h2 class="section-title">{{ system.name }}</h2>
+      {% if system.slug == 'pedro-body' %}
+        <div class="system-hero">
+          <img
+            src="{% static 'lessons/mission3/assembly_no_background.png' %}"
+            alt="{{ system.name }}"
+          />
+        </div>
+      {% endif %}
+      {% if system.slug == 'pedro-head' %}
+        <div class="system-hero">
+          <img
+            src="{% static 'lessons/mission3/system2_head_hero.png' %}"
+            alt="{{ system.name }}"
+          />
+        </div>
+      {% endif %}
+      {% if system.slug == 'pedro-tail' %}
+        <div class="system-hero">
+          <img
+            src="{% static 'lessons/mission3/system3_tail_hero.png' %}"
+            alt="{{ system.name }}"
+          />
+        </div>
+      {% endif %}
+
+      {% if system.slug == 'pedro-legs-left' %}
+        <div class="system-hero">
+          <img
+            src="{% static 'lessons/mission3/system4_legs_hero_v2.png' %}"
+            alt="{{ system.name }}"
+          />
+        </div>
+        <h2 class="section-title">System 4: Pedro's Legs</h2>
+        <h3 class="section-title">Part 4.1: Pedro's Left Legs</h3>
+      {% elif system.slug == 'pedro-legs-right' %}
+        <h2 class="section-title">Part 4.2: Pedro's Right Legs</h2>
+      {% elif system.slug == 'pedro-battery' %}
+        <div class="system-hero">
+          <img
+            src="{% static 'lessons/mission3/system5_battery_hero.png' %}"
+            alt="{{ system.name }}"
+          />
+        </div>
+        <h2 class="section-title">{{ system.name }}</h2>
+      {% elif system.slug == 'pedro-stand' %}
+        <div class="system-hero">
+          <img
+            src="{% static 'lessons/mission3/system6_stand_hero.png' %}"
+            alt="{{ system.name }}"
+          />
+        </div>
+        <h2 class="section-title">{{ system.name }}</h2>
+      {% else %}
+        <h2 class="section-title">{{ system.name }}</h2>
+      {% endif %}
 
       <div class="vertical-path">
         {% for lesson in system.lessons %}
@@ -202,6 +284,102 @@
                     src="{% static 'lessons/mission3/play_icon.png' %}"
                     alt="{{ lesson.title }}"
                     class="circle-image play-icon"
+                  />
+                {% elif system.slug == 'pedro-head' and forloop.first %}
+                  <img
+                    src="{% static 'lessons/mission3/play_icon.png' %}"
+                    alt="{{ lesson.title }}"
+                    class="circle-image play-icon"
+                  />
+                {% elif system.slug == 'pedro-tail' and forloop.first %}
+                  <img
+                    src="{% static 'lessons/mission3/play_icon.png' %}"
+                    alt="{{ lesson.title }}"
+                    class="circle-image play-icon"
+                  />
+                {% elif system.slug == 'pedro-head' and forloop.counter == 2 %}
+                  <img
+                    src="{% static 'lessons/mission3/breadboard_icon.png' %}"
+                    alt="{{ lesson.title }}"
+                    class="circle-image"
+                  />
+                {% elif system.slug == 'pedro-tail' and forloop.counter == 2 %}
+                  <img
+                    src="{% static 'lessons/mission3/breadboard_icon.png' %}"
+                    alt="{{ lesson.title }}"
+                    class="circle-image"
+                  />
+                {% elif system.slug == 'pedro-legs-left' and forloop.counter == 1 %}
+                  <img
+                    src="{% static 'lessons/mission3/play_icon.png' %}"
+                    alt="{{ lesson.title }}"
+                    class="circle-image play-icon"
+                  />
+                {% elif system.slug == 'pedro-legs-left' and forloop.counter == 2 %}
+                  <img
+                    src="{% static 'lessons/mission3/breadboard_icon.png' %}"
+                    alt="{{ lesson.title }}"
+                    class="circle-image"
+                  />
+                {% elif system.slug == 'pedro-legs-left' and forloop.counter == 3 %}
+                  <img
+                    src="{% static 'lessons/mission3/code_icon.png' %}"
+                    alt="{{ lesson.title }}"
+                    class="circle-image code-icon"
+                  />
+                {% elif system.slug == 'pedro-legs-right' and forloop.counter == 1 %}
+                  <img
+                    src="{% static 'lessons/mission3/play_icon.png' %}"
+                    alt="{{ lesson.title }}"
+                    class="circle-image play-icon"
+                  />
+                {% elif system.slug == 'pedro-legs-right' and forloop.counter == 2 %}
+                  <img
+                    src="{% static 'lessons/mission3/breadboard_icon.png' %}"
+                    alt="{{ lesson.title }}"
+                    class="circle-image"
+                  />
+                {% elif system.slug == 'pedro-legs-right' and forloop.counter == 3 %}
+                  <img
+                    src="{% static 'lessons/mission3/code_icon.png' %}"
+                    alt="{{ lesson.title }}"
+                    class="circle-image code-icon"
+                  />
+                {% elif system.slug == 'pedro-battery' and forloop.counter == 1 %}
+                  <img
+                    src="{% static 'lessons/mission3/play_icon.png' %}"
+                    alt="{{ lesson.title }}"
+                    class="circle-image play-icon"
+                  />
+                {% elif system.slug == 'pedro-battery' and forloop.counter == 2 %}
+                  <img
+                    src="{% static 'lessons/mission3/breadboard_icon.png' %}"
+                    alt="{{ lesson.title }}"
+                    class="circle-image"
+                  />
+                {% elif system.slug == 'pedro-battery' and forloop.counter == 3 %}
+                  <img
+                    src="{% static 'lessons/mission3/code_icon.png' %}"
+                    alt="{{ lesson.title }}"
+                    class="circle-image code-icon"
+                  />
+                {% elif system.slug == 'pedro-stand' and forloop.counter == 1 %}
+                  <img
+                    src="{% static 'lessons/mission3/play_icon.png' %}"
+                    alt="{{ lesson.title }}"
+                    class="circle-image play-icon"
+                  />
+                {% elif system.slug == 'pedro-head' and forloop.counter == 3 %}
+                  <img
+                    src="{% static 'lessons/mission3/code_icon.png' %}"
+                    alt="{{ lesson.title }}"
+                    class="circle-image code-icon"
+                  />
+                {% elif system.slug == 'pedro-tail' and forloop.counter == 3 %}
+                  <img
+                    src="{% static 'lessons/mission3/code_icon.png' %}"
+                    alt="{{ lesson.title }}"
+                    class="circle-image code-icon"
                   />
                 {% else %}
                   <img

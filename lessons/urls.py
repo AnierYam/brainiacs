@@ -33,6 +33,11 @@ urlpatterns = [
         views.mission_1_part_2_quiz,
         name="mission_1_part_2_quiz",
     ),
+    path(
+        "mission-1/assembly/parts/",
+        views.mission_1_assembly_parts,
+        name="mission_1_assembly_parts",
+    ),
 
     # ===== Mission 2 – Introduction to Arduino =====
     path("mission-2/", views.mission_2_intro, name="mission_2_intro"),

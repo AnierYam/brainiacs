@@ -60,6 +60,24 @@ MISSION1_FASTENER_LESSONS = {
     },
 }
 
+MISSION1_ASSEMBLY_PARTS = [
+    {"slug": "body-legs-connector", "name": "Body-Legs Connector", "title": "Body-Legs Connector", "type": "assembly", "quantity": 4, "description": "Connector piece between body and legs."},
+    {"slug": "dc-motor-support", "name": "DC Motor Support", "title": "DC Motor Support", "type": "assembly", "quantity": 2, "description": "Mounting support for the DC motor."},
+    {"slug": "inner-motor-leg-adapter", "name": "Inner DC Motor-Leg Adapter", "title": "Inner DC Motor-Leg Adapter", "type": "assembly", "quantity": 2, "description": "Inner adapter linking motor to leg."},
+    {"slug": "pedro-rear-leg", "name": "Pedro's Rear Leg", "title": "Pedro's Rear Leg", "type": "assembly", "quantity": 2, "description": "Rear leg piece for Pedro."},
+    {"slug": "pedro-head", "name": "Pedro's Head", "title": "Pedro's Head", "type": "assembly", "quantity": 2, "description": "Head panel part."},
+    {"slug": "outer-motor-leg-adapter", "name": "Outer DC Motor-Leg Adapter", "title": "Outer DC Motor-Leg Adapter", "type": "assembly", "quantity": 2, "description": "Outer adapter linking motor to leg."},
+    {"slug": "vertical-stand-support", "name": "Vertical Stand Support", "title": "Vertical Stand Support", "type": "assembly", "quantity": 2, "description": "Vertical support for the stand."},
+    {"slug": "pedro-front-leg", "name": "Pedro's Front Leg", "title": "Pedro's Front Leg", "type": "assembly", "quantity": 2, "description": "Front leg piece for Pedro."},
+    {"slug": "leg-motion-connector", "name": "Leg's Motion Connector", "title": "Leg's Motion Connector", "type": "assembly", "quantity": 2, "description": "Connector to transmit motion to legs."},
+    {"slug": "breadboard-support", "name": "Breadboard Support", "title": "Breadboard Support", "type": "assembly", "quantity": 1, "description": "Support plate for the breadboard."},
+    {"slug": "pedro-body", "name": "Pedro's Body", "title": "Pedro's Body", "type": "assembly", "quantity": 1, "description": "Main body plate."},
+    {"slug": "horizontal-stand-support", "name": "Horizontal Stand Support", "title": "Horizontal Stand Support", "type": "assembly", "quantity": 1, "description": "Horizontal support for the stand."},
+    {"slug": "battery-support", "name": "Battery Support", "title": "Battery Support", "type": "assembly", "quantity": 1, "description": "Support bracket for the battery."},
+    {"slug": "head-servo-adapter", "name": "Head-Servo Adapter", "title": "Head-Servo Adapter", "type": "assembly", "quantity": 1, "description": "Adapter for mounting the head servo."},
+    {"slug": "potentiometer-support", "name": "Potentiometer Support", "title": "Potentiometer Support", "type": "assembly", "quantity": 1, "description": "Support plate for the potentiometer."},
+]
+
 
 def lessons_test(request):
     return HttpResponse("Hello Brainiacs – lessons app is working ✅")
@@ -76,12 +94,17 @@ def mission_1(request):
         {
             "step1_tools": list(MISSION1_TOOL_LESSONS.values()),
             "assembly_items": list(MISSION1_FASTENER_LESSONS.values()),
+            "assembly_parts": MISSION1_ASSEMBLY_PARTS,
         },
     )
 
 
 def _get_mission1_lesson_or_404(slug: str):
-    lesson = MISSION1_TOOL_LESSONS.get(slug) or MISSION1_FASTENER_LESSONS.get(slug)
+    lesson = (
+        MISSION1_TOOL_LESSONS.get(slug)
+        or MISSION1_FASTENER_LESSONS.get(slug)
+        or next((p for p in MISSION1_ASSEMBLY_PARTS if p["slug"] == slug), None)
+    )
     if not lesson:
         raise Http404("Mission 1 lesson not found")
     return lesson
@@ -115,6 +138,13 @@ def mission_1_part_2_quiz(request):
                 "type": "quiz",
             }
         },
+    )
+
+def mission_1_assembly_parts(request):
+    return render(
+        request,
+        "lessons/mission_1_parts.html",
+        {"parts": MISSION1_ASSEMBLY_PARTS},
     )
 
 
@@ -255,33 +285,32 @@ MISSION3_SYSTEMS = [
         "slug": "pedro-legs-left",
         "name": "System 4: Pedro’s Left Legs",
         "lessons": [
-            {"slug": "legs-left-structure", "title": "Build Left Legs"},
-            {"slug": "legs-left-electronics", "title": "Connect Left Leg Motors"},
-            {"slug": "legs-left-code", "title": "Code Left Leg Movement"},
+            {"slug": "legs-left-structure", "title": "The Left Legs"},
         ],
     },
     {
         "slug": "pedro-legs-right",
         "name": "System 5: Pedro’s Right Legs",
         "lessons": [
-            {"slug": "legs-right-structure", "title": "Build Right Legs"},
-            {"slug": "legs-right-electronics", "title": "Connect Right Leg Motors"},
-            {"slug": "legs-right-code", "title": "Code Right Leg Movement"},
+            {"slug": "legs-right-structure", "title": "The Right Legs"},
+            {"slug": "legs-right-electronics", "title": "Connecting the Motor"},
+            {"slug": "legs-right-code", "title": "Coding the Motor"},
         ],
     },
     {
         "slug": "pedro-battery",
-        "name": "System 6: Pedro’s Battery",
+        "name": "System 5: Pedro’s Battery",
         "lessons": [
-            {"slug": "battery-mount", "title": "Install Battery"},
-            {"slug": "battery-wire", "title": "Connect Power"},
+            {"slug": "battery-mount", "title": "The Support"},
+            {"slug": "battery-wire", "title": "Connecto to Power"},
+            {"slug": "battery-code", "title": "Coding for Power"},
         ],
     },
     {
         "slug": "pedro-stand",
-        "name": "System 7: Pedro’s Stand",
+        "name": "System 6: Pedro’s Stand",
         "lessons": [
-            {"slug": "stand-structure", "title": "Build the Stand"},
+            {"slug": "stand-structure", "title": "The Stand"},
         ],
     },
 ]
@@ -316,10 +345,9 @@ def mission_3_lesson_detail(request, system_slug, lesson_slug):
 # -------------------------------------------------------------------
 
 MISSION4_STEPS = [
-    {"slug": "assemble-frame", "title": "Connect All Systems to the Body"},
-    {"slug": "final-wiring", "title": "Final Wiring & Power Check"},
-    {"slug": "combine-code", "title": "Combine All System Codes"},
-    {"slug": "test-robot", "title": "Test and Debug Pedro"},
+    {"slug": "assemble-frame", "title": "The Assembly"},
+    {"slug": "final-wiring", "title": "Making Connections"},
+    {"slug": "combine-code", "title": "Combining Codes"},
 ]
 
 

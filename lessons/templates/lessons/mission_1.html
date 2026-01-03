@@ -99,8 +99,8 @@
     }
 
     .circle-card {
-      width: 170px;
-      height: 170px;
+      width: 190px;
+      height: 190px;
       border-radius: 50%;
       background: #ffffff;
       box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
@@ -111,7 +111,7 @@
       cursor: pointer;
       transition: transform 0.2s ease, box-shadow 0.2s ease, margin 0.2s ease;
       text-align: center;
-      padding: 0.75rem;
+      padding: 1rem;
     }
 
     .circle-card:hover {
@@ -132,9 +132,11 @@
     }
 
     .circle-image-wrapper {
-      width: 90px;
-      height: 90px;
-      margin-bottom: 0.5rem;
+      width: 120px;
+      height: 120px;
+      padding: 6px;
+      box-sizing: border-box;
+      margin-bottom: 0.6rem;
       border-radius: 999px;
       overflow: hidden;
       display: flex;
@@ -143,8 +145,26 @@
     }
 
     .circle-image {
-      width: 100%;
-      height: 100%;
+      width: 90px;
+      height: 90px;
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .combination-icon {
+      width: 100px;
+      height: 100px;
+      object-fit: contain;
+      display: block;
+    }
+
+    .part3-icon {
+      width: 110px;
+      height: 110px;
+      max-width: 100%;
+      max-height: 100%;
       object-fit: contain;
       display: block;
     }
@@ -163,8 +183,8 @@
     }
 
     .circle-card.quiz .circle-image-wrapper {
-      width: 90px;
-      height: 90px;
+      width: 120px;
+      height: 120px;
     }
 
     .quiz-label {
@@ -235,11 +255,19 @@
         <div class="circle-card">
           <a href="{% url 'lessons:mission_1_tool_detail' tool.slug %}" class="circle-link">
             <div class="circle-image-wrapper">
-              <img
-                src="{% static 'lessons/icons/lessons-gear.png' %}"
-                alt="{{ tool.name }}"
-                class="circle-image"
-              />
+              {% if tool.slug == 'combination-wrench' %}
+                <img
+                  src="{% static 'lessons/mission1/combination_wrench.png' %}"
+                  alt="{{ tool.name }}"
+                  class="circle-image combination-icon"
+                />
+              {% else %}
+                <img
+                  src="{% static 'lessons/mission1/ChatGPT Image Jan 3, 2026, 10_59_48 PM.png' %}"
+                  alt="{{ tool.name }}"
+                  class="circle-image"
+                />
+              {% endif %}
             </div>
             <div class="circle-name">
               {{ tool.name }}
@@ -267,20 +295,44 @@
 
   <!-- PART 2 -->
   <section class="section">
-    <h2 class="section-title">Part 2: Fasteners to assemble Pedro</h2>
+    <h2 class="section-title">Part 2: Fasteners to Assemble Pedro</h2>
 
     <div class="vertical-path">
       {% for item in assembly_items %}
         <div class="circle-card">
           <a href="{% url 'lessons:mission_1_fastener_detail' item.slug %}" class="circle-link">
             <div class="circle-image-wrapper">
-              {% if forloop.counter == 1 %}
+              {% if item.slug == 'screws' %}
                 <img
-                  src="{% static 'lessons/icons/lessons-gear.png' %}"
+                  src="{% static 'lessons/mission1/bolt_pan_head.png' %}"
                   alt="{{ item.name }}"
                   class="circle-image"
                 />
-              {% elif forloop.counter %}
+              {% elif item.slug == 'plain-washers' %}
+                <img
+                  src="{% static 'lessons/mission1/washer_plain.png' %}"
+                  alt="{{ item.name }}"
+                  class="circle-image"
+                />
+              {% elif item.slug == 'spring-washers' %}
+                <img
+                  src="{% static 'lessons/mission1/washer_spring.png' %}"
+                  alt="{{ item.name }}"
+                  class="circle-image"
+                />
+              {% elif item.slug == 'nuts' %}
+                <img
+                  src="{% static 'lessons/mission1/nut_hex.png' %}"
+                  alt="{{ item.name }}"
+                  class="circle-image"
+                />
+              {% elif item.slug == 'torque-nuts' %}
+                <img
+                  src="{% static 'lessons/mission1/nut_torque.png' %}"
+                  alt="{{ item.name }}"
+                  class="circle-image"
+                />
+              {% else %}
                 <img
                   src="{% static 'lessons/icons/lessons-gear.png' %}"
                   alt="{{ item.name }}"
@@ -313,6 +365,28 @@
             />
           </div>
           <div class="quiz-topic">Fasteners</div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- PART 3 -->
+  <section class="section">
+    <h2 class="section-title">Part 3: Robot Assembly Parts</h2>
+
+    <div class="vertical-path">
+      <div class="circle-card">
+        <a href="{% url 'lessons:mission_1_assembly_parts' %}" class="circle-link">
+          <div class="circle-image-wrapper">
+            <img
+              src="{% static 'lessons/mission1/part3_icon.png' %}"
+              alt="Pedro Parts"
+              class="circle-image part3-icon"
+            />
+          </div>
+          <div class="circle-name">
+            Pedro Parts
+          </div>
         </a>
       </div>
     </div>
