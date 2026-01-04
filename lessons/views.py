@@ -260,6 +260,8 @@ MISSION3_SYSTEMS = [
         "slug": "pedro-body",
         "name": "System 1: Pedro’s Body",
         "lessons": [
+            {"slug": "body-leg-connector-front", "title": "Front Connectors"},
+            {"slug": "body-leg-connector-back", "title": "Back Connectors"},
             {"slug": "build-structure", "title": "The Body Structure"},
         ],
     },
