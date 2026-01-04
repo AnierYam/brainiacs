@@ -1,0 +1,50 @@
+/* Global responsive adjustments across lesson pages */
+body {
+  padding: clamp(1rem, 4vw, 2rem);
+}
+
+/* Circle cards scale down gracefully on small screens */
+.circle-card {
+  width: clamp(150px, 22vw, 190px);
+  height: clamp(150px, 22vw, 190px);
+}
+
+.circle-card .circle-image-wrapper,
+.circle-image-wrapper {
+  width: clamp(90px, 16vw, 120px);
+  height: clamp(90px, 16vw, 120px);
+}
+
+.circle-image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+/* Common layout refinements */
+.layout {
+  gap: clamp(1rem, 3vw, 1.5rem);
+}
+
+.parts-table {
+  overflow-x: auto;
+}
+
+.viewer {
+  min-height: clamp(240px, 45vw, 360px);
+}
+
+@media (max-width: 900px) {
+  .layout {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .section {
+    margin-bottom: 2.5rem !important;
+  }
+  .page-header {
+    margin-bottom: 1.5rem !important;
+  }
+}

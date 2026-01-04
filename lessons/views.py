@@ -61,21 +61,21 @@ MISSION1_FASTENER_LESSONS = {
 }
 
 MISSION1_ASSEMBLY_PARTS = [
-    {"slug": "body-legs-connector", "name": "Body-Legs Connector", "title": "Body-Legs Connector", "type": "assembly", "quantity": 4, "description": "Connector piece between body and legs."},
-    {"slug": "dc-motor-support", "name": "DC Motor Support", "title": "DC Motor Support", "type": "assembly", "quantity": 2, "description": "Mounting support for the DC motor."},
-    {"slug": "inner-motor-leg-adapter", "name": "Inner DC Motor-Leg Adapter", "title": "Inner DC Motor-Leg Adapter", "type": "assembly", "quantity": 2, "description": "Inner adapter linking motor to leg."},
-    {"slug": "pedro-rear-leg", "name": "Pedro's Rear Leg", "title": "Pedro's Rear Leg", "type": "assembly", "quantity": 2, "description": "Rear leg piece for Pedro."},
-    {"slug": "pedro-head", "name": "Pedro's Head", "title": "Pedro's Head", "type": "assembly", "quantity": 2, "description": "Head panel part."},
-    {"slug": "outer-motor-leg-adapter", "name": "Outer DC Motor-Leg Adapter", "title": "Outer DC Motor-Leg Adapter", "type": "assembly", "quantity": 2, "description": "Outer adapter linking motor to leg."},
-    {"slug": "vertical-stand-support", "name": "Vertical Stand Support", "title": "Vertical Stand Support", "type": "assembly", "quantity": 2, "description": "Vertical support for the stand."},
-    {"slug": "pedro-front-leg", "name": "Pedro's Front Leg", "title": "Pedro's Front Leg", "type": "assembly", "quantity": 2, "description": "Front leg piece for Pedro."},
-    {"slug": "leg-motion-connector", "name": "Leg's Motion Connector", "title": "Leg's Motion Connector", "type": "assembly", "quantity": 2, "description": "Connector to transmit motion to legs."},
-    {"slug": "breadboard-support", "name": "Breadboard Support", "title": "Breadboard Support", "type": "assembly", "quantity": 1, "description": "Support plate for the breadboard."},
     {"slug": "pedro-body", "name": "Pedro's Body", "title": "Pedro's Body", "type": "assembly", "quantity": 1, "description": "Main body plate."},
-    {"slug": "horizontal-stand-support", "name": "Horizontal Stand Support", "title": "Horizontal Stand Support", "type": "assembly", "quantity": 1, "description": "Horizontal support for the stand."},
-    {"slug": "battery-support", "name": "Battery Support", "title": "Battery Support", "type": "assembly", "quantity": 1, "description": "Support bracket for the battery."},
+    {"slug": "breadboard-support", "name": "Breadboard Support", "title": "Breadboard Support", "type": "assembly", "quantity": 1, "description": "Support plate for the breadboard."},
+    {"slug": "body-legs-connector", "name": "Body-Legs Connector", "title": "Body-Legs Connector", "type": "assembly", "quantity": 4, "description": "Connector piece between body and legs."},
+    {"slug": "pedro-head", "name": "Pedro's Head", "title": "Pedro's Head", "type": "assembly", "quantity": 2, "description": "Head panel part."},
     {"slug": "head-servo-adapter", "name": "Head-Servo Adapter", "title": "Head-Servo Adapter", "type": "assembly", "quantity": 1, "description": "Adapter for mounting the head servo."},
     {"slug": "potentiometer-support", "name": "Potentiometer Support", "title": "Potentiometer Support", "type": "assembly", "quantity": 1, "description": "Support plate for the potentiometer."},
+    {"slug": "dc-motor-support", "name": "DC Motor Support", "title": "DC Motor Support", "type": "assembly", "quantity": 2, "description": "Mounting support for the DC motor."},
+    {"slug": "inner-motor-leg-adapter", "name": "Inner DC Motor-Leg Adapter", "title": "Inner DC Motor-Leg Adapter", "type": "assembly", "quantity": 2, "description": "Inner adapter linking motor to leg."},
+    {"slug": "outer-motor-leg-adapter", "name": "Outer DC Motor-Leg Adapter", "title": "Outer DC Motor-Leg Adapter", "type": "assembly", "quantity": 2, "description": "Outer adapter linking motor to leg."},
+    {"slug": "pedro-rear-leg", "name": "Pedro's Rear Leg", "title": "Pedro's Rear Leg", "type": "assembly", "quantity": 2, "description": "Rear leg piece for Pedro."},
+    {"slug": "pedro-front-leg", "name": "Pedro's Front Leg", "title": "Pedro's Front Leg", "type": "assembly", "quantity": 2, "description": "Front leg piece for Pedro."},
+    {"slug": "leg-motion-connector", "name": "Leg's Motion Connector", "title": "Leg's Motion Connector", "type": "assembly", "quantity": 2, "description": "Connector to transmit motion to legs."},
+    {"slug": "battery-support", "name": "Battery Support", "title": "Battery Support", "type": "assembly", "quantity": 1, "description": "Support bracket for the battery."},
+    {"slug": "vertical-stand-support", "name": "Vertical Stand Support", "title": "Vertical Stand Support", "type": "assembly", "quantity": 2, "description": "Vertical support for the stand."},
+    {"slug": "horizontal-stand-support", "name": "Horizontal Stand Support", "title": "Horizontal Stand Support", "type": "assembly", "quantity": 1, "description": "Horizontal support for the stand."},
 ]
 
 
