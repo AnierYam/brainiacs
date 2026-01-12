@@ -15,3 +15,10 @@ venv/
 # Django migrations cache
 **/migrations/*.py[cod]
 !**/migrations/__init__.py
+
+# Ignore large media files
+*.mp4
+*.mov
+*.avi
+*.webm
+
