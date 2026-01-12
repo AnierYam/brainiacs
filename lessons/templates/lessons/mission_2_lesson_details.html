@@ -100,7 +100,7 @@
 
     <!-- Breadcrumb -->
     <div class="breadcrumb">
-      <a href="{% url 'lessons:mission_2_intro' %}">← Back to Mission 2 path</a>
+      <a href="{% url 'lessons:mission_2_intro' %}#lesson-{{ lesson.slug }}">← Back to Mission 2 path</a>
     </div>
 
     <!-- Header -->
@@ -136,5 +136,45 @@
     </section>
 
   </div>
+
+  <script>
+    (function() {
+      const selectors = ["a.circle-link", "a.quiz-link", "a.mission-link"];
+      const focusables = Array.from(document.querySelectorAll(selectors.join(",")));
+      const isEditable = (el) => {
+        if (!el) return false;
+        const tag = el.tagName;
+        return tag === "INPUT" || tag === "TEXTAREA" || el.isContentEditable;
+      };
+      const focusAt = (index) => {
+        if (!focusables.length) return;
+        const count = focusables.length;
+        const next = ((index % count) + count) % count;
+        const el = focusables[next];
+        el.focus();
+        if (typeof el.scrollIntoView === "function") {
+          el.scrollIntoView({ block: "center", behavior: "smooth" });
+        }
+      };
+
+      document.addEventListener("keydown", (event) => {
+        if (isEditable(event.target)) return;
+        if (event.key === "Backspace") {
+          event.preventDefault();
+          window.history.back();
+          return;
+        }
+        if (event.key !== "ArrowDown" && event.key !== "ArrowUp") return;
+        if (!focusables.length) return;
+        event.preventDefault();
+        const currentIndex = focusables.indexOf(document.activeElement);
+        if (event.key === "ArrowDown") {
+          focusAt(currentIndex === -1 ? 0 : currentIndex + 1);
+        } else {
+          focusAt(currentIndex === -1 ? focusables.length - 1 : currentIndex - 1);
+        }
+      });
+    })();
+  </script>
 </body>
 </html>

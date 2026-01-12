@@ -110,33 +110,50 @@ def _get_mission1_lesson_or_404(slug: str):
     return lesson
 
 
+def _mission1_anchor_id(lesson):
+    lesson_type = lesson.get("type", "")
+    if lesson_type == "assembly":
+        return "lesson-assembly-parts"
+    if lesson_type == "quiz":
+        slug = lesson.get("slug", "")
+        return f"lesson-quiz-{slug}" if slug else "lesson-quiz"
+    slug = lesson.get("slug", "")
+    return f"lesson-{lesson_type}-{slug}" if slug else f"lesson-{lesson_type}"
+
+
 def mission_1_lesson_detail(request, slug):
     lesson = _get_mission1_lesson_or_404(slug)
+    lesson = {**lesson, "anchor_id": _mission1_anchor_id(lesson)}
     return render(request, "lessons/mission_1_lesson_detail.html", {"lesson": lesson})
 
 
 def mission_1_part_1_quiz(request):
+    lesson = {
+        "title": "Mission 1 - Part 1 Quiz (Tools)",
+        "type": "quiz",
+        "slug": "part-1",
+    }
+    lesson["anchor_id"] = _mission1_anchor_id(lesson)
     return render(
         request,
         "lessons/mission_1_lesson_detail.html",
         {
-            "lesson": {
-                "title": "Mission 1 – Part 1 Quiz (Tools)",
-                "type": "quiz",
-            }
+            "lesson": lesson,
         },
     )
 
-
 def mission_1_part_2_quiz(request):
+    lesson = {
+        "title": "Mission 1 - Part 2 Quiz (Fasteners)",
+        "type": "quiz",
+        "slug": "part-2",
+    }
+    lesson["anchor_id"] = _mission1_anchor_id(lesson)
     return render(
         request,
         "lessons/mission_1_lesson_detail.html",
         {
-            "lesson": {
-                "title": "Mission 1 – Part 2 Quiz (Fasteners)",
-                "type": "quiz",
-            }
+            "lesson": lesson,
         },
     )
 
@@ -285,14 +302,14 @@ MISSION3_SYSTEMS = [
     },
     {
         "slug": "pedro-legs-left",
-        "name": "System 4: Pedro’s Left Legs",
+        "name": "System 4 (Part 4.1): Pedro's Left Legs",
         "lessons": [
             {"slug": "legs-left-structure", "title": "The Left Legs"},
         ],
     },
     {
         "slug": "pedro-legs-right",
-        "name": "System 5: Pedro’s Right Legs",
+        "name": "System 4 (Part 4.2): Pedro's Right Legs",
         "lessons": [
             {"slug": "legs-right-structure", "title": "The Right Legs"},
             {"slug": "legs-right-electronics", "title": "Connecting the Motor"},
@@ -301,20 +318,12 @@ MISSION3_SYSTEMS = [
     },
     {
         "slug": "pedro-battery",
-        "name": "System 5: Pedro’s Battery",
-        "lessons": [
-            {"slug": "battery-mount", "title": "The Support"},
-            {"slug": "battery-wire", "title": "Connecto to Power"},
-            {"slug": "battery-code", "title": "Coding for Power"},
-        ],
-    },
-    {
-        "slug": "pedro-stand",
-        "name": "System 6: Pedro’s Stand",
+        "name": "System 5: Pedro's Stand",
         "lessons": [
             {"slug": "stand-structure", "title": "The Stand"},
         ],
     },
+
 ]
 
 
@@ -369,5 +378,5 @@ def mission_4_step_detail(request, slug):
     return render(
         request,
         "lessons/mission_4_step_detail.html",
-        {"title": step["title"]},
+        {"title": step["title"], "slug": step["slug"]},
     )

@@ -3,29 +3,217 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="{% static 'css/icons.css' %}" />
-  <title>{{ system.name }} – {{ lesson.title }}</title>
+  <link rel="stylesheet" href="{% static 'css/responsive-overrides.css' %}" />
+  <title>{{ system.name }} - {{ lesson.title }}</title>
+  <style>
+    body {
+      margin: 0;
+      padding: clamp(1rem, 4vw, 2rem);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #e0f2fe, #f9fafb);
+      color: #1f2937;
+    }
+    h1, h2, p {
+      margin: 0 0 0.75rem 0;
+    }
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+      padding: clamp(1rem, 3vw, 1.5rem);
+    }
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      text-decoration: none;
+      color: #1d4ed8;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+    .video-wrapper {
+      margin-top: 1rem;
+      position: relative;
+      padding-top: 56.25%;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+      background: #000;
+    }
+    .video-wrapper iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+  </style>
 </head>
 <body>
-  <h1>{{ system.name }}</h1>
-  <h2>{{ lesson.title }}</h2>
+  <div class="container">
+    <a class="back-link" href="{% url 'lessons:mission_3_page' %}#lesson-{{ system.slug }}-{{ lesson.slug }}">← Back to Mission 3</a>
+    <h1>{{ system.name }}</h1>
+    <h2>{{ lesson.title }}</h2>
 
-  <p>
-    This is the lesson page for <strong>{{ lesson.title }}</strong> in
-    <strong>{{ system.name }}</strong>.
-  </p>
+    {% if lesson.slug == 'body-leg-connector-front' %}
+      <p>Watch the build video for the front body-leg connector.</p>
+      <div class="video-wrapper">
+        <iframe
+          src="https://www.youtube-nocookie.com/embed/rJU8Zs6ZEwE?rel=0&modestbranding=1&playsinline=1&origin=http%3A%2F%2F127.0.0.1%3A8000"
+          title="Brainiacs video"
+          loading="lazy"
+          referrerpolicy="strict-origin-when-cross-origin"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowfullscreen
+        ></iframe>
+      </div>
+    {% elif lesson.slug == 'body-leg-connector-back' %}
+      <p>Watch the build video for the back body-leg connector.</p>
+      <div class="video-wrapper">
+        <iframe
+          src="https://www.youtube-nocookie.com/embed/3wO1e-3LHg8?rel=0&modestbranding=1&playsinline=1&origin=http%3A%2F%2F127.0.0.1%3A8000"
+          title="Brainiacs video"
+          loading="lazy"
+          referrerpolicy="strict-origin-when-cross-origin"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowfullscreen
+        ></iframe>
+      </div>
+    {% elif lesson.slug == 'build-structure' %}
+      <p>Watch the build video for the body structure.</p>
+      <div class="video-wrapper">
+        <iframe
+          src="https://www.youtube-nocookie.com/embed/bX3bHwYuTHg?rel=0&modestbranding=1&playsinline=1&origin=http%3A%2F%2F127.0.0.1%3A8000"
+          title="Brainiacs video"
+          loading="lazy"
+          referrerpolicy="strict-origin-when-cross-origin"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowfullscreen
+        ></iframe>
+      </div>
+    {% elif system.slug == 'pedro-head' and lesson.slug == 'build-head' %}
+      <p>Watch the build video for the head.</p>
+      <div class="video-wrapper">
+        <iframe
+          width="560"
+          height="315"
+          src="https://www.youtube.com/embed/5FXCceNBkoc?si=C_wiNjEeuQtjVKlh"
+          title="YouTube video player"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerpolicy="strict-origin-when-cross-origin"
+          allowfullscreen
+        ></iframe>
+      </div>
+    {% elif system.slug == 'pedro-tail' and lesson.slug == 'tail-structure' %}
+      <p>Watch the build video for the tail.</p>
+      <div class="video-wrapper">
+        <iframe
+          width="560"
+          height="315"
+          src="https://www.youtube-nocookie.com/embed/QzCg-Jz_vGg?si=oFsb7TW5_-kDW5t8"
+          title="YouTube video player"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerpolicy="strict-origin-when-cross-origin"
+          allowfullscreen
+        ></iframe>
+      </div>
+    {% elif system.slug == 'pedro-legs-left' and lesson.slug == 'legs-left-structure' %}
+      <p>Watch the build video for the left legs.</p>
+      <div class="video-wrapper">
+        <iframe
+          src="https://www.youtube-nocookie.com/embed/3t6GST3vB50?rel=0&modestbranding=1&playsinline=1&origin=http%3A%2F%2F127.0.0.1%3A8000"
+          title="Brainiacs video"
+          loading="lazy"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerpolicy="strict-origin-when-cross-origin"
+          allowfullscreen
+        ></iframe>
+      </div>
+    {% elif system.slug == 'pedro-legs-right' and lesson.slug == 'legs-right-structure' %}
+      <p>Watch the build video for the right legs.</p>
+      <div class="video-wrapper">
+        <iframe
+          width="560"
+          height="315"
+          src="https://www.youtube-nocookie.com/embed/qmjlCu1lLw4?si=-yH6Kt2HzhlagjFA"
+          title="YouTube video player"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerpolicy="strict-origin-when-cross-origin"
+          allowfullscreen
+        ></iframe>
+      </div>
+    {% elif system.slug == 'pedro-battery' and lesson.slug == 'stand-structure' %}
+      <p>Watch the build video for the stand.</p>
+      <div class="video-wrapper">
+        <iframe
+          width="560"
+          height="315"
+          src="https://www.youtube-nocookie.com/embed/lQjV9jTARPo?si=WSQGOBJtdgwSH3DW"
+          title="YouTube video player"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerpolicy="strict-origin-when-cross-origin"
+          allowfullscreen
+        ></iframe>
+      </div>
+    {% else %}
+      <p>
+        This is the lesson page for <strong>{{ lesson.title }}</strong> in
+        <strong>{{ system.name }}</strong>.
+      </p>
+    {% endif %}
+  </div>
 
-  <p>
-    Later, you can add:
-  </p>
-  <ul>
-    <li>YouTube embed if this is a build video lesson.</li>
-    <li>Images and diagrams for electronics lessons.</li>
-    <li>Code examples and editors for coding lessons.</li>
-  </ul>
+  <script>
+    (function() {
+      const selectors = ["a.circle-link", "a.quiz-link", "a.mission-link"];
+      const focusables = Array.from(document.querySelectorAll(selectors.join(",")));
+      const isEditable = (el) => {
+        if (!el) return false;
+        const tag = el.tagName;
+        return tag === "INPUT" || tag === "TEXTAREA" || el.isContentEditable;
+      };
+      const focusAt = (index) => {
+        if (!focusables.length) return;
+        const count = focusables.length;
+        const next = ((index % count) + count) % count;
+        const el = focusables[next];
+        el.focus();
+        if (typeof el.scrollIntoView === "function") {
+          el.scrollIntoView({ block: "center", behavior: "smooth" });
+        }
+      };
 
-  <p>
-    <a href="{% url 'lessons:mission_3_page' %}">⬅ Back to Mission 3</a>
-  </p>
+      document.addEventListener("keydown", (event) => {
+        if (isEditable(event.target)) return;
+        if (event.key === "Backspace") {
+          event.preventDefault();
+          window.history.back();
+          return;
+        }
+        if (event.key !== "ArrowDown" && event.key !== "ArrowUp") return;
+        if (!focusables.length) return;
+        event.preventDefault();
+        const currentIndex = focusables.indexOf(document.activeElement);
+        if (event.key === "ArrowDown") {
+          focusAt(currentIndex === -1 ? 0 : currentIndex + 1);
+        } else {
+          focusAt(currentIndex === -1 ? focusables.length - 1 : currentIndex - 1);
+        }
+      });
+    })();
+  </script>
 </body>
 </html>

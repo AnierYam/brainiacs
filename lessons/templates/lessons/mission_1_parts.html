@@ -74,6 +74,7 @@
       box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
       overflow: hidden;
       border: 1px solid #e5e7eb;
+      user-select: none;
     }
 
     table {
@@ -111,11 +112,14 @@
       border-radius: 12px;
       box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
       padding: 1.25rem;
-      min-height: 320px;
+      --viewer-size: 820px;
+      min-height: 820px;
       border: 1px solid #e5e7eb;
       display: flex;
       flex-direction: column;
       gap: 0.75rem;
+      cursor: default;
+      user-select: none;
     }
 
     .detail-title {
@@ -136,8 +140,10 @@
     }
 
     .viewer {
-      width: 100%;
-      min-height: 320px;
+      width: var(--viewer-size);
+      height: var(--viewer-size);
+      max-width: 100%;
+      max-height: 100%;
       border: none;
       border-radius: 0;
       background: transparent;
@@ -146,6 +152,16 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      align-self: center;
+      flex: 0 0 auto;
+    }
+
+    .part-image {
+      width: 100%;
+      height: 100%;
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
     }
 
     .viewer-status {
@@ -170,7 +186,7 @@
   </style>
 </head>
 <body>
-  <a href="{% url 'lessons:mission_1' %}" class="back-button">
+  <a href="{% url 'lessons:mission_1' %}#lesson-assembly-parts" class="back-button">
     <span class="back-arrow">&larr;</span>
     Back to Mission 1
   </a>
@@ -206,7 +222,7 @@
       <div class="detail-desc" id="detail-desc"></div>
       <div class="viewer" id="viewer">
         <div class="viewer-status" id="viewer-status">Select a part to preview.</div>
-        <img id="part-image" alt="Part preview" style="display:none; max-width:100%; max-height:100%; object-fit:contain;" />
+        <img id="part-image" class="part-image" alt="Part preview" style="display:none;" />
       </div>
     </div>
   </div>
@@ -222,7 +238,21 @@
 
       const IMAGE_BASE = "{% static 'lessons/mission1/Part 3/' %}";
       const IMAGE_MAP = {
-        "pedro-head": "{% static 'lessons/mission1/part3_icon.png' %}"
+        "pedro-body": IMAGE_BASE + "Pedro's Body.png",
+        "breadboard-support": IMAGE_BASE + "Breadboard Support.png",
+        "body-legs-connector": IMAGE_BASE + "Body-Legs connector.png",
+        "pedro-head": IMAGE_BASE + "Pedro's Head.png",
+        "head-servo-adapter": IMAGE_BASE + "Head-Servo adapter.png",
+        "potentiometer-support": IMAGE_BASE + "Potentiometer Support.png",
+        "dc-motor-support": IMAGE_BASE + "DC Motor Support.png",
+        "inner-motor-leg-adapter": IMAGE_BASE + "Inner DC Motor-Leg Adapter.png",
+        "outer-motor-leg-adapter": IMAGE_BASE + "Outer DC Motor-Leg Adapter.png",
+        "pedro-rear-leg": IMAGE_BASE + "Pedro's Rear Leg.png",
+        "pedro-front-leg": IMAGE_BASE + "Pedro's Front Leg.png",
+        "leg-motion-connector": IMAGE_BASE + "Leg's Motion Connector.png",
+        "battery-support": IMAGE_BASE + "Battery Support.png",
+        "vertical-stand-support": IMAGE_BASE + "Vertical Stand Support.png",
+        "horizontal-stand-support": IMAGE_BASE + "Horizontal Stand Support.png"
       };
 
       function selectRow(row) {
@@ -260,6 +290,46 @@
       if (rows.length) {
         selectRow(rows[0]);
       }
+    })();
+  </script>
+
+  <script>
+    (function() {
+      const selectors = ["a.circle-link", "a.quiz-link", "a.mission-link"];
+      const focusables = Array.from(document.querySelectorAll(selectors.join(",")));
+      const isEditable = (el) => {
+        if (!el) return false;
+        const tag = el.tagName;
+        return tag === "INPUT" || tag === "TEXTAREA" || el.isContentEditable;
+      };
+      const focusAt = (index) => {
+        if (!focusables.length) return;
+        const count = focusables.length;
+        const next = ((index % count) + count) % count;
+        const el = focusables[next];
+        el.focus();
+        if (typeof el.scrollIntoView === "function") {
+          el.scrollIntoView({ block: "center", behavior: "smooth" });
+        }
+      };
+
+      document.addEventListener("keydown", (event) => {
+        if (isEditable(event.target)) return;
+        if (event.key === "Backspace") {
+          event.preventDefault();
+          window.history.back();
+          return;
+        }
+        if (event.key !== "ArrowDown" && event.key !== "ArrowUp") return;
+        if (!focusables.length) return;
+        event.preventDefault();
+        const currentIndex = focusables.indexOf(document.activeElement);
+        if (event.key === "ArrowDown") {
+          focusAt(currentIndex === -1 ? 0 : currentIndex + 1);
+        } else {
+          focusAt(currentIndex === -1 ? focusables.length - 1 : currentIndex - 1);
+        }
+      });
     })();
   </script>
 </body>

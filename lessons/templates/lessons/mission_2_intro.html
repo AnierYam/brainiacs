@@ -134,6 +134,7 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
+      user-select: none;
       transition: transform 0.2s ease, box-shadow 0.2s ease, margin 0.2s ease;
       text-align: center;
       padding: 0.75rem;
@@ -259,7 +260,7 @@
 
     <div class="vertical-path">
       {% for lesson in lesson1_lessons %}
-            <div class="circle-card">
+            <div class="circle-card" id="lesson-{{ lesson.slug }}">
           <a href="{% url 'lessons:mission_2_lesson_detail' lesson.slug %}" class="circle-link">
             <div class="circle-image-wrapper lesson1-icon">
               <img
@@ -289,7 +290,7 @@
 
     <div class="vertical-path">
         {% for lesson in lesson2_lessons %}
-          <div class="circle-card">
+          <div class="circle-card" id="lesson-{{ lesson.slug }}">
             <a href="{% url 'lessons:mission_2_lesson_detail' lesson.slug %}" class="circle-link">
             <div class="circle-image-wrapper lesson2-icon">
               <img
@@ -318,9 +319,9 @@
     </div>
     <h2 class="section-title">Lesson 3: The Arduino IDE</h2>
 
-    <div class="vertical-path">
+      <div class="vertical-path">
       {% for lesson in lesson3_lessons %}
-        <div class="circle-card">
+        <div class="circle-card" id="lesson-{{ lesson.slug }}">
           <a href="{% url 'lessons:mission_2_lesson_detail' lesson.slug %}" class="circle-link">
             <div class="circle-image-wrapper">
               <img
@@ -337,5 +338,44 @@
       {% endfor %}
     </div>
 	  </section>
+  <script>
+    (function() {
+      const selectors = ["a.circle-link", "a.quiz-link", "a.mission-link"];
+      const focusables = Array.from(document.querySelectorAll(selectors.join(",")));
+      const isEditable = (el) => {
+        if (!el) return false;
+        const tag = el.tagName;
+        return tag === "INPUT" || tag === "TEXTAREA" || el.isContentEditable;
+      };
+      const focusAt = (index) => {
+        if (!focusables.length) return;
+        const count = focusables.length;
+        const next = ((index % count) + count) % count;
+        const el = focusables[next];
+        el.focus();
+        if (typeof el.scrollIntoView === "function") {
+          el.scrollIntoView({ block: "center", behavior: "smooth" });
+        }
+      };
+
+      document.addEventListener("keydown", (event) => {
+        if (isEditable(event.target)) return;
+        if (event.key === "Backspace") {
+          event.preventDefault();
+          window.history.back();
+          return;
+        }
+        if (event.key !== "ArrowDown" && event.key !== "ArrowUp") return;
+        if (!focusables.length) return;
+        event.preventDefault();
+        const currentIndex = focusables.indexOf(document.activeElement);
+        if (event.key === "ArrowDown") {
+          focusAt(currentIndex === -1 ? 0 : currentIndex + 1);
+        } else {
+          focusAt(currentIndex === -1 ? focusables.length - 1 : currentIndex - 1);
+        }
+      });
+    })();
+  </script>
 </body>
 	</html>

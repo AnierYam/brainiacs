@@ -111,6 +111,7 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
+      user-select: none;
       transition: transform 0.2s ease, box-shadow 0.2s ease, margin 0.2s ease;
       text-align: center;
       padding: 1rem;
@@ -254,7 +255,7 @@
 
     <div class="vertical-path">
       {% for tool in step1_tools %}
-        <div class="circle-card">
+        <div class="circle-card" id="lesson-tool-{{ tool.slug }}">
           <a href="{% url 'lessons:mission_1_tool_detail' tool.slug %}" class="circle-link">
             <div class="circle-image-wrapper">
               {% if tool.slug == 'combination-wrench' %}
@@ -279,7 +280,7 @@
       {% endfor %}
 
       <!-- Part 1 Quiz -->
-      <div class="circle-card quiz">
+      <div class="circle-card quiz" id="lesson-quiz-part-1">
         <a href="{% url 'lessons:mission_1_part_1_quiz' %}" class="quiz-link">
           <div class="quiz-label">Quiz</div>
           <div class="circle-image-wrapper">
@@ -301,7 +302,7 @@
 
     <div class="vertical-path">
       {% for item in assembly_items %}
-        <div class="circle-card">
+        <div class="circle-card" id="lesson-fastener-{{ item.slug }}">
           <a href="{% url 'lessons:mission_1_fastener_detail' item.slug %}" class="circle-link">
             <div class="circle-image-wrapper">
               {% if item.slug == 'screws' %}
@@ -356,7 +357,7 @@
       {% endfor %}
 
       <!-- Part 2 Quiz -->
-      <div class="circle-card quiz">
+      <div class="circle-card quiz" id="lesson-quiz-part-2">
         <a href="{% url 'lessons:mission_1_part_2_quiz' %}" class="quiz-link">
           <div class="quiz-label">Quiz</div>
           <div class="circle-image-wrapper">
@@ -377,7 +378,7 @@
     <h2 class="section-title">Part 3: Robot Assembly Parts</h2>
 
     <div class="vertical-path">
-      <div class="circle-card">
+      <div class="circle-card" id="lesson-assembly-parts">
         <a href="{% url 'lessons:mission_1_assembly_parts' %}" class="circle-link">
           <div class="circle-image-wrapper">
             <img
@@ -394,5 +395,44 @@
     </div>
   </section>
 
+  <script>
+    (function() {
+      const selectors = ["a.circle-link", "a.quiz-link", "a.mission-link"];
+      const focusables = Array.from(document.querySelectorAll(selectors.join(",")));
+      const isEditable = (el) => {
+        if (!el) return false;
+        const tag = el.tagName;
+        return tag === "INPUT" || tag === "TEXTAREA" || el.isContentEditable;
+      };
+      const focusAt = (index) => {
+        if (!focusables.length) return;
+        const count = focusables.length;
+        const next = ((index % count) + count) % count;
+        const el = focusables[next];
+        el.focus();
+        if (typeof el.scrollIntoView === "function") {
+          el.scrollIntoView({ block: "center", behavior: "smooth" });
+        }
+      };
+
+      document.addEventListener("keydown", (event) => {
+        if (isEditable(event.target)) return;
+        if (event.key === "Backspace") {
+          event.preventDefault();
+          window.history.back();
+          return;
+        }
+        if (event.key !== "ArrowDown" && event.key !== "ArrowUp") return;
+        if (!focusables.length) return;
+        event.preventDefault();
+        const currentIndex = focusables.indexOf(document.activeElement);
+        if (event.key === "ArrowDown") {
+          focusAt(currentIndex === -1 ? 0 : currentIndex + 1);
+        } else {
+          focusAt(currentIndex === -1 ? focusables.length - 1 : currentIndex - 1);
+        }
+      });
+    })();
+  </script>
 </body>
 </html>

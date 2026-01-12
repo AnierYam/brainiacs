@@ -85,6 +85,8 @@
     .system-hero {
       display: flex;
       justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
       margin-bottom: 1rem;
     }
 
@@ -118,6 +120,7 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
+      user-select: none;
       transition: transform 0.2s ease, box-shadow 0.2s ease, margin 0.2s ease;
       text-align: center;
       padding: 0.75rem;
@@ -259,14 +262,6 @@
       {% elif system.slug == 'pedro-battery' %}
         <div class="system-hero">
           <img
-            src="{% static 'lessons/mission3/system5_battery_hero.png' %}"
-            alt="{{ system.name }}"
-          />
-        </div>
-        <h2 class="section-title">{{ system.name }}</h2>
-      {% elif system.slug == 'pedro-stand' %}
-        <div class="system-hero">
-          <img
             src="{% static 'lessons/mission3/system6_stand_hero.png' %}"
             alt="{{ system.name }}"
           />
@@ -278,7 +273,7 @@
 
       <div class="vertical-path">
         {% for lesson in system.lessons %}
-          <div class="circle-card">
+          <div class="circle-card" id="lesson-{{ system.slug }}-{{ lesson.slug }}">
             <a href="{% url 'lessons:mission_3_lesson_detail' system.slug lesson.slug %}" class="circle-link">
               <div class="circle-image-wrapper">
                 {% if system.slug == 'pedro-body' %}
@@ -353,24 +348,6 @@
                     alt="{{ lesson.title }}"
                     class="circle-image play-icon"
                   />
-                {% elif system.slug == 'pedro-battery' and forloop.counter == 2 %}
-                  <img
-                    src="{% static 'lessons/mission3/breadboard_icon.png' %}"
-                    alt="{{ lesson.title }}"
-                    class="circle-image"
-                  />
-                {% elif system.slug == 'pedro-battery' and forloop.counter == 3 %}
-                  <img
-                    src="{% static 'lessons/mission3/code_icon.png' %}"
-                    alt="{{ lesson.title }}"
-                    class="circle-image code-icon"
-                  />
-                {% elif system.slug == 'pedro-stand' and forloop.counter == 1 %}
-                  <img
-                    src="{% static 'lessons/mission3/play_icon.png' %}"
-                    alt="{{ lesson.title }}"
-                    class="circle-image play-icon"
-                  />
                 {% elif system.slug == 'pedro-head' and forloop.counter == 3 %}
                   <img
                     src="{% static 'lessons/mission3/code_icon.png' %}"
@@ -400,5 +377,45 @@
       </div>
     </section>
   {% endfor %}
+
+  <script>
+    (function() {
+      const selectors = ["a.circle-link", "a.quiz-link", "a.mission-link"];
+      const focusables = Array.from(document.querySelectorAll(selectors.join(",")));
+      const isEditable = (el) => {
+        if (!el) return false;
+        const tag = el.tagName;
+        return tag === "INPUT" || tag === "TEXTAREA" || el.isContentEditable;
+      };
+      const focusAt = (index) => {
+        if (!focusables.length) return;
+        const count = focusables.length;
+        const next = ((index % count) + count) % count;
+        const el = focusables[next];
+        el.focus();
+        if (typeof el.scrollIntoView === "function") {
+          el.scrollIntoView({ block: "center", behavior: "smooth" });
+        }
+      };
+
+      document.addEventListener("keydown", (event) => {
+        if (isEditable(event.target)) return;
+        if (event.key === "Backspace") {
+          event.preventDefault();
+          window.history.back();
+          return;
+        }
+        if (event.key !== "ArrowDown" && event.key !== "ArrowUp") return;
+        if (!focusables.length) return;
+        event.preventDefault();
+        const currentIndex = focusables.indexOf(document.activeElement);
+        if (event.key === "ArrowDown") {
+          focusAt(currentIndex === -1 ? 0 : currentIndex + 1);
+        } else {
+          focusAt(currentIndex === -1 ? focusables.length - 1 : currentIndex - 1);
+        }
+      });
+    })();
+  </script>
 </body>
 </html>

@@ -3,18 +3,121 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="{% static 'css/icons.css' %}" />
-  <title>{{ title }} – Mission 4</title>
+  <link rel="stylesheet" href="{% static 'css/responsive-overrides.css' %}" />
+  <title>{{ title }} - Mission 4</title>
+  <style>
+    body {
+      margin: 0;
+      padding: clamp(1rem, 4vw, 2rem);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #e0f2fe, #f9fafb);
+      color: #1f2937;
+    }
+
+    h1, h2, p {
+      margin: 0 0 0.75rem 0;
+    }
+
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+      padding: clamp(1rem, 3vw, 1.5rem);
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      text-decoration: none;
+      color: #1d4ed8;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    .video-wrapper {
+      margin-top: 1rem;
+      position: relative;
+      padding-top: 56.25%;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+      background: #000;
+    }
+
+    .video-wrapper iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+  </style>
 </head>
 <body>
-  <h1>
-    {% include 'partials/content_icon.html' with content_type="exercise" %}
-    {{ title }}
-  </h1>
-  <p>Content for this step will go here (assembly, wiring, combining code, testing, etc.).</p>
+  <div class="container">
+    <a class="back-link" href="{% url 'lessons:mission_4_page' %}#lesson-{{ slug }}">&larr; Back to Mission 4</a>
+    <h1>{{ title }}</h1>
+    <p>Content for this step will go here (assembly, wiring, combining code, testing, etc.).</p>
 
-  <p>
-    <a href="{% url 'lessons:mission_4_page' %}">⬅ Back to Mission 4</a>
-  </p>
+    {% if slug == 'assemble-frame' %}
+      <div class="video-wrapper">
+        <iframe
+          src="https://www.youtube-nocookie.com/embed/fT0HkZOsjWs?rel=0&modestbranding=1&playsinline=1&origin=http%3A%2F%2F127.0.0.1%3A8000"
+          title="Brainiacs video"
+          loading="lazy"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerpolicy="strict-origin-when-cross-origin"
+          allowfullscreen
+        ></iframe>
+      </div>
+    {% endif %}
+  </div>
+
+  <script>
+    (function() {
+      const selectors = ["a.circle-link", "a.quiz-link", "a.mission-link"];
+      const focusables = Array.from(document.querySelectorAll(selectors.join(",")));
+      const isEditable = (el) => {
+        if (!el) return false;
+        const tag = el.tagName;
+        return tag === "INPUT" || tag === "TEXTAREA" || el.isContentEditable;
+      };
+      const focusAt = (index) => {
+        if (!focusables.length) return;
+        const count = focusables.length;
+        const next = ((index % count) + count) % count;
+        const el = focusables[next];
+        el.focus();
+        if (typeof el.scrollIntoView === "function") {
+          el.scrollIntoView({ block: "center", behavior: "smooth" });
+        }
+      };
+
+      document.addEventListener("keydown", (event) => {
+        if (isEditable(event.target)) return;
+        if (event.key === "Backspace") {
+          event.preventDefault();
+          window.history.back();
+          return;
+        }
+        if (event.key !== "ArrowDown" && event.key !== "ArrowUp") return;
+        if (!focusables.length) return;
+        event.preventDefault();
+        const currentIndex = focusables.indexOf(document.activeElement);
+        if (event.key === "ArrowDown") {
+          focusAt(currentIndex === -1 ? 0 : currentIndex + 1);
+        } else {
+          focusAt(currentIndex === -1 ? focusables.length - 1 : currentIndex - 1);
+        }
+      });
+    })();
+  </script>
 </body>
 </html>
