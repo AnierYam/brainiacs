@@ -22,3 +22,10 @@ venv/
 *.avi
 *.webm
 
+
+# Ignore large media files
+*.mp4
+*.mov
+*.avi
+*.webm
+
