@@ -281,7 +281,7 @@
 
       <div class="vertical-path">
         {% for lesson in system.lessons %}
-          <div class="circle-card" id="lesson-{{ system.slug }}-{{ lesson.slug }}">
+          <div class="circle-card{% if lesson.is_complete %} is-complete{% endif %}" id="lesson-{{ system.slug }}-{{ lesson.slug }}">
             <a href="{% url 'lessons:mission_3_lesson_detail' system.slug lesson.slug %}" class="circle-link">
               <div class="circle-image-wrapper">
                 {% if system.slug == 'pedro-body' %}

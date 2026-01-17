@@ -268,7 +268,7 @@
 
     <div class="vertical-path">
       {% for lesson in lesson1_lessons %}
-            <div class="circle-card" id="lesson-{{ lesson.slug }}">
+            <div class="circle-card{% if lesson.is_complete %} is-complete{% endif %}" id="lesson-{{ lesson.slug }}">
           <a href="{% url 'lessons:mission_2_lesson_detail' lesson.slug %}" class="circle-link">
             <div class="circle-image-wrapper lesson1-icon">
               <img
@@ -298,7 +298,7 @@
 
     <div class="vertical-path">
         {% for lesson in lesson2_lessons %}
-          <div class="circle-card" id="lesson-{{ lesson.slug }}">
+          <div class="circle-card{% if lesson.is_complete %} is-complete{% endif %}" id="lesson-{{ lesson.slug }}">
             <a href="{% url 'lessons:mission_2_lesson_detail' lesson.slug %}" class="circle-link">
             <div class="circle-image-wrapper lesson2-icon">
               <img
@@ -329,7 +329,7 @@
 
       <div class="vertical-path">
       {% for lesson in lesson3_lessons %}
-        <div class="circle-card" id="lesson-{{ lesson.slug }}">
+        <div class="circle-card{% if lesson.is_complete %} is-complete{% endif %}" id="lesson-{{ lesson.slug }}">
           <a href="{% url 'lessons:mission_2_lesson_detail' lesson.slug %}" class="circle-link">
             <div class="circle-image-wrapper">
               <img

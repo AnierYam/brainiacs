@@ -223,6 +223,32 @@
       opacity: 1;
     }
 
+    .hotspot__spot {
+      position: absolute;
+      border: 2px dashed rgba(148, 163, 184, 0.7);
+      border-radius: 12px;
+      box-sizing: border-box;
+      background: transparent;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+      cursor: pointer;
+    }
+
+    .hotspot__spot:hover {
+      transform: translateY(-4px);
+    }
+
+    .hotspot__spot--found {
+      border: 4px solid #22c55e;
+      box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.2);
+      background: transparent;
+    }
+
+    .hotspot__spot--wrong {
+      border: 4px solid #ef4444;
+      box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.2);
+      background: transparent;
+    }
+
     .hotspot__hint {
       margin-top: 0.65rem;
       color: #475569;
@@ -713,11 +739,7 @@
             setXp();
           }
 
-          function getHotspotBounds(card) {
-            if (!card || card.card_type !== "action") return null;
-            const payload = card.action_payload;
-            if (!payload || typeof payload !== "object") return null;
-            const bounds = payload.bounds;
+          function parseBounds(bounds) {
             if (!bounds || typeof bounds !== "object") return null;
             const left = Number(bounds.left);
             const top = Number(bounds.top);
@@ -729,8 +751,41 @@
             return { left, top, width, height };
           }
 
+          function getHotspotItems(card) {
+            if (!card || card.card_type !== "action") return [];
+            const payload = card.action_payload;
+            if (!payload || typeof payload !== "object") return [];
+            const items = Array.isArray(payload.hotspots) ? payload.hotspots : [];
+            const normalized = [];
+
+            items.forEach((item, index) => {
+              if (!item || typeof item !== "object") return;
+              const bounds = parseBounds(item.bounds);
+              if (!bounds) return;
+              const id = String(item.id || item.target || item.label || "hotspot-" + index);
+              normalized.push({
+                id: id,
+                label: item.label || "",
+                isTarget: Boolean(item.is_target),
+                bounds: bounds,
+              });
+            });
+
+            if (normalized.length) return normalized;
+
+            const bounds = parseBounds(payload.bounds);
+            if (!bounds) return [];
+            normalized.push({
+              id: String(payload.target || "target"),
+              label: payload.label || "",
+              isTarget: true,
+              bounds: bounds,
+            });
+            return normalized;
+          }
+
           function hasHotspotAction(card) {
-            return Boolean(getHotspotBounds(card) && card.image_url);
+            return Boolean(getHotspotItems(card).length && card.image_url);
           }
 
           function renderMedia(card) {
@@ -760,9 +815,16 @@
           }
 
           function renderHotspotAction(card) {
-            const bounds = getHotspotBounds(card);
-            if (!bounds || !card.image_url) return;
+            const items = getHotspotItems(card);
+            if (!items.length || !card.image_url) return;
             const payload = card.action_payload || {};
+            const overlayImage = payload.overlay_image || card.image_url;
+            const targetIdRaw = payload.target ? String(payload.target) : "";
+            let targetId = targetIdRaw;
+            if (!items.some((item) => item.id === targetId)) {
+              const explicit = items.find((item) => item.isTarget);
+              targetId = explicit ? explicit.id : items[0].id;
+            }
 
             const wrapper = document.createElement("div");
             wrapper.className = "hotspot";
@@ -776,47 +838,84 @@
             img.className = "hotspot__image";
             frame.appendChild(img);
 
-            const target = document.createElement("div");
-            target.className = "hotspot__target";
-            target.style.left = bounds.left + "%";
-            target.style.top = bounds.top + "%";
-            target.style.width = bounds.width + "%";
-            target.style.height = bounds.height + "%";
-            frame.appendChild(target);
-            if (completed[currentIndex]) {
-              target.classList.add("visible");
+            function updateSpotBackgrounds() {
+              const rect = img.getBoundingClientRect();
+              const frameWidth = rect.width;
+              const frameHeight = rect.height;
+              if (!frameWidth || !frameHeight) return;
+
+              items.forEach((item) => {
+                const leftPx = (frameWidth * item.bounds.left) / 100;
+                const topPx = (frameHeight * item.bounds.top) / 100;
+                const spot = item.el;
+                if (!spot) return;
+                spot.style.backgroundImage = "url('" + overlayImage + "')";
+                spot.style.backgroundRepeat = "no-repeat";
+                spot.style.backgroundSize = frameWidth + "px " + frameHeight + "px";
+                spot.style.backgroundPosition = -leftPx + "px " + -topPx + "px";
+              });
             }
+
+            items.forEach((item) => {
+              const spot = document.createElement("div");
+              spot.className = "hotspot__spot";
+              spot.style.left = item.bounds.left + "%";
+              spot.style.top = item.bounds.top + "%";
+              spot.style.width = item.bounds.width + "%";
+              spot.style.height = item.bounds.height + "%";
+              item.el = spot;
+              if (item.label) {
+                spot.setAttribute("title", item.label);
+              }
+              const isTarget = item.id === targetId;
+              if (completed[currentIndex] && isTarget) {
+                spot.classList.add("hotspot__spot--found");
+              }
+              spot.addEventListener("click", (event) => {
+                event.stopPropagation();
+                if (completed[currentIndex]) return;
+                if (isTarget) {
+                  spot.classList.add("hotspot__spot--found");
+                  completeCard();
+                  nextBtn.disabled = false;
+                  cardFeedbackEl.textContent = payload.success_message || "You found the USB port!";
+                  cardFeedbackEl.className = "card-feedback success";
+                } else {
+                  spot.classList.add("hotspot__spot--wrong");
+                  cardFeedbackEl.textContent = payload.fail_message || "Not quite. Try again.";
+                  cardFeedbackEl.className = "card-feedback error";
+                }
+              });
+              frame.appendChild(spot);
+            });
+
+            frame.addEventListener("click", () => {
+              if (completed[currentIndex]) return;
+              cardFeedbackEl.textContent = payload.fail_message || "Not quite. Try again.";
+              cardFeedbackEl.className = "card-feedback error";
+            });
 
             const hint = document.createElement("div");
             hint.className = "hotspot__hint";
             hint.textContent = payload.prompt || "Click the USB port on the board.";
 
-            frame.addEventListener("click", (event) => {
-              if (completed[currentIndex]) return;
-              const rect = frame.getBoundingClientRect();
-              if (!rect.width || !rect.height) return;
-              const x = ((event.clientX - rect.left) / rect.width) * 100;
-              const y = ((event.clientY - rect.top) / rect.height) * 100;
-              const inside =
-                x >= bounds.left &&
-                x <= bounds.left + bounds.width &&
-                y >= bounds.top &&
-                y <= bounds.top + bounds.height;
-              if (inside) {
-                target.classList.add("visible");
-                completeCard();
-                nextBtn.disabled = false;
-                cardFeedbackEl.textContent = payload.success_message || "That's the USB port!";
-                cardFeedbackEl.className = "card-feedback success";
-              } else {
-                cardFeedbackEl.textContent = payload.fail_message || "Not quite. Try again.";
-                cardFeedbackEl.className = "card-feedback error";
-              }
-            });
-
             wrapper.appendChild(frame);
             wrapper.appendChild(hint);
             cardActionEl.appendChild(wrapper);
+
+            img.addEventListener("load", updateSpotBackgrounds);
+            if (img.complete) {
+              updateSpotBackgrounds();
+            }
+
+            const resizeHandler = () => {
+              if (!document.body.contains(frame)) {
+                window.removeEventListener("resize", resizeHandler);
+                return;
+              }
+              updateSpotBackgrounds();
+            };
+            window.addEventListener("resize", resizeHandler);
           }
 
           function renderAction(card) {

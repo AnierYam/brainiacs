@@ -45,6 +45,12 @@ def _completion_qs(user):
         return LessonStepCompletion.objects.filter(user=user)
     return LessonStepCompletion.objects.none()
 
+def _completed_step_ids(user, parent_prefix=""):
+    qs = _completion_qs(user).filter(is_complete=True)
+    if parent_prefix:
+        qs = qs.filter(step__parent_slug__startswith=parent_prefix)
+    return set(qs.values_list("step_id", flat=True))
+
 
 def _award_qs(user):
     if user:
@@ -315,9 +321,11 @@ def mission_1(request):
         step.slug: step
         for step in LessonStep.objects.filter(parent_slug__startswith="mission-1")
     }
+    completed_ids = _completed_step_ids(user, "mission-1")
     step1_tools = [dict(tool) for tool in MISSION1_TOOL_LESSONS.values()]
     for tool in step1_tools:
         step = step_map.get(tool["slug"])
+        tool["is_complete"] = bool(step and step.id in completed_ids)
         if step:
             tool["name"] = step.title
             tool["title"] = step.title
@@ -325,9 +333,17 @@ def mission_1(request):
     assembly_items = [dict(item) for item in MISSION1_FASTENER_LESSONS.values()]
     for item in assembly_items:
         step = step_map.get(item["slug"])
+        item["is_complete"] = bool(step and step.id in completed_ids)
         if step:
             item["name"] = step.title
             item["title"] = step.title
+
+    part1_quiz_step = step_map.get("part-1-quiz")
+    part2_quiz_step = step_map.get("part-2-quiz")
+    assembly_parts_step = step_map.get("assembly-parts")
+    part1_quiz_complete = bool(part1_quiz_step and part1_quiz_step.id in completed_ids)
+    part2_quiz_complete = bool(part2_quiz_step and part2_quiz_step.id in completed_ids)
+    assembly_parts_complete = bool(assembly_parts_step and assembly_parts_step.id in completed_ids)
 
     xp_total, xp_max, xp_percent = _get_xp_stats("mission-1", user)
     return render(
@@ -337,6 +353,9 @@ def mission_1(request):
             "step1_tools": step1_tools,
             "assembly_items": assembly_items,
             "assembly_parts": MISSION1_ASSEMBLY_PARTS,
+            "part1_quiz_complete": part1_quiz_complete,
+            "part2_quiz_complete": part2_quiz_complete,
+            "assembly_parts_complete": assembly_parts_complete,
             "xp_total": xp_total,
             "xp_max": xp_max,
             "xp_percent": xp_percent,
@@ -579,30 +598,37 @@ def mission_2_intro(request):
         (step.parent_slug, step.slug): step
         for step in LessonStep.objects.filter(parent_slug__startswith="mission-2-")
     }
+    completed_ids = _completed_step_ids(user, "mission-2-")
     lesson1_lessons = [dict(lesson) for lesson in MISSION2_LESSON1]
     lesson2_lessons = [dict(lesson) for lesson in MISSION2_LESSON2]
     lesson3_lessons = [dict(lesson) for lesson in MISSION2_LESSON3]
 
     for lesson in lesson1_lessons:
         step = step_map.get(("mission-2-arduino-board", lesson["slug"]))
+        lesson["is_complete"] = False
         if step:
             lesson["title"] = step.title
             lesson["content_mode"] = step.content_mode
             lesson["has_quiz"] = step.has_quiz
+            lesson["is_complete"] = step.id in completed_ids
 
     for lesson in lesson2_lessons:
         step = step_map.get(("mission-2-breadboard", lesson["slug"]))
+        lesson["is_complete"] = False
         if step:
             lesson["title"] = step.title
             lesson["content_mode"] = step.content_mode
             lesson["has_quiz"] = step.has_quiz
+            lesson["is_complete"] = step.id in completed_ids
 
     for lesson in lesson3_lessons:
         step = step_map.get(("mission-2-arduino-ide", lesson["slug"]))
+        lesson["is_complete"] = False
         if step:
             lesson["title"] = step.title
             lesson["content_mode"] = step.content_mode
             lesson["has_quiz"] = step.has_quiz
+            lesson["is_complete"] = step.id in completed_ids
 
     xp_total, xp_max, xp_percent = _get_xp_stats("mission-2", user)
     return render(
@@ -813,6 +839,7 @@ def mission_3_build_pedro(request):
         (step.parent_slug, step.slug): step
         for step in LessonStep.objects.filter(parent_slug__startswith="mission-3-")
     }
+    completed_ids = _completed_step_ids(user, "mission-3-")
     system_parent_map = {
         "pedro-body": "mission-3-system-1",
         "pedro-head": "mission-3-system-2",
@@ -824,12 +851,14 @@ def mission_3_build_pedro(request):
     for system in systems:
         parent_slug = system_parent_map.get(system["slug"])
         for lesson in system["lessons"]:
+            lesson["is_complete"] = False
             if not parent_slug:
                 continue
             step = step_map.get((parent_slug, lesson["slug"]))
             if step:
                 lesson["title"] = step.title
                 lesson["content_mode"] = step.content_mode
+                lesson["is_complete"] = step.id in completed_ids
 
     xp_total, xp_max, xp_percent = _get_xp_stats("mission-3", user)
     return render(
@@ -960,11 +989,14 @@ def mission_4_assemble_pedro(request):
         step.slug: step
         for step in LessonStep.objects.filter(parent_slug="mission-4")
     }
+    completed_ids = _completed_step_ids(user, "mission-4")
     for step_item in steps:
         step = step_map.get(step_item["slug"])
+        step_item["is_complete"] = False
         if step:
             step_item["title"] = step.title
             step_item["content_mode"] = step.content_mode
+            step_item["is_complete"] = step.id in completed_ids
 
     xp_total, xp_max, xp_percent = _get_xp_stats("mission-4", user)
     return render(

@@ -198,7 +198,7 @@
     <h2 class="section-title">Assembling All Systems</h2>
     <div class="vertical-path">
       {% for step in steps %}
-            <div class="circle-card" id="lesson-{{ step.slug }}">
+            <div class="circle-card{% if step.is_complete %} is-complete{% endif %}" id="lesson-{{ step.slug }}">
               <a href="{% url 'lessons:mission_4_step_detail' step.slug %}" class="circle-link">
                 <div class="circle-image-wrapper">
                   {% if forloop.first %}

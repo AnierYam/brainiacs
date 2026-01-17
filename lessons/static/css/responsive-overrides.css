@@ -13,6 +13,15 @@ body {
   height: clamp(150px, 22vw, 190px);
 }
 
+.circle-card.is-complete {
+  background: #d1fae5;
+}
+
+.circle-card.is-complete.quiz {
+  background: #d1fae5;
+  border-color: #86efac;
+}
+
 .circle-card .circle-image-wrapper,
 .circle-image-wrapper {
   width: clamp(90px, 16vw, 120px);

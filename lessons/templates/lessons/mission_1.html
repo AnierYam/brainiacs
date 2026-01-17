@@ -263,7 +263,7 @@
 
     <div class="vertical-path">
       {% for tool in step1_tools %}
-        <div class="circle-card" id="lesson-tool-{{ tool.slug }}">
+        <div class="circle-card{% if tool.is_complete %} is-complete{% endif %}" id="lesson-tool-{{ tool.slug }}">
           <a href="{% url 'lessons:mission_1_tool_detail' tool.slug %}" class="circle-link">
             <div class="circle-image-wrapper">
               {% if tool.slug == 'combination-wrench' %}
@@ -288,7 +288,7 @@
       {% endfor %}
 
       <!-- Part 1 Quiz -->
-      <div class="circle-card quiz" id="lesson-quiz-part-1">
+      <div class="circle-card quiz{% if part1_quiz_complete %} is-complete{% endif %}" id="lesson-quiz-part-1">
         <a href="{% url 'lessons:mission_1_part_1_quiz' %}" class="quiz-link">
           <div class="quiz-label">Quiz</div>
           <div class="circle-image-wrapper">
@@ -310,7 +310,7 @@
 
     <div class="vertical-path">
       {% for item in assembly_items %}
-        <div class="circle-card" id="lesson-fastener-{{ item.slug }}">
+        <div class="circle-card{% if item.is_complete %} is-complete{% endif %}" id="lesson-fastener-{{ item.slug }}">
           <a href="{% url 'lessons:mission_1_fastener_detail' item.slug %}" class="circle-link">
             <div class="circle-image-wrapper">
               {% if item.slug == 'screws' %}
@@ -365,7 +365,7 @@
       {% endfor %}
 
       <!-- Part 2 Quiz -->
-      <div class="circle-card quiz" id="lesson-quiz-part-2">
+      <div class="circle-card quiz{% if part2_quiz_complete %} is-complete{% endif %}" id="lesson-quiz-part-2">
         <a href="{% url 'lessons:mission_1_part_2_quiz' %}" class="quiz-link">
           <div class="quiz-label">Quiz</div>
           <div class="circle-image-wrapper">
@@ -386,7 +386,7 @@
     <h2 class="section-title">Part 3: Pedro Parts</h2>
 
     <div class="vertical-path">
-      <div class="circle-card" id="lesson-assembly-parts">
+      <div class="circle-card{% if assembly_parts_complete %} is-complete{% endif %}" id="lesson-assembly-parts">
         <a href="{% url 'lessons:mission_1_assembly_parts' %}" class="circle-link">
           <div class="circle-image-wrapper">
             <img
