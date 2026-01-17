@@ -29,3 +29,10 @@ venv/
 *.avi
 *.webm
 
+
+# Ignore videos
+*.mp4
+*.mov
+*.mkv
+*.webm
+
