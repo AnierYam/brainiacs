@@ -243,6 +243,14 @@
     <p>Your first mission: learn the tools and parts to build your robot.</p>
   </header>
 
+  <div class="xp-summary" aria-label="Mission 1 XP progress">
+    <div class="xp-pill">XP {{ xp_total|default:"0" }}</div>
+    <div class="xp-progress" role="progressbar" aria-valuenow="{{ xp_total|default:'0' }}" aria-valuemin="0" aria-valuemax="{{ xp_max|default:'0' }}">
+      <div class="xp-progress__fill" style="width: {{ xp_percent|default:'0' }}%;"></div>
+    </div>
+    <div class="xp-label">{{ xp_total|default:"0" }} / {{ xp_max|default:"0" }} XP</div>
+  </div>
+
   <!-- PART 1 -->
   <section class="section">
     <!-- Toolbox icon above Part 1 title -->
@@ -251,7 +259,7 @@
       alt="Toolbox"
       class="toolbox-large"
     />
-    <h2 class="section-title">Part 1: Your Toolset</h2>
+    <h2 class="section-title">Part 1: Tools</h2>
 
     <div class="vertical-path">
       {% for tool in step1_tools %}
@@ -298,7 +306,7 @@
 
   <!-- PART 2 -->
   <section class="section">
-    <h2 class="section-title">Part 2: Fasteners to Assemble Pedro</h2>
+    <h2 class="section-title">Part 2: Fasteners</h2>
 
     <div class="vertical-path">
       {% for item in assembly_items %}
@@ -375,7 +383,7 @@
 
   <!-- PART 3 -->
   <section class="section">
-    <h2 class="section-title">Part 3: Robot Assembly Parts</h2>
+    <h2 class="section-title">Part 3: Pedro Parts</h2>
 
     <div class="vertical-path">
       <div class="circle-card" id="lesson-assembly-parts">
@@ -388,7 +396,7 @@
             />
           </div>
           <div class="circle-name">
-            Pedro Parts
+            Discover Pedro Parts
           </div>
         </a>
       </div>

@@ -196,6 +196,14 @@
     <p>Select a part to see its description and quantity.</p>
   </header>
 
+  <div class="xp-summary" aria-label="Mission 1 XP progress">
+    <div class="xp-pill">XP {{ xp_total|default:"0" }}</div>
+    <div class="xp-progress" role="progressbar" aria-valuenow="{{ xp_total|default:'0' }}" aria-valuemin="0" aria-valuemax="{{ xp_max|default:'0' }}">
+      <div class="xp-progress__fill" style="width: {{ xp_percent|default:'0' }}%;"></div>
+    </div>
+    <div class="xp-label">{{ xp_total|default:"0" }} / {{ xp_max|default:"0" }} XP</div>
+  </div>
+
   <div class="layout" id="parts-layout">
     <div class="parts-table">
       <table id="parts-table">

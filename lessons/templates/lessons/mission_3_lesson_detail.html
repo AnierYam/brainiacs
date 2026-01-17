@@ -52,131 +52,468 @@
       height: 100%;
       border: 0;
     }
+    .card-engine {
+      margin-top: 1.5rem;
+      background: #ffffff;
+      border-radius: 1.5rem;
+      box-shadow: 0 15px 40px rgba(15, 23, 42, 0.12);
+      padding: 1.5rem;
+    }
+    .card-engine__top {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .progress-bar {
+      flex: 1;
+      height: 10px;
+      border-radius: 999px;
+      background: #e5e7eb;
+      overflow: hidden;
+    }
+    .progress-bar__fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #22c55e, #16a34a);
+      transition: width 0.3s ease;
+    }
+    .card-engine__card {
+      margin-top: 1.5rem;
+      background: #f8fafc;
+      border-radius: 1rem;
+      padding: 1.5rem;
+      border: 1px solid #e2e8f0;
+    }
+    .card-engine__nav {
+      margin-top: 1.25rem;
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .nav-btn {
+      flex: 1;
+      border-radius: 999px;
+      border: 1px solid #cbd5f5;
+      padding: 0.6rem 1rem;
+      background: #eef2ff;
+      color: #1d4ed8;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .nav-btn.primary {
+      background: #2563eb;
+      color: #ffffff;
+      border: none;
+    }
+    .nav-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    .xp-toast {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      background: #16a34a;
+      color: #ffffff;
+      padding: 0.6rem 1rem;
+      border-radius: 999px;
+      font-weight: 700;
+      box-shadow: 0 12px 24px rgba(22, 163, 74, 0.25);
+      opacity: 0;
+      transform: translateY(-8px);
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      pointer-events: none;
+      z-index: 20;
+    }
+    .xp-toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .quiz-block {
+      margin-top: 1.5rem;
+      padding: 1.25rem;
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+      background: #f8fafc;
+    }
+    .quiz-question {
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+    }
+    .quiz-choice {
+      display: block;
+      width: 100%;
+      text-align: left;
+      padding: 0.65rem 0.9rem;
+      border-radius: 10px;
+      border: 1px solid #e5e7eb;
+      background: #ffffff;
+      margin-bottom: 0.6rem;
+      cursor: pointer;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .quiz-choice:hover {
+      border-color: #93c5fd;
+      box-shadow: 0 6px 18px rgba(37, 99, 235, 0.12);
+    }
+    .quiz-choice.correct {
+      border-color: #22c55e;
+      background: #ecfdf5;
+    }
+    .quiz-choice.wrong {
+      border-color: #ef4444;
+      background: #fef2f2;
+    }
+    .quiz-feedback {
+      margin-top: 0.75rem;
+      font-weight: 600;
+    }
+    .quiz-feedback.success {
+      color: #16a34a;
+    }
+    .quiz-feedback.error {
+      color: #dc2626;
+    }
+    .action-btn {
+      border: none;
+      border-radius: 999px;
+      padding: 0.6rem 1.4rem;
+      background: #2563eb;
+      color: #ffffff;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 8px 18px rgba(37, 99, 235, 0.35);
+    }
+    .action-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
   </style>
 </head>
 <body>
+  <div class="xp-toast" id="xp-toast" role="status" aria-live="polite"></div>
+  {% if new_badge %}
+    <div class="badge-toast" role="status">
+      <span class="badge-toast__title">Badge unlocked!</span>
+      <span>{{ new_badge.name }}</span>
+    </div>
+  {% endif %}
   <div class="container">
     <a class="back-link" href="{% url 'lessons:mission_3_page' %}#lesson-{{ system.slug }}-{{ lesson.slug }}">← Back to Mission 3</a>
     <h1>{{ system.name }}</h1>
     <h2>{{ lesson.title }}</h2>
 
-    {% if lesson.slug == 'body-leg-connector-front' %}
-      <p>Watch the build video for the front body-leg connector.</p>
-      <div class="video-wrapper">
-        <iframe
-          src="https://www.youtube-nocookie.com/embed/rJU8Zs6ZEwE?rel=0&modestbranding=1&playsinline=1&origin=http%3A%2F%2F127.0.0.1%3A8000"
-          title="Brainiacs video"
-          loading="lazy"
-          referrerpolicy="strict-origin-when-cross-origin"
-          frameborder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          allowfullscreen
-        ></iframe>
+    <div class="xp-summary" aria-label="Mission 3 XP progress">
+      <div class="xp-pill">XP <span id="xp-total-value">{{ xp_total|default:"0" }}</span></div>
+      <div class="xp-progress" role="progressbar" aria-valuenow="{{ xp_total|default:'0' }}" aria-valuemin="0" aria-valuemax="{{ xp_max|default:'0' }}">
+        <div class="xp-progress__fill" id="xp-progress-fill" style="width: {{ xp_percent|default:'0' }}%;"></div>
       </div>
-    {% elif lesson.slug == 'body-leg-connector-back' %}
-      <p>Watch the build video for the back body-leg connector.</p>
-      <div class="video-wrapper">
-        <iframe
-          src="https://www.youtube-nocookie.com/embed/3wO1e-3LHg8?rel=0&modestbranding=1&playsinline=1&origin=http%3A%2F%2F127.0.0.1%3A8000"
-          title="Brainiacs video"
-          loading="lazy"
-          referrerpolicy="strict-origin-when-cross-origin"
-          frameborder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          allowfullscreen
-        ></iframe>
+      <div class="xp-label"><span id="xp-total-label">{{ xp_total|default:"0" }}</span> / {{ xp_max|default:"0" }} XP</div>
+    </div>
+
+    {% if step and step.content_mode == 'video' %}
+      <p>Watch the build video for this step.</p>
+      {% if video_id %}
+        <div class="video-wrapper">
+          <iframe
+            src="https://www.youtube-nocookie.com/embed/{{ video_id }}?rel=0&modestbranding=1&playsinline=1&origin=http%3A%2F%2F127.0.0.1%3A8000"
+            title="Brainiacs video"
+            loading="lazy"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerpolicy="strict-origin-when-cross-origin"
+            allowfullscreen
+          ></iframe>
+        </div>
+      {% else %}
+        <p>Video coming soon.</p>
+      {% endif %}
+      <div class="card-engine__nav">
+        <button class="nav-btn" id="video-back" type="button">Back</button>
+        <button class="nav-btn primary" id="video-next" type="button" {% if not step_completed %}disabled{% endif %}>Next</button>
       </div>
-    {% elif lesson.slug == 'build-structure' %}
-      <p>Watch the build video for the body structure.</p>
-      <div class="video-wrapper">
-        <iframe
-          src="https://www.youtube-nocookie.com/embed/bX3bHwYuTHg?rel=0&modestbranding=1&playsinline=1&origin=http%3A%2F%2F127.0.0.1%3A8000"
-          title="Brainiacs video"
-          loading="lazy"
-          referrerpolicy="strict-origin-when-cross-origin"
-          frameborder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          allowfullscreen
-        ></iframe>
-      </div>
-    {% elif system.slug == 'pedro-head' and lesson.slug == 'build-head' %}
-      <p>Watch the build video for the head.</p>
-      <div class="video-wrapper">
-        <iframe
-          width="560"
-          height="315"
-          src="https://www.youtube.com/embed/5FXCceNBkoc?si=C_wiNjEeuQtjVKlh"
-          title="YouTube video player"
-          frameborder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          referrerpolicy="strict-origin-when-cross-origin"
-          allowfullscreen
-        ></iframe>
-      </div>
-    {% elif system.slug == 'pedro-tail' and lesson.slug == 'tail-structure' %}
-      <p>Watch the build video for the tail.</p>
-      <div class="video-wrapper">
-        <iframe
-          width="560"
-          height="315"
-          src="https://www.youtube-nocookie.com/embed/QzCg-Jz_vGg?si=oFsb7TW5_-kDW5t8"
-          title="YouTube video player"
-          frameborder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          referrerpolicy="strict-origin-when-cross-origin"
-          allowfullscreen
-        ></iframe>
-      </div>
-    {% elif system.slug == 'pedro-legs-left' and lesson.slug == 'legs-left-structure' %}
-      <p>Watch the build video for the left legs.</p>
-      <div class="video-wrapper">
-        <iframe
-          src="https://www.youtube-nocookie.com/embed/3t6GST3vB50?rel=0&modestbranding=1&playsinline=1&origin=http%3A%2F%2F127.0.0.1%3A8000"
-          title="Brainiacs video"
-          loading="lazy"
-          frameborder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          referrerpolicy="strict-origin-when-cross-origin"
-          allowfullscreen
-        ></iframe>
-      </div>
-    {% elif system.slug == 'pedro-legs-right' and lesson.slug == 'legs-right-structure' %}
-      <p>Watch the build video for the right legs.</p>
-      <div class="video-wrapper">
-        <iframe
-          width="560"
-          height="315"
-          src="https://www.youtube-nocookie.com/embed/qmjlCu1lLw4?si=-yH6Kt2HzhlagjFA"
-          title="YouTube video player"
-          frameborder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          referrerpolicy="strict-origin-when-cross-origin"
-          allowfullscreen
-        ></iframe>
-      </div>
-    {% elif system.slug == 'pedro-battery' and lesson.slug == 'stand-structure' %}
-      <p>Watch the build video for the stand.</p>
-      <div class="video-wrapper">
-        <iframe
-          width="560"
-          height="315"
-          src="https://www.youtube-nocookie.com/embed/lQjV9jTARPo?si=WSQGOBJtdgwSH3DW"
-          title="YouTube video player"
-          frameborder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          referrerpolicy="strict-origin-when-cross-origin"
-          allowfullscreen
-        ></iframe>
+      <button class="action-btn" id="video-complete" type="button" {% if step_completed or not can_track_progress %}disabled{% endif %}>
+        {% if step_completed %}Step Completed{% else %}Mark Step Complete{% endif %}
+      </button>
+    {% elif step and step.content_mode == 'cards' %}
+      <div class="card-engine" id="card-engine" data-step-id="{{ step.id }}">
+        <div class="card-engine__top">
+          <div class="progress-bar">
+            <div class="progress-bar__fill" id="card-progress"></div>
+          </div>
+          <div class="xp-pill">Cards</div>
+        </div>
+        <div class="card-engine__card">
+          <h3 id="card-title"></h3>
+          <p id="card-body"></p>
+        </div>
+        <div class="card-engine__nav">
+          <button class="nav-btn" id="card-prev" type="button">Back</button>
+          <button class="nav-btn primary" id="card-next" type="button">Next</button>
+        </div>
       </div>
     {% else %}
       <p>
         This is the lesson page for <strong>{{ lesson.title }}</strong> in
         <strong>{{ system.name }}</strong>.
       </p>
-    {% endif %}
-  </div>
+      {% endif %}
+
+      {% if step and step.has_quiz %}
+        <div class="quiz-block" data-step-id="{{ step.id }}" data-next-url="{{ next_url }}">
+          <h3>Quick Check</h3>
+          <p class="quiz-question">What is the best next move after this step?</p>
+          <button class="quiz-choice" type="button" data-answer="A">A. Test your build and follow the guide.</button>
+          <button class="quiz-choice" type="button" data-answer="B">B. Skip the instructions and guess.</button>
+          <button class="quiz-choice" type="button" data-answer="C">C. Ignore the wiring and move on.</button>
+          <p class="quiz-feedback" id="quiz-feedback"></p>
+          <button class="action-btn" id="quiz-next" type="button" disabled>Next</button>
+        </div>
+      {% endif %}
+
+      {% if not can_track_progress %}
+        <p class="xp-label">Sign in to save progress.</p>
+      {% endif %}
+    </div>
 
   <script>
+    (function() {
+      const stepId = {{ step.id|default:"null" }};
+      const canTrackProgress = {{ can_track_progress|yesno:"true,false" }};
+      const stepCompleteUrl = "{% url 'lessons:step_complete' %}";
+
+      function getCookie(name) {
+        if (!document.cookie) return null;
+        const token = document.cookie
+          .split(";")
+          .map((cookie) => cookie.trim())
+          .find((cookie) => cookie.startsWith(name + "="));
+        return token ? decodeURIComponent(token.split("=")[1]) : null;
+      }
+
+      function showXpToast(xp) {
+        const toast = document.getElementById("xp-toast");
+        if (!toast) return;
+        toast.textContent = "+" + xp + " XP";
+        toast.classList.add("show");
+        setTimeout(() => {
+          toast.classList.remove("show");
+        }, 1600);
+      }
+
+      function updateXpSummary(xpTotalValue, xpPercentValue) {
+        const totalEl = document.getElementById("xp-total-value");
+        const labelEl = document.getElementById("xp-total-label");
+        const progressEl = document.getElementById("xp-progress-fill");
+        if (totalEl) totalEl.textContent = xpTotalValue;
+        if (labelEl) labelEl.textContent = xpTotalValue;
+        if (progressEl) progressEl.style.width = xpPercentValue + "%";
+      }
+
+      function postStepComplete() {
+        if (!canTrackProgress || !stepId) {
+          return Promise.resolve({ success: false, xp_awarded: 0 });
+        }
+        const csrfToken = getCookie("csrftoken");
+        if (!csrfToken) {
+          return Promise.resolve({ success: false, xp_awarded: 0 });
+        }
+
+        const body = new URLSearchParams();
+        body.append("step_id", stepId);
+
+        return fetch(stepCompleteUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "X-CSRFToken": csrfToken,
+          },
+          body: body.toString(),
+        })
+          .then((response) => (response.ok ? response.json() : { success: false, xp_awarded: 0 }))
+          .catch(() => ({ success: false, xp_awarded: 0 }));
+      }
+
+      window.__postStepComplete = postStepComplete;
+      window.__showXpToast = showXpToast;
+      window.__updateXpSummary = updateXpSummary;
+    })();
+
+    (function() {
+      const cardEngine = document.getElementById("card-engine");
+      if (!cardEngine) return;
+      const progressFill = document.getElementById("card-progress");
+      const titleEl = document.getElementById("card-title");
+      const bodyEl = document.getElementById("card-body");
+      const prevBtn = document.getElementById("card-prev");
+      const nextBtn = document.getElementById("card-next");
+      const cards = [
+        {
+          title: "Cards coming soon",
+          body: "We are building interactive steps for this part.",
+        },
+      ];
+      let currentIndex = 0;
+      let completionPosted = false;
+
+      function renderCard() {
+        const card = cards[currentIndex];
+        titleEl.textContent = card.title || "";
+        bodyEl.textContent = card.body || "";
+        prevBtn.disabled = currentIndex === 0;
+        nextBtn.textContent = currentIndex === cards.length - 1 ? "Finish" : "Next";
+        if (progressFill) {
+          progressFill.style.width = ((currentIndex + 1) / cards.length) * 100 + "%";
+        }
+      }
+
+      function completeStep() {
+        if (completionPosted) return;
+        completionPosted = true;
+        if (!window.__postStepComplete) return;
+        window.__postStepComplete().then((result) => {
+          if (result && result.success) {
+            if (result.xp_awarded) {
+              window.__showXpToast(result.xp_awarded);
+            }
+            if (typeof result.xp_total === "number" && typeof result.xp_percent === "number") {
+              window.__updateXpSummary(result.xp_total, result.xp_percent);
+            }
+          }
+        });
+      }
+
+      prevBtn.addEventListener("click", () => {
+        if (currentIndex === 0) return;
+        currentIndex -= 1;
+        renderCard();
+      });
+
+      nextBtn.addEventListener("click", () => {
+        if (currentIndex < cards.length - 1) {
+          currentIndex += 1;
+          renderCard();
+          return;
+        }
+        completeStep();
+        nextBtn.textContent = "Completed";
+        nextBtn.disabled = true;
+      });
+
+      renderCard();
+    })();
+
+    (function() {
+      const completeBtn = document.getElementById("video-complete");
+      const nextBtn = document.getElementById("video-next");
+      const backBtn = document.getElementById("video-back");
+      if (backBtn) {
+        backBtn.addEventListener("click", () => window.history.back());
+      }
+      if (!completeBtn || !nextBtn) return;
+
+      completeBtn.addEventListener("click", () => {
+        if (!window.__postStepComplete) return;
+        window.__postStepComplete().then((result) => {
+          if (!result || !result.success) return;
+          completeBtn.disabled = true;
+          completeBtn.textContent = "Step Completed";
+          nextBtn.disabled = false;
+          if (result.xp_awarded) {
+            window.__showXpToast(result.xp_awarded);
+          }
+          if (typeof result.xp_total === "number" && typeof result.xp_percent === "number") {
+            window.__updateXpSummary(result.xp_total, result.xp_percent);
+          }
+        });
+      });
+
+      nextBtn.addEventListener("click", () => {
+        window.location.href = "{{ next_url }}";
+      });
+    })();
+
+    (function() {
+      const quizBlock = document.querySelector(".quiz-block");
+      if (!quizBlock) return;
+      const stepId = quizBlock.dataset.stepId;
+      const nextUrl = quizBlock.dataset.nextUrl || "";
+      const canTrackProgress = {{ can_track_progress|yesno:"true,false" }};
+      const correctAnswer = "A";
+      const feedbackEl = document.getElementById("quiz-feedback");
+      const nextBtn = document.getElementById("quiz-next");
+      const choices = Array.from(quizBlock.querySelectorAll(".quiz-choice"));
+      let quizLocked = false;
+
+      function getCookie(name) {
+        if (!document.cookie) return null;
+        const token = document.cookie
+          .split(";")
+          .map((cookie) => cookie.trim())
+          .find((cookie) => cookie.startsWith(name + "="));
+        return token ? decodeURIComponent(token.split("=")[1]) : null;
+      }
+
+      function postQuizAnswer(answer) {
+        if (!answer) {
+          return Promise.resolve({ correct: false, xp_awarded: 0 });
+        }
+        if (!canTrackProgress || !stepId) {
+          return Promise.resolve({ correct: true, xp_awarded: 0 });
+        }
+        const csrfToken = getCookie("csrftoken");
+        if (!csrfToken) {
+          return Promise.resolve({ correct: true, xp_awarded: 0 });
+        }
+
+        const body = new URLSearchParams();
+        body.append("step_id", stepId);
+        body.append("chosen_answer", answer);
+
+        return fetch("{% url 'lessons:step_quiz' %}", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "X-CSRFToken": csrfToken,
+          },
+          body: body.toString(),
+        })
+          .then((response) => (response.ok ? response.json() : { correct: false, xp_awarded: 0 }))
+          .catch(() => ({ correct: false, xp_awarded: 0 }));
+      }
+
+      choices.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          if (quizLocked) return;
+          const answer = btn.dataset.answer;
+          if (answer === correctAnswer) {
+            quizLocked = true;
+            btn.classList.add("correct");
+            feedbackEl.textContent = "Correct! You can keep going.";
+            feedbackEl.className = "quiz-feedback success";
+            postQuizAnswer(answer).then((result) => {
+              if (result && result.correct) {
+                nextBtn.disabled = false;
+              }
+            });
+          } else {
+            btn.classList.add("wrong");
+            feedbackEl.textContent = "Not quite. Try again.";
+            feedbackEl.className = "quiz-feedback error";
+          }
+        });
+      });
+
+      nextBtn.addEventListener("click", () => {
+        if (nextUrl) {
+          window.location.href = nextUrl;
+          return;
+        }
+        window.history.back();
+      });
+    })();
+
     (function() {
       const selectors = ["a.circle-link", "a.quiz-link", "a.mission-link"];
       const focusables = Array.from(document.querySelectorAll(selectors.join(",")));

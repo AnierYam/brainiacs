@@ -248,6 +248,14 @@
     <p>Learn the Arduino board, breadboard basics, and the Arduino IDE.</p>
   </header>
 
+  <div class="xp-summary" aria-label="Mission 2 XP progress">
+    <div class="xp-pill">XP {{ xp_total|default:"0" }}</div>
+    <div class="xp-progress" role="progressbar" aria-valuenow="{{ xp_total|default:'0' }}" aria-valuemin="0" aria-valuemax="{{ xp_max|default:'0' }}">
+      <div class="xp-progress__fill" style="width: {{ xp_percent|default:'0' }}%;"></div>
+    </div>
+    <div class="xp-label">{{ xp_total|default:"0" }} / {{ xp_max|default:"0" }} XP</div>
+  </div>
+
   <!-- LESSON 1 -->
   <section class="section">
     <div class="lesson1-hero">
@@ -256,7 +264,7 @@
         alt="Arduino board"
       />
     </div>
-    <h2 class="section-title">Lesson 1: The Arduino Board</h2>
+    <h2 class="section-title">Lesson 1: Arduino Board</h2>
 
     <div class="vertical-path">
       {% for lesson in lesson1_lessons %}
@@ -286,7 +294,7 @@
         alt="Breadboard"
       />
     </div>
-    <h2 class="section-title">Lesson 2: The Breadboard</h2>
+    <h2 class="section-title">Lesson 2: Breadboard</h2>
 
     <div class="vertical-path">
         {% for lesson in lesson2_lessons %}
@@ -317,7 +325,7 @@
         alt="Arduino IDE"
       />
     </div>
-    <h2 class="section-title">Lesson 3: The Arduino IDE</h2>
+    <h2 class="section-title">Lesson 3: Arduino IDE</h2>
 
       <div class="vertical-path">
       {% for lesson in lesson3_lessons %}
@@ -340,6 +348,29 @@
 	  </section>
   <script>
     (function() {
+      const params = new URLSearchParams(window.location.search);
+      const focusPrev = params.get("focus_prev");
+      const focusNext = params.get("focus_next");
+      if (focusPrev) {
+        const prevEl = document.getElementById("lesson-" + focusPrev);
+        const nextEl = focusNext ? document.getElementById("lesson-" + focusNext) : null;
+        if (prevEl) {
+          window.setTimeout(() => {
+            const prevRect = prevEl.getBoundingClientRect();
+            const prevTop = prevRect.top + window.scrollY;
+            let targetTop = prevTop - 40;
+            if (nextEl) {
+              const nextRect = nextEl.getBoundingClientRect();
+              const nextTop = nextRect.top + window.scrollY;
+              const prevCenter = prevTop + prevRect.height / 2;
+              const nextCenter = nextTop + nextRect.height / 2;
+              const mid = (prevCenter + nextCenter) / 2;
+              targetTop = mid - window.innerHeight / 2;
+            }
+            window.scrollTo({ top: Math.max(targetTop, 0), behavior: "smooth" });
+          }, 0);
+        }
+      }
       const selectors = ["a.circle-link", "a.quiz-link", "a.mission-link"];
       const focusables = Array.from(document.querySelectorAll(selectors.join(",")));
       const isEditable = (el) => {

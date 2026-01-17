@@ -8,6 +8,8 @@ urlpatterns = [
     path("", views.missions_home, name="missions_home"),
     # alias used in some templates
     path("", views.missions_home, name="lessons_home"),
+    path("step/quiz/", views.step_quiz, name="step_quiz"),
+    path("step/complete/", views.step_complete, name="step_complete"),
 
     # ===== Mission 1 – Know your Toolbox =====
     path("mission-1/", views.mission_1, name="mission_1"),

@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="{% static 'css/icons.css' %}" />
   <link rel="stylesheet" href="{% static 'css/responsive-overrides.css' %}" />
-  <title>{{ lesson.title }} – Mission 2</title>
+  <title>{{ lesson.title }} - Mission 2</title>
   <style>
     body {
       margin: 0;
@@ -93,59 +93,1078 @@
       margin-top: -0.5rem;
       margin-bottom: 0.75rem;
     }
+
+    .card-engine {
+      background: #ffffff;
+      border-radius: 1.5rem;
+      box-shadow: 0 15px 40px rgba(15, 23, 42, 0.12);
+      padding: 1.5rem;
+    }
+
+    .card-engine__top {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .progress-bar {
+      flex: 1;
+      height: 10px;
+      border-radius: 999px;
+      background: #e5e7eb;
+      overflow: hidden;
+    }
+
+    .progress-bar__fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #22c55e, #16a34a);
+      transition: width 0.3s ease;
+    }
+
+    .xp-pill {
+      background: #ecfeff;
+      color: #0f766e;
+      border-radius: 999px;
+      padding: 0.35rem 0.9rem;
+      font-weight: 700;
+      font-size: 0.85rem;
+    }
+
+    .card-engine__card {
+      margin-top: 1.5rem;
+      background: #f8fafc;
+      border-radius: 1rem;
+      padding: 1.5rem;
+      border: 1px solid #e2e8f0;
+    }
+
+    .card-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.75rem;
+    }
+
+    .card-type {
+      font-size: 0.7rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #64748b;
+      font-weight: 700;
+    }
+
+    .card-index {
+      font-size: 0.8rem;
+      color: #64748b;
+    }
+
+    .card-media {
+      margin-top: 1rem;
+    }
+
+    .card-media img {
+      width: 100%;
+      max-height: 320px;
+      object-fit: contain;
+      border-radius: 12px;
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+    }
+
+    .card-media__frame {
+      position: relative;
+      padding-top: 56.25%;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #000;
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+    }
+
+    .card-media__frame iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    .hotspot {
+      margin-top: 1rem;
+    }
+
+    .hotspot__frame {
+      position: relative;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid #e5e7eb;
+      background: #ffffff;
+      cursor: crosshair;
+    }
+
+    .hotspot__image {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .hotspot__target {
+      position: absolute;
+      border: 3px solid #22c55e;
+      border-radius: 12px;
+      box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.2);
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      pointer-events: none;
+    }
+
+    .hotspot__target.visible {
+      opacity: 1;
+    }
+
+    .hotspot__hint {
+      margin-top: 0.65rem;
+      color: #475569;
+      font-weight: 600;
+    }
+
+    .card-action {
+      margin-top: 1rem;
+    }
+
+    .card-action--center {
+      display: flex;
+      justify-content: center;
+    }
+
+    .action-btn {
+      border: none;
+      border-radius: 999px;
+      padding: 0.6rem 1.4rem;
+      background: #2563eb;
+      color: #ffffff;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 8px 18px rgba(37, 99, 235, 0.35);
+    }
+
+    .action-btn:hover {
+      background: #1d4ed8;
+    }
+
+    .card-quiz {
+      margin-top: 1rem;
+    }
+
+    .quiz-question {
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+    }
+
+    .quiz-choice {
+      display: block;
+      width: 100%;
+      text-align: left;
+      padding: 0.75rem 1rem;
+      border-radius: 12px;
+      border: 1px solid #e5e7eb;
+      background: #ffffff;
+      margin-bottom: 0.6rem;
+      cursor: pointer;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .quiz-choice:hover {
+      border-color: #93c5fd;
+      box-shadow: 0 6px 18px rgba(37, 99, 235, 0.12);
+    }
+
+    .quiz-choice.correct {
+      border-color: #22c55e;
+      background: #ecfdf5;
+    }
+
+    .quiz-choice.wrong {
+      border-color: #ef4444;
+      background: #fef2f2;
+    }
+
+    .card-code {
+      margin-top: 1rem;
+    }
+
+    .code-block {
+      background: #0f172a;
+      color: #e2e8f0;
+      border-radius: 12px;
+      padding: 1rem;
+      font-family: "SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      font-size: 0.9rem;
+      line-height: 1.5;
+      white-space: pre-wrap;
+    }
+
+    .card-feedback {
+      margin-top: 0.75rem;
+      font-weight: 600;
+    }
+
+    .card-feedback.success {
+      color: #16a34a;
+    }
+
+    .card-feedback.error {
+      color: #dc2626;
+    }
+
+    .card-engine__nav {
+      margin-top: 1.25rem;
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .nav-btn {
+      flex: 1;
+      border-radius: 999px;
+      border: 1px solid #cbd5f5;
+      padding: 0.6rem 1rem;
+      background: #eef2ff;
+      color: #1d4ed8;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .nav-btn.primary {
+      background: #2563eb;
+      color: #ffffff;
+      border: none;
+    }
+
+    .nav-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .card-engine__empty {
+      text-align: center;
+      color: #4b5563;
+      font-weight: 600;
+      padding: 2rem;
+    }
+
+    .video-wrapper {
+      margin-top: 1rem;
+      position: relative;
+      padding-top: 56.25%;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+      background: #000;
+    }
+
+    .video-wrapper iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    .xp-toast {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      background: #16a34a;
+      color: #ffffff;
+      padding: 0.6rem 1rem;
+      border-radius: 999px;
+      font-weight: 700;
+      box-shadow: 0 12px 24px rgba(22, 163, 74, 0.25);
+      opacity: 0;
+      transform: translateY(-8px);
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      pointer-events: none;
+      z-index: 20;
+    }
+
+    .xp-toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
   </style>
 </head>
 <body>
   <div class="page">
+    <div class="xp-toast" id="xp-toast" role="status" aria-live="polite"></div>
+    {% if new_badge %}
+      <div class="badge-toast" role="status">
+        <span class="badge-toast__title">Badge unlocked!</span>
+        <span>{{ new_badge.name }}</span>
+      </div>
+    {% endif %}
+  <div class="breadcrumb">
+    <a href="{% url 'lessons:mission_2_intro' %}#lesson-{{ lesson.slug }}">&larr; Back to Mission 2 path</a>
+  </div>
 
-    <!-- Breadcrumb -->
-    <div class="breadcrumb">
-      <a href="{% url 'lessons:mission_2_intro' %}#lesson-{{ lesson.slug }}">← Back to Mission 2 path</a>
+  <div class="xp-summary" aria-label="Mission 2 XP progress">
+    <div class="xp-pill">XP <span id="xp-total-value">{{ xp_total|default:"0" }}</span></div>
+    <div class="xp-progress" role="progressbar" aria-valuenow="{{ xp_total|default:'0' }}" aria-valuemin="0" aria-valuemax="{{ xp_max|default:'0' }}">
+      <div class="xp-progress__fill" id="xp-progress-fill" style="width: {{ xp_percent|default:'0' }}%;"></div>
     </div>
+    <div class="xp-label"><span id="xp-total-label">{{ xp_total|default:"0" }}</span> / {{ xp_max|default:"0" }} XP</div>
+  </div>
 
-    <!-- Header -->
-    <header class="header">
-      <div
-        class="lesson-hero"
-        style="
-          --pos: {{ lesson.focus|default:'50% 50%' }};
-          --zoom: {{ lesson.zoom|default:'160%' }};
-        "
-        role="img"
-        aria-label="Arduino board focus image"
-      ></div>
-      <div class="lesson-hero__label">Zoomed view of the Arduino board for this lesson</div>
-      <h1>{{ lesson.title }}</h1>
-      <p>
-        Mission 2 – Pedro's Brain ·
-        Lesson {{ lesson.part }}
-      </p>
-    </header>
+    {% if step_meta and step_meta.content_mode == 'cards' %}
+      <header class="header">
+        <h1>{{ lesson.title }}</h1>
+        <p>Mission 2 - Lesson {{ lesson.part }}</p>
+      </header>
 
-    <!-- Main content placeholder -->
-    <section class="card">
-      <h2>Lesson content coming soon</h2>
-      <p>
-        This is where you’ll add the explanation, images, diagrams,
-        or embedded video for <strong>{{ lesson.title }}</strong>.
-      </p>
-      <p>
-        Later we can make different layouts depending on whether this is
-        a hardware lesson or an IDE/code lesson.
-      </p>
-    </section>
+      {% if cards_count == 0 %}
+        <div class="card-engine">
+          <div class="card-engine__empty">
+            Cards coming soon.
+          </div>
+          {% if step_meta %}
+            <div class="card-engine__nav">
+              <button class="nav-btn primary" id="cards-complete" type="button" {% if step_completed or not can_track_progress or step_locked %}disabled{% endif %}>
+                {% if step_completed %}Step Completed{% else %}Mark Step Complete{% endif %}
+              </button>
+            </div>
+            {% if step_locked %}
+              <div class="card-feedback error">Complete Meet the Arduino first to unlock this step.</div>
+            {% endif %}
+          {% endif %}
+        </div>
+        {% if step_meta %}
+          <script>
+            (function() {
+              const completeBtn = document.getElementById("cards-complete");
+              if (!completeBtn) return;
+              const stepId = {{ step.id|default:"null" }};
+              const canTrackProgress = {{ can_track_progress|yesno:"true,false" }};
+              const stepCompleteUrl = "{% url 'lessons:step_complete' %}";
 
+              function getCookie(name) {
+                if (!document.cookie) return null;
+                const token = document.cookie
+                  .split(";")
+                  .map((cookie) => cookie.trim())
+                  .find((cookie) => cookie.startsWith(name + "="));
+                return token ? decodeURIComponent(token.split("=")[1]) : null;
+              }
+
+              function showXpToast(xp) {
+                const toast = document.getElementById("xp-toast");
+                if (!toast) return;
+                toast.textContent = "+" + xp + " XP";
+                toast.classList.add("show");
+                setTimeout(() => {
+                  toast.classList.remove("show");
+                }, 1600);
+              }
+
+              function updateXpSummary(xpTotalValue, xpPercentValue) {
+                const totalEl = document.getElementById("xp-total-value");
+                const labelEl = document.getElementById("xp-total-label");
+                const progressEl = document.getElementById("xp-progress-fill");
+                if (totalEl) totalEl.textContent = xpTotalValue;
+                if (labelEl) labelEl.textContent = xpTotalValue;
+                if (progressEl) progressEl.style.width = xpPercentValue + "%";
+              }
+
+              completeBtn.addEventListener("click", () => {
+                if (!canTrackProgress || !stepId) return;
+                const csrfToken = getCookie("csrftoken");
+                if (!csrfToken) return;
+                const body = new URLSearchParams();
+                body.append("step_id", stepId);
+                fetch(stepCompleteUrl, {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    "X-CSRFToken": csrfToken,
+                  },
+                  body: body.toString(),
+                })
+                  .then((response) => (response.ok ? response.json() : null))
+                  .then((result) => {
+                    if (!result || !result.success) return;
+                    completeBtn.disabled = true;
+                    completeBtn.textContent = "Step Completed";
+                    if (result.xp_awarded) {
+                      showXpToast(result.xp_awarded);
+                    }
+                    if (typeof result.xp_total === "number" && typeof result.xp_percent === "number") {
+                      updateXpSummary(result.xp_total, result.xp_percent);
+                    }
+                  })
+                  .catch(() => {});
+              });
+            })();
+          </script>
+        {% endif %}
+      {% else %}
+        <div class="card-engine" id="card-engine">
+          <div class="card-engine__top">
+            <div class="progress-bar">
+              <div class="progress-bar__fill" id="progress-fill"></div>
+            </div>
+            <div class="xp-pill">XP <span id="xp-total">0</span></div>
+          </div>
+          <div class="card-engine__card" id="card-root">
+            <div class="card-meta">
+              <span class="card-type" id="card-type"></span>
+              <span class="card-index" id="card-index"></span>
+            </div>
+            <h2 id="card-title"></h2>
+            <p id="card-body"></p>
+            <div class="card-media" id="card-media"></div>
+            <div class="card-action" id="card-action"></div>
+            <div class="card-quiz" id="card-quiz"></div>
+            <div class="card-code" id="card-code"></div>
+            <div class="card-feedback" id="card-feedback"></div>
+          </div>
+          <div class="card-engine__nav" id="card-nav">
+            <button class="nav-btn" id="prev-btn" type="button">Back</button>
+            <button class="nav-btn primary" id="next-btn" type="button">Next</button>
+          </div>
+        </div>
+
+        <script>
+          const CARDS = JSON.parse('{{ cards_json|escapejs }}');
+          const XP_PER_CARD = 10;
+          const completed = new Array(CARDS.length).fill(false);
+          let currentIndex = 0;
+          let xpTotal = 0;
+          const canTrackProgress = {{ can_track_progress|yesno:"true,false" }};
+          const stepHasQuiz = {{ step_meta.has_quiz|yesno:"true,false,false" }};
+          const stepId = {{ step.id|default:"null" }};
+          const stepCompleteUrl = "{% url 'lessons:step_complete' %}";
+          const stepLocked = {{ step_locked|yesno:"true,false" }};
+          const stepLockMessage = "Complete Meet the Arduino first to unlock this step.";
+          let completionPosted = false;
+          let quizPosted = false;
+
+          const progressFill = document.getElementById("progress-fill");
+          const xpTotalEl = document.getElementById("xp-total");
+          const cardTypeEl = document.getElementById("card-type");
+          const cardIndexEl = document.getElementById("card-index");
+          const cardTitleEl = document.getElementById("card-title");
+          const cardBodyEl = document.getElementById("card-body");
+          const cardMediaEl = document.getElementById("card-media");
+          const cardActionEl = document.getElementById("card-action");
+          const cardQuizEl = document.getElementById("card-quiz");
+          const cardCodeEl = document.getElementById("card-code");
+          const cardFeedbackEl = document.getElementById("card-feedback");
+          const prevBtn = document.getElementById("prev-btn");
+          const nextBtn = document.getElementById("next-btn");
+          const navContainer = document.getElementById("card-nav");
+          const continueUrl = "{{ continue_url }}";
+
+          function getCookie(name) {
+            if (!document.cookie) return null;
+            const token = document.cookie
+              .split(";")
+              .map((cookie) => cookie.trim())
+              .find((cookie) => cookie.startsWith(name + "="));
+            return token ? decodeURIComponent(token.split("=")[1]) : null;
+          }
+
+          function postStepAction(action) {
+            if (!canTrackProgress) return;
+            if (action === "complete" && completionPosted) return;
+            const csrfToken = getCookie("csrftoken");
+            if (!csrfToken) return;
+
+            const body = new URLSearchParams();
+            body.append("action", action);
+
+            fetch(window.location.href, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+                "X-CSRFToken": csrfToken,
+              },
+              body: body.toString(),
+            }).catch(() => {});
+
+            if (action === "complete") {
+              completionPosted = true;
+            }
+          }
+
+          function postQuizAnswer(chosenAnswer) {
+            if (!chosenAnswer || quizPosted) {
+              return Promise.resolve({ correct: false, xp_awarded: 0 });
+            }
+            if (!canTrackProgress || !stepId) {
+              return Promise.resolve({ correct: true, xp_awarded: 0 });
+            }
+            const csrfToken = getCookie("csrftoken");
+            if (!csrfToken) {
+              return Promise.resolve({ correct: true, xp_awarded: 0 });
+            }
+
+            const body = new URLSearchParams();
+            body.append("step_id", stepId);
+            body.append("chosen_answer", chosenAnswer);
+
+            quizPosted = true;
+            return fetch("{% url 'lessons:step_quiz' %}", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+                "X-CSRFToken": csrfToken,
+              },
+              body: body.toString(),
+            })
+              .then((response) => (response.ok ? response.json() : { correct: false, xp_awarded: 0 }))
+              .catch(() => ({ correct: false, xp_awarded: 0 }));
+          }
+
+          function showXpToast(xp) {
+            const toast = document.getElementById("xp-toast");
+            if (!toast) return;
+            toast.textContent = "+" + xp + " XP";
+            toast.classList.add("show");
+            setTimeout(() => {
+              toast.classList.remove("show");
+            }, 1600);
+          }
+
+          function updateXpSummary(xpTotalValue, xpPercentValue) {
+            const totalEl = document.getElementById("xp-total-value");
+            const labelEl = document.getElementById("xp-total-label");
+            const progressEl = document.getElementById("xp-progress-fill");
+            if (totalEl) totalEl.textContent = xpTotalValue;
+            if (labelEl) labelEl.textContent = xpTotalValue;
+            if (progressEl) progressEl.style.width = xpPercentValue + "%";
+          }
+
+          function postStepComplete() {
+            if (!canTrackProgress || completionPosted || !stepId) {
+              return Promise.resolve({ success: false, xp_awarded: 0, xp_total: null, xp_percent: null });
+            }
+            const csrfToken = getCookie("csrftoken");
+            if (!csrfToken) {
+              return Promise.resolve({ success: false, xp_awarded: 0, xp_total: null, xp_percent: null });
+            }
+
+            const body = new URLSearchParams();
+            body.append("step_id", stepId);
+
+            completionPosted = true;
+            return fetch(stepCompleteUrl, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+                "X-CSRFToken": csrfToken,
+              },
+              body: body.toString(),
+            })
+              .then((response) => (response.ok ? response.json() : { success: false, xp_awarded: 0 }))
+              .catch(() => ({ success: false, xp_awarded: 0 }));
+          }
+
+          function setProgress() {
+            if (!CARDS.length) return;
+            const percent = ((currentIndex + 1) / CARDS.length) * 100;
+            progressFill.style.width = percent + "%";
+          }
+
+          function setXp() {
+            xpTotalEl.textContent = xpTotal;
+          }
+
+          function renderBody(text) {
+            clearElement(cardBodyEl);
+            if (!text) {
+              cardBodyEl.style.display = "none";
+              return;
+            }
+            cardBodyEl.style.display = "block";
+            const lines = String(text).split("\n");
+            lines.forEach((line, index) => {
+              if (index > 0) {
+                cardBodyEl.appendChild(document.createElement("br"));
+              }
+              cardBodyEl.appendChild(document.createTextNode(line));
+            });
+          }
+
+          function clearElement(el) {
+            while (el.firstChild) {
+              el.removeChild(el.firstChild);
+            }
+          }
+
+          function isGateCard(card) {
+            return card.card_type === "action" || (stepHasQuiz && card.card_type === "quiz");
+          }
+
+          function completeCard() {
+            if (completed[currentIndex]) return;
+            completed[currentIndex] = true;
+            xpTotal += XP_PER_CARD;
+            setXp();
+          }
+
+          function getHotspotBounds(card) {
+            if (!card || card.card_type !== "action") return null;
+            const payload = card.action_payload;
+            if (!payload || typeof payload !== "object") return null;
+            const bounds = payload.bounds;
+            if (!bounds || typeof bounds !== "object") return null;
+            const left = Number(bounds.left);
+            const top = Number(bounds.top);
+            const width = Number(bounds.width);
+            const height = Number(bounds.height);
+            if (![left, top, width, height].every((value) => Number.isFinite(value))) {
+              return null;
+            }
+            return { left, top, width, height };
+          }
+
+          function hasHotspotAction(card) {
+            return Boolean(getHotspotBounds(card) && card.image_url);
+          }
+
+          function renderMedia(card) {
+            if (hasHotspotAction(card)) {
+              return;
+            }
+            if (card.image_url) {
+              const img = document.createElement("img");
+              img.src = card.image_url;
+              img.alt = card.title || "Lesson image";
+              cardMediaEl.appendChild(img);
+              return;
+            }
+            if (card.youtube_id) {
+              const frame = document.createElement("div");
+              frame.className = "card-media__frame";
+              const iframe = document.createElement("iframe");
+              iframe.src = "https://www.youtube-nocookie.com/embed/" + card.youtube_id + "?rel=0&modestbranding=1&playsinline=1&origin=http%3A%2F%2F127.0.0.1%3A8000";
+              iframe.title = "Brainiacs video";
+              iframe.setAttribute("loading", "lazy");
+              iframe.setAttribute("allowfullscreen", "");
+              iframe.setAttribute("referrerpolicy", "strict-origin-when-cross-origin");
+              iframe.setAttribute("allow", "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share");
+              frame.appendChild(iframe);
+              cardMediaEl.appendChild(frame);
+            }
+          }
+
+          function renderHotspotAction(card) {
+            const bounds = getHotspotBounds(card);
+            if (!bounds || !card.image_url) return;
+            const payload = card.action_payload || {};
+
+            const wrapper = document.createElement("div");
+            wrapper.className = "hotspot";
+
+            const frame = document.createElement("div");
+            frame.className = "hotspot__frame";
+
+            const img = document.createElement("img");
+            img.src = card.image_url;
+            img.alt = payload.alt || card.title || "Arduino board";
+            img.className = "hotspot__image";
+            frame.appendChild(img);
+
+            const target = document.createElement("div");
+            target.className = "hotspot__target";
+            target.style.left = bounds.left + "%";
+            target.style.top = bounds.top + "%";
+            target.style.width = bounds.width + "%";
+            target.style.height = bounds.height + "%";
+            frame.appendChild(target);
+            if (completed[currentIndex]) {
+              target.classList.add("visible");
+            }
+
+            const hint = document.createElement("div");
+            hint.className = "hotspot__hint";
+            hint.textContent = payload.prompt || "Click the USB port on the board.";
+
+            frame.addEventListener("click", (event) => {
+              if (completed[currentIndex]) return;
+              const rect = frame.getBoundingClientRect();
+              if (!rect.width || !rect.height) return;
+              const x = ((event.clientX - rect.left) / rect.width) * 100;
+              const y = ((event.clientY - rect.top) / rect.height) * 100;
+              const inside =
+                x >= bounds.left &&
+                x <= bounds.left + bounds.width &&
+                y >= bounds.top &&
+                y <= bounds.top + bounds.height;
+              if (inside) {
+                target.classList.add("visible");
+                completeCard();
+                nextBtn.disabled = false;
+                cardFeedbackEl.textContent = payload.success_message || "That's the USB port!";
+                cardFeedbackEl.className = "card-feedback success";
+              } else {
+                cardFeedbackEl.textContent = payload.fail_message || "Not quite. Try again.";
+                cardFeedbackEl.className = "card-feedback error";
+              }
+            });
+
+            wrapper.appendChild(frame);
+            wrapper.appendChild(hint);
+            cardActionEl.appendChild(wrapper);
+          }
+
+          function renderAction(card) {
+            const label = card.action_label || "Complete the action";
+            const button = document.createElement("button");
+            button.type = "button";
+            button.className = "action-btn";
+            button.textContent = label;
+            button.addEventListener("click", () => {
+              completeCard();
+              nextBtn.disabled = false;
+              cardFeedbackEl.textContent = "Nice work!";
+              cardFeedbackEl.className = "card-feedback success";
+            });
+            cardActionEl.appendChild(button);
+          }
+
+          function renderQuiz(card) {
+            const question = document.createElement("div");
+            question.className = "quiz-question";
+            question.textContent = card.question || "Choose the correct answer.";
+            cardQuizEl.appendChild(question);
+
+            const choices = [
+              { key: "A", label: card.choice_a },
+              { key: "B", label: card.choice_b },
+              { key: "C", label: card.choice_c },
+            ].filter((choice) => choice.label);
+
+            const correct = (card.correct_choice || "").toUpperCase();
+
+            choices.forEach((choice) => {
+              const btn = document.createElement("button");
+              btn.type = "button";
+              btn.className = "quiz-choice";
+              btn.textContent = choice.key + ": " + choice.label;
+              btn.addEventListener("click", () => {
+                if (choice.key === correct) {
+                  btn.classList.add("correct");
+                  completeCard();
+                  nextBtn.disabled = false;
+                  cardFeedbackEl.textContent = card.explanation || "Correct!";
+                  cardFeedbackEl.className = "card-feedback success";
+                  postQuizAnswer(choice.key).then((result) => {
+                    if (result && result.correct) {
+                      nextBtn.disabled = false;
+                    }
+                  });
+                } else {
+                  btn.classList.add("wrong");
+                  cardFeedbackEl.textContent = "Not quite. Try again.";
+                  cardFeedbackEl.className = "card-feedback error";
+                }
+              });
+              cardQuizEl.appendChild(btn);
+            });
+          }
+
+          function renderCode(card) {
+            if (!card.starter_code) return;
+            const pre = document.createElement("pre");
+            pre.className = "code-block";
+            pre.textContent = card.starter_code;
+            cardCodeEl.appendChild(pre);
+          }
+
+          function handleContinue() {
+            if (stepLocked) {
+              cardFeedbackEl.textContent = stepLockMessage;
+              cardFeedbackEl.className = "card-feedback error";
+              return;
+            }
+            postStepComplete().then((result) => {
+              if (!result || result.success || !canTrackProgress) {
+                window.location.href = continueUrl;
+                return;
+              }
+              cardFeedbackEl.textContent = "Try again in a moment.";
+              cardFeedbackEl.className = "card-feedback error";
+            });
+          }
+
+          function renderReward(card) {
+            if (navContainer) {
+              navContainer.style.display = "none";
+            }
+            cardActionEl.classList.add("card-action--center");
+            const button = document.createElement("button");
+            button.type = "button";
+            button.className = "action-btn";
+            button.textContent = "Continue";
+            button.addEventListener("click", handleContinue);
+            cardActionEl.appendChild(button);
+          }
+
+          function renderCard() {
+            const card = CARDS[currentIndex];
+            cardTypeEl.textContent = card.card_type ? card.card_type.toUpperCase() : "";
+            cardIndexEl.textContent = "Card " + (currentIndex + 1) + " of " + CARDS.length;
+
+            cardTitleEl.textContent = card.title || "";
+            cardTitleEl.style.display = card.title ? "block" : "none";
+            renderBody(card.body || "");
+
+            clearElement(cardMediaEl);
+            clearElement(cardActionEl);
+            clearElement(cardQuizEl);
+            clearElement(cardCodeEl);
+            cardActionEl.className = "card-action";
+            cardFeedbackEl.textContent = "";
+            cardFeedbackEl.className = "card-feedback";
+
+            if (navContainer) {
+              navContainer.style.display = "flex";
+            }
+
+            renderMedia(card);
+
+            if (card.card_type === "action") {
+              if (hasHotspotAction(card)) {
+                renderHotspotAction(card);
+              } else {
+                renderAction(card);
+              }
+            }
+            if (card.card_type === "quiz" && stepHasQuiz) {
+              renderQuiz(card);
+            }
+            if (card.card_type === "code") {
+              renderCode(card);
+            }
+            if (card.card_type === "reward") {
+              renderReward(card);
+            }
+
+            prevBtn.disabled = currentIndex === 0;
+            nextBtn.textContent = currentIndex === CARDS.length - 1 ? "Finish" : "Next";
+
+            if (isGateCard(card)) {
+              nextBtn.disabled = !completed[currentIndex];
+            } else {
+              nextBtn.disabled = false;
+            }
+
+            setProgress();
+          }
+
+          function goNext() {
+            if (nextBtn.disabled) return;
+            const card = CARDS[currentIndex];
+            if (card.card_type === "reward") {
+              handleContinue();
+              return;
+            }
+            if (!completed[currentIndex] && !isGateCard(card)) {
+              completeCard();
+            }
+            if (currentIndex < CARDS.length - 1) {
+              currentIndex += 1;
+              renderCard();
+              return;
+            }
+            if (stepLocked) {
+              cardFeedbackEl.textContent = stepLockMessage;
+              cardFeedbackEl.className = "card-feedback error";
+              return;
+            }
+            postStepComplete().then((result) => {
+              if (result && result.success) {
+                if (result.xp_awarded) {
+                  showXpToast(result.xp_awarded);
+                }
+                if (typeof result.xp_total === "number" && typeof result.xp_percent === "number") {
+                  updateXpSummary(result.xp_total, result.xp_percent);
+                }
+                nextBtn.textContent = "Completed";
+                nextBtn.disabled = true;
+              }
+            });
+          }
+
+          function goPrev() {
+            if (currentIndex === 0) return;
+            currentIndex -= 1;
+            renderCard();
+          }
+
+          prevBtn.addEventListener("click", goPrev);
+          nextBtn.addEventListener("click", goNext);
+
+          if (CARDS.length) {
+            renderCard();
+          }
+
+          window.__lessonCardNav = {
+            next: goNext,
+            prev: goPrev,
+            hasCards: CARDS.length > 0,
+          };
+        </script>
+      {% endif %}
+    {% else %}
+      <header class="header">
+        <div
+          class="lesson-hero"
+          style="
+            --pos: {{ lesson.focus|default:'50% 50%' }};
+            --zoom: {{ lesson.zoom|default:'160%' }};
+          "
+          role="img"
+          aria-label="Arduino board focus image"
+        ></div>
+        <div class="lesson-hero__label">Zoomed view of the Arduino board for this lesson</div>
+        <h1>{{ lesson.title }}</h1>
+        <p>Mission 2 - Lesson {{ lesson.part }}</p>
+      </header>
+
+      {% if step_meta and step_meta.content_mode == "video" %}
+        <section class="card">
+          <h2>Watch the video</h2>
+          {% if step and step.youtube_id %}
+            <div class="video-wrapper">
+              <iframe
+                src="https://www.youtube-nocookie.com/embed/{{ step.youtube_id }}?rel=0&modestbranding=1&playsinline=1&origin=http%3A%2F%2F127.0.0.1%3A8000"
+                title="Brainiacs video"
+                loading="lazy"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerpolicy="strict-origin-when-cross-origin"
+                allowfullscreen
+              ></iframe>
+            </div>
+          {% else %}
+            <p>Video coming soon.</p>
+          {% endif %}
+          <button class="action-btn" id="video-complete" type="button" {% if step_completed or not can_track_progress %}disabled{% endif %}>
+            {% if step_completed %}Step Completed{% else %}Mark Step Complete{% endif %}
+          </button>
+          <div class="card-engine__nav">
+            <button class="nav-btn" id="video-back" type="button">Back</button>
+            <button class="nav-btn primary" id="video-next" type="button" {% if not step_completed %}disabled{% endif %}>Next</button>
+          </div>
+        </section>
+      {% else %}
+        <section class="card">
+          <h2>Lesson content coming soon</h2>
+          <p>
+            This is where you'll add the explanation, images, diagrams,
+            or embedded video for <strong>{{ lesson.title }}</strong>.
+          </p>
+          <p>
+            Later we can make different layouts depending on whether this is
+            a hardware lesson or an IDE/code lesson.
+          </p>
+        </section>
+      {% endif %}
+    {% endif %}
+
+    {% if step_meta and step_meta.content_mode == "video" %}
+      <script>
+        (function() {
+          const completeBtn = document.getElementById("video-complete");
+          const nextBtn = document.getElementById("video-next");
+          const backBtn = document.getElementById("video-back");
+          if (backBtn) {
+            backBtn.addEventListener("click", () => window.history.back());
+          }
+          if (!completeBtn || !nextBtn) return;
+          const stepId = {{ step.id|default:"null" }};
+          const canTrackProgress = {{ can_track_progress|yesno:"true,false" }};
+          const stepCompleteUrl = "{% url 'lessons:step_complete' %}";
+
+          function getCookie(name) {
+            if (!document.cookie) return null;
+            const token = document.cookie
+              .split(";")
+              .map((cookie) => cookie.trim())
+              .find((cookie) => cookie.startsWith(name + "="));
+            return token ? decodeURIComponent(token.split("=")[1]) : null;
+          }
+
+          function showXpToast(xp) {
+            const toast = document.getElementById("xp-toast");
+            if (!toast) return;
+            toast.textContent = "+" + xp + " XP";
+            toast.classList.add("show");
+            setTimeout(() => {
+              toast.classList.remove("show");
+            }, 1600);
+          }
+
+          function updateXpSummary(xpTotalValue, xpPercentValue) {
+            const totalEl = document.getElementById("xp-total-value");
+            const labelEl = document.getElementById("xp-total-label");
+            const progressEl = document.getElementById("xp-progress-fill");
+            if (totalEl) totalEl.textContent = xpTotalValue;
+            if (labelEl) labelEl.textContent = xpTotalValue;
+            if (progressEl) progressEl.style.width = xpPercentValue + "%";
+          }
+
+          completeBtn.addEventListener("click", () => {
+            if (!canTrackProgress || !stepId) return;
+            const csrfToken = getCookie("csrftoken");
+            if (!csrfToken) return;
+            const body = new URLSearchParams();
+            body.append("step_id", stepId);
+            fetch(stepCompleteUrl, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+                "X-CSRFToken": csrfToken,
+              },
+              body: body.toString(),
+            })
+              .then((response) => (response.ok ? response.json() : null))
+              .then((result) => {
+                if (!result || !result.success) return;
+                completeBtn.disabled = true;
+                completeBtn.textContent = "Step Completed";
+                nextBtn.disabled = false;
+                if (result.xp_awarded) {
+                  showXpToast(result.xp_awarded);
+                }
+                if (typeof result.xp_total === "number" && typeof result.xp_percent === "number") {
+                  updateXpSummary(result.xp_total, result.xp_percent);
+                }
+              })
+              .catch(() => {});
+          });
+
+          nextBtn.addEventListener("click", () => {
+            window.location.href = "{{ next_url }}";
+          });
+        })();
+      </script>
+    {% endif %}
   </div>
 
   <script>
     (function() {
-      const selectors = ["a.circle-link", "a.quiz-link", "a.mission-link"];
-      const focusables = Array.from(document.querySelectorAll(selectors.join(",")));
       const isEditable = (el) => {
         if (!el) return false;
         const tag = el.tagName;
         return tag === "INPUT" || tag === "TEXTAREA" || el.isContentEditable;
       };
+      const selectors = ["a.circle-link", "a.quiz-link", "a.mission-link", "a"];
+      const focusables = Array.from(document.querySelectorAll(selectors.join(",")));
+
       const focusAt = (index) => {
         if (!focusables.length) return;
         const count = focusables.length;
@@ -165,6 +1184,17 @@
           return;
         }
         if (event.key !== "ArrowDown" && event.key !== "ArrowUp") return;
+
+        if (window.__lessonCardNav && window.__lessonCardNav.hasCards) {
+          event.preventDefault();
+          if (event.key === "ArrowDown") {
+            window.__lessonCardNav.next();
+          } else {
+            window.__lessonCardNav.prev();
+          }
+          return;
+        }
+
         if (!focusables.length) return;
         event.preventDefault();
         const currentIndex = focusables.indexOf(document.activeElement);
