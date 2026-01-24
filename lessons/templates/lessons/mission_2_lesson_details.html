@@ -163,6 +163,16 @@
       margin-top: 1rem;
     }
 
+    .card-list {
+      margin: 0.6rem 0 0.9rem 1.2rem;
+      padding: 0;
+      color: #4b5563;
+    }
+
+    .card-list li {
+      margin: 0.25rem 0;
+    }
+
     .card-media img {
       width: 100%;
       max-height: 320px;
@@ -233,19 +243,65 @@
       cursor: pointer;
     }
 
-    .hotspot__spot:hover {
+    .hotspot__spot:not(.hotspot__spot--found):not(.hotspot__spot--wrong):hover {
       transform: translateY(-4px);
+      border-color: rgba(148, 163, 184, 0.9);
+      box-shadow: 0 12px 20px rgba(15, 23, 42, 0.12);
+    }
+
+    .hotspot__spot--clipped {
+      border: none;
+      box-shadow: none;
+    }
+
+    .hotspot__spot--clipped.hotspot__spot--found,
+    .hotspot__spot--clipped.hotspot__spot--wrong {
+      border: none;
+      box-shadow: none;
+    }
+
+    .hotspot__outline {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      opacity: 0;
+      color: transparent;
+      transition: opacity 0.2s ease;
+      overflow: visible;
+    }
+
+    .hotspot__spot--found .hotspot__outline {
+      opacity: 1;
+      color: #22c55e;
+    }
+
+    .hotspot__spot--wrong .hotspot__outline {
+      opacity: 1;
+      color: #ef4444;
+    }
+
+    .hotspot__outline--found {
+      opacity: 1;
+      color: #22c55e;
+    }
+
+    .hotspot__outline--wrong {
+      opacity: 1;
+      color: #ef4444;
     }
 
     .hotspot__spot--found {
-      border: 4px solid #22c55e;
-      box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.2);
+      border: none;
+      box-shadow: inset 0 0 0 4px #22c55e, 0 0 0 4px rgba(34, 197, 94, 0.2);
       background: transparent;
     }
 
     .hotspot__spot--wrong {
-      border: 4px solid #ef4444;
-      box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.2);
+      border: none;
+      box-shadow: inset 0 0 0 4px #ef4444, 0 0 0 4px rgba(239, 68, 68, 0.2);
       background: transparent;
     }
 
@@ -255,6 +311,26 @@
       font-weight: 600;
     }
 
+    .hotspot__sequence {
+      margin-bottom: 0.75rem;
+      padding: 0.75rem 1rem;
+      border-radius: 12px;
+      background: #f1f5f9;
+      border: 1px solid #e2e8f0;
+      color: #1f2937;
+    }
+
+    .hotspot__sequence-title {
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+    }
+
+    .hotspot__sequence-list {
+      margin: 0;
+      padding-left: 1.25rem;
+      color: #334155;
+    }
+
     .card-action {
       margin-top: 1rem;
     }
@@ -262,6 +338,75 @@
     .card-action--center {
       display: flex;
       justify-content: center;
+    }
+
+    .match-quiz {
+      margin-top: 1rem;
+    }
+
+    .match-columns {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+    }
+
+    .match-column {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 0.75rem;
+    }
+
+    .match-column h4 {
+      margin: 0 0 0.75rem 0;
+      font-size: 0.95rem;
+      color: #1f2937;
+    }
+
+    .match-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .match-item {
+      border: 1px solid #cbd5f5;
+      border-radius: 10px;
+      padding: 0.55rem 0.75rem;
+      background: #eef2ff;
+      color: #1d4ed8;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+      text-align: left;
+    }
+
+    .match-item:hover {
+      transform: translateY(-2px);
+      border-color: #93c5fd;
+      box-shadow: 0 8px 16px rgba(15, 23, 42, 0.12);
+    }
+
+    .match-item.selected {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+    }
+
+    .match-item.matched {
+      background: #f8fafc;
+      color: #64748b;
+    }
+
+    .match-item.correct {
+      border-color: #22c55e;
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .match-item.wrong {
+      border-color: #ef4444;
+      background: #fee2e2;
+      color: #991b1b;
     }
 
     .action-btn {
@@ -306,6 +451,11 @@
       box-shadow: 0 6px 18px rgba(37, 99, 235, 0.12);
     }
 
+    .quiz-choice.selected {
+      border-color: #94a3b8;
+      box-shadow: 0 0 0 2px rgba(148, 163, 184, 0.35);
+    }
+
     .quiz-choice.correct {
       border-color: #22c55e;
       background: #ecfdf5;
@@ -314,6 +464,12 @@
     .quiz-choice.wrong {
       border-color: #ef4444;
       background: #fef2f2;
+    }
+
+    .quiz-actions {
+      margin-top: 0.9rem;
+      display: flex;
+      justify-content: center;
     }
 
     .card-code {
@@ -456,8 +612,8 @@
           </div>
           {% if step_meta %}
             <div class="card-engine__nav">
-              <button class="nav-btn primary" id="cards-complete" type="button" {% if step_completed or not can_track_progress or step_locked %}disabled{% endif %}>
-                {% if step_completed %}Step Completed{% else %}Mark Step Complete{% endif %}
+              <button class="nav-btn primary" id="cards-complete" type="button" {% if not can_track_progress or step_locked %}disabled{% endif %}>
+                {% if step_completed %}Review +5 XP{% else %}Mark Step Complete{% endif %}
               </button>
             </div>
             {% if step_locked %}
@@ -473,6 +629,7 @@
               const stepId = {{ step.id|default:"null" }};
               const canTrackProgress = {{ can_track_progress|yesno:"true,false" }};
               const stepCompleteUrl = "{% url 'lessons:step_complete' %}";
+              const continueUrl = "{{ continue_url }}";
 
               function getCookie(name) {
                 if (!document.cookie) return null;
@@ -527,6 +684,9 @@
                     if (typeof result.xp_total === "number" && typeof result.xp_percent === "number") {
                       updateXpSummary(result.xp_total, result.xp_percent);
                     }
+                    if (continueUrl) {
+                      window.location.href = continueUrl;
+                    }
                   })
                   .catch(() => {});
               });
@@ -562,6 +722,24 @@
 
         <script>
           const CARDS = JSON.parse('{{ cards_json|escapejs }}');
+          const lessonTitle = "{{ lesson.title|escapejs }}";
+          const lessonSlug = "{{ lesson.slug|escapejs }}";
+          const rewardBody =
+            "You have completed " +
+            lessonTitle +
+            "." +
+            (lessonSlug === "arduino-board-quiz" ? "\n\nBadge unlocked: Arduino Explorer." : "");
+          const rewardCard = CARDS.find((card) => card.card_type === "reward");
+          if (rewardCard) {
+            rewardCard.title = "Congrats!";
+            rewardCard.body = rewardBody;
+          } else {
+            CARDS.push({
+              card_type: "reward",
+              title: "Congrats!",
+              body: rewardBody,
+            });
+          }
           const XP_PER_CARD = 10;
           const completed = new Array(CARDS.length).fill(false);
           let currentIndex = 0;
@@ -590,6 +768,14 @@
           const nextBtn = document.getElementById("next-btn");
           const navContainer = document.getElementById("card-nav");
           const continueUrl = "{{ continue_url }}";
+          const multiQuizState = {};
+
+          function getQuizKey(card, index) {
+            if (card && card.id) {
+              return "card-" + card.id;
+            }
+            return "index-" + index;
+          }
 
           function getCookie(name) {
             if (!document.cookie) return null;
@@ -714,11 +900,82 @@
             }
             cardBodyEl.style.display = "block";
             const lines = String(text).split("\n");
-            lines.forEach((line, index) => {
-              if (index > 0) {
-                cardBodyEl.appendChild(document.createElement("br"));
+            const blocks = [];
+            let currentList = null;
+
+            lines.forEach((line) => {
+              const trimmed = line.trim();
+              const isBlank = trimmed.length === 0;
+              const isBullet = trimmed.startsWith("- ");
+
+              if (isBlank) {
+                if (currentList) {
+                  blocks.push({ type: "list", items: currentList });
+                  currentList = null;
+                }
+                blocks.push({ type: "blank" });
+                return;
               }
-              cardBodyEl.appendChild(document.createTextNode(line));
+
+              if (isBullet) {
+                if (!currentList) {
+                  currentList = [];
+                }
+                currentList.push(trimmed.slice(2));
+                return;
+              }
+
+              if (currentList) {
+                blocks.push({ type: "list", items: currentList });
+                currentList = null;
+              }
+              blocks.push({ type: "line", text: line });
+            });
+
+            if (currentList) {
+              blocks.push({ type: "list", items: currentList });
+            }
+
+            let needsBreak = false;
+            blocks.forEach((block) => {
+              if (block.type === "blank") {
+                if (needsBreak) {
+                  cardBodyEl.appendChild(document.createElement("br"));
+                }
+                needsBreak = true;
+                return;
+              }
+
+              if (block.type === "line") {
+                if (needsBreak) {
+                  cardBodyEl.appendChild(document.createElement("br"));
+                }
+                const hintMatch = block.text.match(/^\s*(?:\*{1,2})?HINT(?:\*{1,2})?\s*:\s*(.*)$/i);
+                if (hintMatch) {
+                  const strong = document.createElement("strong");
+                  strong.textContent = "HINT:";
+                  cardBodyEl.appendChild(strong);
+                  if (hintMatch[1]) {
+                    cardBodyEl.appendChild(document.createTextNode(" " + hintMatch[1]));
+                  }
+                } else {
+                  cardBodyEl.appendChild(document.createTextNode(block.text));
+                }
+                needsBreak = true;
+                return;
+              }
+
+              if (block.type === "list") {
+                const list = document.createElement("ul");
+                list.className = "card-list";
+                block.items.forEach((item) => {
+                  const li = document.createElement("li");
+                  li.textContent = item;
+                  list.appendChild(li);
+                });
+                cardBodyEl.appendChild(list);
+                needsBreak = true;
+              }
             });
           }
 
@@ -726,6 +983,17 @@
             while (el.firstChild) {
               el.removeChild(el.firstChild);
             }
+          }
+
+          function shuffleArray(values) {
+            const array = values.slice();
+            for (let i = array.length - 1; i > 0; i -= 1) {
+              const j = Math.floor(Math.random() * (i + 1));
+              const temp = array[i];
+              array[i] = array[j];
+              array[j] = temp;
+            }
+            return array;
           }
 
           function isGateCard(card) {
@@ -751,6 +1019,20 @@
             return { left, top, width, height };
           }
 
+          function parsePolygon(points) {
+            if (!Array.isArray(points) || points.length < 3) return null;
+            const normalized = points
+              .map((point) => {
+                if (!point || typeof point !== "object") return null;
+                const x = Number(point.x);
+                const y = Number(point.y);
+                if (!Number.isFinite(x) || !Number.isFinite(y)) return null;
+                return { x, y };
+              })
+              .filter(Boolean);
+            return normalized.length >= 3 ? normalized : null;
+          }
+
           function getHotspotItems(card) {
             if (!card || card.card_type !== "action") return [];
             const payload = card.action_payload;
@@ -762,12 +1044,14 @@
               if (!item || typeof item !== "object") return;
               const bounds = parseBounds(item.bounds);
               if (!bounds) return;
+              const polygon = parsePolygon(item.polygon);
               const id = String(item.id || item.target || item.label || "hotspot-" + index);
               normalized.push({
                 id: id,
                 label: item.label || "",
                 isTarget: Boolean(item.is_target),
                 bounds: bounds,
+                polygon: polygon,
               });
             });
 
@@ -819,15 +1103,83 @@
             if (!items.length || !card.image_url) return;
             const payload = card.action_payload || {};
             const overlayImage = payload.overlay_image || card.image_url;
+            const labelOverrides = {
+              "reset-button": "Reset Button",
+              "digital-pins": "Digital Pins",
+              "l-led": "Pin 13 LED",
+              "tx-rx": "TX/RX LEDs",
+              "on-led": "Power LED",
+              "microcontroller": "Microcontroller",
+              "analog-in": "Analog Pins",
+              "power-header": "Power Pins",
+              "usb-port": "USB Port",
+              "barrel-jack": "Power Jack",
+              "power-jack": "Power Jack",
+            };
+            const itemLabels = new Map(
+              items.map((item) => [item.id, item.label || labelOverrides[item.id] || item.id])
+            );
+
+            const sequencePoolRaw = Array.isArray(payload.sequence_pool) ? payload.sequence_pool : [];
+            const hasItemId = (id) => items.some((item) => item.id === id);
+            const normalizeSequenceId = (id) => {
+              if (hasItemId(id)) return id;
+              if (id === "power-jack" && hasItemId("barrel-jack")) return "barrel-jack";
+              if (id === "barrel-jack" && hasItemId("power-jack")) return "power-jack";
+              return "";
+            };
+            const sequencePool = sequencePoolRaw
+              .map((id) => normalizeSequenceId(String(id)))
+              .filter((id) => id);
+            const sequenceMode = sequencePool.length > 0;
+            let sequenceOrder = [];
+            let sequenceIndex = 0;
+            let sequenceList = null;
+            let renderSequenceList = null;
+
+            function getLabel(id) {
+              return itemLabels.get(id) || labelOverrides[id] || id;
+            }
+
+            if (sequenceMode) {
+              sequenceOrder = shuffleArray(Array.from(new Set(sequencePool)));
+            }
+
             const targetIdRaw = payload.target ? String(payload.target) : "";
             let targetId = targetIdRaw;
-            if (!items.some((item) => item.id === targetId)) {
-              const explicit = items.find((item) => item.isTarget);
-              targetId = explicit ? explicit.id : items[0].id;
+            if (!sequenceMode) {
+              if (!items.some((item) => item.id === targetId)) {
+                const explicit = items.find((item) => item.isTarget);
+                targetId = explicit ? explicit.id : items[0].id;
+              }
             }
 
             const wrapper = document.createElement("div");
             wrapper.className = "hotspot";
+
+            if (sequenceMode) {
+              const sequencePanel = document.createElement("div");
+              sequencePanel.className = "hotspot__sequence";
+              const sequenceTitle = document.createElement("div");
+              sequenceTitle.className = "hotspot__sequence-title";
+              sequenceTitle.textContent = payload.sequence_title || "Click in this order:";
+              sequenceList = document.createElement("ol");
+              sequenceList.className = "hotspot__sequence-list";
+              renderSequenceList = () => {
+                while (sequenceList.firstChild) {
+                  sequenceList.removeChild(sequenceList.firstChild);
+                }
+                sequenceOrder.forEach((id) => {
+                  const item = document.createElement("li");
+                  item.textContent = getLabel(id);
+                  sequenceList.appendChild(item);
+                });
+              };
+              renderSequenceList();
+              sequencePanel.appendChild(sequenceTitle);
+              sequencePanel.appendChild(sequenceList);
+              wrapper.appendChild(sequencePanel);
+            }
 
             const frame = document.createElement("div");
             frame.className = "hotspot__frame";
@@ -849,12 +1201,42 @@
                 const topPx = (frameHeight * item.bounds.top) / 100;
                 const spot = item.el;
                 if (!spot) return;
-                spot.style.backgroundImage = "url('" + overlayImage + "')";
-                spot.style.backgroundRepeat = "no-repeat";
-                spot.style.backgroundSize = frameWidth + "px " + frameHeight + "px";
-                spot.style.backgroundPosition = -leftPx + "px " + -topPx + "px";
+                spot.style.backgroundImage = "url('" + overlayImage + "'), url('" + card.image_url + "')";
+                spot.style.backgroundRepeat = "no-repeat, no-repeat";
+                spot.style.backgroundSize =
+                  frameWidth + "px " + frameHeight + "px, " + frameWidth + "px " + frameHeight + "px";
+                spot.style.backgroundPosition =
+                  -leftPx + "px " + -topPx + "px, " + -leftPx + "px " + -topPx + "px";
               });
             }
+
+            const resetSequenceMarks = () => {
+              items.forEach((item) => {
+                if (item.el) {
+                  item.el.classList.remove("hotspot__spot--found");
+                }
+                if (item.outline) {
+                  item.outline.classList.remove("hotspot__outline--found");
+                }
+              });
+            };
+
+            const flashWrong = (item) => {
+              if (item.el) {
+                item.el.classList.add("hotspot__spot--wrong");
+              }
+              if (item.outline) {
+                item.outline.classList.add("hotspot__outline--wrong");
+              }
+              window.setTimeout(() => {
+                if (item.el) {
+                  item.el.classList.remove("hotspot__spot--wrong");
+                }
+                if (item.outline) {
+                  item.outline.classList.remove("hotspot__outline--wrong");
+                }
+              }, 700);
+            };
 
             items.forEach((item) => {
               const spot = document.createElement("div");
@@ -863,44 +1245,145 @@
               spot.style.top = item.bounds.top + "%";
               spot.style.width = item.bounds.width + "%";
               spot.style.height = item.bounds.height + "%";
+              if (item.polygon) {
+                const points = item.polygon
+                  .map((point) => point.x + "% " + point.y + "%")
+                  .join(", ");
+                spot.style.clipPath = "polygon(" + points + ")";
+                spot.style.webkitClipPath = "polygon(" + points + ")";
+                spot.classList.add("hotspot__spot--clipped");
+                const outline = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                outline.setAttribute("viewBox", "0 0 100 100");
+                outline.setAttribute("preserveAspectRatio", "none");
+                outline.classList.add("hotspot__outline");
+                outline.style.left = item.bounds.left + "%";
+                outline.style.top = item.bounds.top + "%";
+                outline.style.width = item.bounds.width + "%";
+                outline.style.height = item.bounds.height + "%";
+                const outlinePoly = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+                const outlinePoints = item.polygon.map((point) => point.x + "," + point.y).join(" ");
+                outlinePoly.setAttribute("points", outlinePoints);
+                outlinePoly.setAttribute("fill", "none");
+                outlinePoly.setAttribute("stroke", "currentColor");
+                outlinePoly.setAttribute("stroke-width", "4");
+                outlinePoly.setAttribute("vector-effect", "non-scaling-stroke");
+                outlinePoly.setAttribute("stroke-linejoin", "round");
+                outlinePoly.setAttribute("stroke-linecap", "round");
+                outline.appendChild(outlinePoly);
+                item.outline = outline;
+              }
               item.el = spot;
               if (item.label) {
                 spot.setAttribute("title", item.label);
               }
-              const isTarget = item.id === targetId;
+              const isTarget = !sequenceMode && item.id === targetId;
               if (completed[currentIndex] && isTarget) {
                 spot.classList.add("hotspot__spot--found");
+                if (item.outline) {
+                  item.outline.classList.add("hotspot__outline--found");
+                }
               }
               spot.addEventListener("click", (event) => {
                 event.stopPropagation();
                 if (completed[currentIndex]) return;
+                if (sequenceMode) {
+                  const expectedId = sequenceOrder[sequenceIndex];
+                  if (item.id === expectedId) {
+                    spot.classList.add("hotspot__spot--found");
+                    if (item.outline) {
+                      item.outline.classList.add("hotspot__outline--found");
+                    }
+                    sequenceIndex += 1;
+                    if (sequenceIndex >= sequenceOrder.length) {
+                      completeCard();
+                      nextBtn.disabled = false;
+                      cardFeedbackEl.textContent =
+                        payload.success_message || "Great job! You completed the sequence.";
+                      cardFeedbackEl.className = "card-feedback success";
+                    } else {
+                      cardFeedbackEl.textContent = "Nice! Next: " + getLabel(sequenceOrder[sequenceIndex]);
+                      cardFeedbackEl.className = "card-feedback";
+                    }
+                  } else {
+                    flashWrong(item);
+                    resetSequenceMarks();
+                    sequenceIndex = 0;
+                    sequenceOrder = shuffleArray(Array.from(new Set(sequencePool)));
+                    if (renderSequenceList) {
+                      renderSequenceList();
+                    }
+                    cardFeedbackEl.textContent =
+                      payload.fail_message || "Not quite. Try the sequence again from the start.";
+                    cardFeedbackEl.className = "card-feedback error";
+                  }
+                  return;
+                }
                 if (isTarget) {
                   spot.classList.add("hotspot__spot--found");
+                  if (item.outline) {
+                    item.outline.classList.add("hotspot__outline--found");
+                  }
                   completeCard();
                   nextBtn.disabled = false;
                   cardFeedbackEl.textContent = payload.success_message || "You found the USB port!";
                   cardFeedbackEl.className = "card-feedback success";
                 } else {
                   spot.classList.add("hotspot__spot--wrong");
-                  cardFeedbackEl.textContent = payload.fail_message || "Not quite. Try again.";
+                  if (item.outline) {
+                    item.outline.classList.add("hotspot__outline--wrong");
+                  }
+                  const failMessage = payload.fail_message || "Not quite, try again.";
+                  const feedbackById = {
+                    "reset-button": "This is the Reset Button.",
+                    "digital-pins": "These are the Digital Pins.",
+                    "l-led": "This is the Pin 13 LED.",
+                    "tx-rx": "These are the TX/RX LEDs.",
+                    "on-led": "This is the Power LED.",
+                    "microcontroller": "This is the Microcontroller.",
+                    "analog-in": "These are the Analog Pins.",
+                    "power-header": "These are the Power Pins.",
+                    "usb-port": "This is the USB Port.",
+                    "barrel-jack": "This is the Power Jack.",
+                    "power-jack": "This is the Power Jack.",
+                  };
+                  const customFeedback = feedbackById[item.id] || "";
+                  const labelText = !customFeedback && item.label ? " This is " + item.label + "." : "";
+                  cardFeedbackEl.textContent = failMessage + " " + (customFeedback || labelText).trim();
                   cardFeedbackEl.className = "card-feedback error";
                 }
               });
               frame.appendChild(spot);
+              if (item.outline) {
+                frame.appendChild(item.outline);
+              }
             });
 
             frame.addEventListener("click", () => {
               if (completed[currentIndex]) return;
+              if (sequenceMode) {
+                cardFeedbackEl.textContent =
+                  payload.fail_message || "Not quite. Try the sequence again from the start.";
+                cardFeedbackEl.className = "card-feedback error";
+                resetSequenceMarks();
+                sequenceIndex = 0;
+                sequenceOrder = shuffleArray(Array.from(new Set(sequencePool)));
+                if (renderSequenceList) {
+                  renderSequenceList();
+                }
+                return;
+              }
               cardFeedbackEl.textContent = payload.fail_message || "Not quite. Try again.";
               cardFeedbackEl.className = "card-feedback error";
             });
 
-            const hint = document.createElement("div");
-            hint.className = "hotspot__hint";
-            hint.textContent = payload.prompt || "Click the USB port on the board.";
-
             wrapper.appendChild(frame);
-            wrapper.appendChild(hint);
+            const hintText = (payload.prompt || "").trim();
+            if (hintText && payload.show_prompt === true) {
+              const hint = document.createElement("div");
+              hint.className = "hotspot__hint";
+              hint.textContent = hintText;
+              wrapper.appendChild(hint);
+            }
             cardActionEl.appendChild(wrapper);
 
             img.addEventListener("load", updateSpotBackgrounds);
@@ -939,39 +1422,477 @@
             question.textContent = card.question || "Choose the correct answer.";
             cardQuizEl.appendChild(question);
 
-            const choices = [
-              { key: "A", label: card.choice_a },
-              { key: "B", label: card.choice_b },
-              { key: "C", label: card.choice_c },
-            ].filter((choice) => choice.label);
+            const payload = card.action_payload || {};
+            const isMultiSelect = Boolean(payload.multi_select);
+            const payloadOptions = Array.isArray(payload.options) ? payload.options : [];
 
-            const correct = (card.correct_choice || "").toUpperCase();
+            const choices = payloadOptions.length
+              ? payloadOptions.map((choice) => ({
+                  key: String(choice.key || "").toUpperCase(),
+                  label: choice.label || "",
+                  isCorrect: Boolean(choice.is_correct),
+                }))
+              : [
+                  { key: "A", label: card.choice_a },
+                  { key: "B", label: card.choice_b },
+                  { key: "C", label: card.choice_c },
+                ]
+                  .filter((choice) => choice.label)
+                  .map((choice) => ({ ...choice, isCorrect: false }));
+
+            if (!choices.length) {
+              return;
+            }
+
+            if (!isMultiSelect) {
+              const correct = (card.correct_choice || "").toUpperCase();
+              const correctFeedback = payload.correct_feedback || card.explanation || "Correct!";
+              const incorrectFeedback = payload.incorrect_feedback || "Not quite. Try again.";
+              const lockOnSelect = Boolean(payload.lock_on_select);
+              let selectedKey = "";
+              let quizLocked = false;
+              let quizPosted = false;
+              const choiceButtons = new Map();
+
+              const setChoiceDisabled = (disabled, exceptKey = "") => {
+                choiceButtons.forEach((btn, key) => {
+                  if (exceptKey && key === exceptKey) {
+                    btn.disabled = false;
+                    return;
+                  }
+                  btn.disabled = disabled;
+                });
+              };
+
+              const resetSingleFeedback = () => {
+                cardFeedbackEl.textContent = "";
+                cardFeedbackEl.className = "card-feedback";
+                choiceButtons.forEach((btn) => btn.classList.remove("correct", "wrong"));
+              };
+
+              const applySingleValidation = () => {
+                if (!selectedKey) return;
+                choiceButtons.forEach((btn, key) => {
+                  btn.classList.remove("correct", "wrong");
+                  if (key === correct) {
+                    btn.classList.add("correct");
+                  } else if (key === selectedKey) {
+                    btn.classList.add("wrong");
+                  }
+                });
+                if (selectedKey === correct) {
+                  quizLocked = true;
+                  completeCard();
+                  nextBtn.disabled = false;
+                  cardFeedbackEl.textContent = correctFeedback;
+                  cardFeedbackEl.className = "card-feedback success";
+                  if (!quizPosted) {
+                    quizPosted = true;
+                    postQuizAnswer(selectedKey).then((result) => {
+                      if (result && result.correct) {
+                        nextBtn.disabled = false;
+                      }
+                    });
+                  }
+                  if (lockOnSelect) {
+                    setChoiceDisabled(true);
+                  }
+                } else {
+                  cardFeedbackEl.textContent = incorrectFeedback;
+                  cardFeedbackEl.className = "card-feedback error";
+                  setChoiceDisabled(false);
+                }
+              };
+
+              choices.forEach((choice) => {
+                const btn = document.createElement("button");
+                btn.type = "button";
+                btn.className = "quiz-choice";
+                btn.textContent = choice.key + ": " + choice.label;
+                choiceButtons.set(choice.key, btn);
+                btn.addEventListener("click", () => {
+                  if (quizLocked) return;
+                  if (selectedKey === choice.key) {
+                    selectedKey = "";
+                    choiceButtons.forEach((otherBtn) => {
+                      otherBtn.classList.remove("selected", "correct", "wrong");
+                      otherBtn.disabled = false;
+                    });
+                  } else {
+                    selectedKey = choice.key;
+                    choiceButtons.forEach((otherBtn, key) => {
+                      otherBtn.classList.toggle("selected", key === selectedKey);
+                      otherBtn.classList.remove("correct", "wrong");
+                      otherBtn.disabled = false;
+                    });
+                  }
+                  resetSingleFeedback();
+                });
+                cardQuizEl.appendChild(btn);
+              });
+
+              const actions = document.createElement("div");
+              actions.className = "quiz-actions";
+              const okBtn = document.createElement("button");
+              okBtn.type = "button";
+              okBtn.className = "action-btn";
+              okBtn.textContent = "OK";
+              okBtn.addEventListener("click", () => {
+                if (quizLocked) return;
+                if (!selectedKey) {
+                  cardFeedbackEl.textContent = "Select an answer.";
+                  cardFeedbackEl.className = "card-feedback error";
+                  return;
+                }
+                applySingleValidation();
+              });
+              actions.appendChild(okBtn);
+              cardQuizEl.appendChild(actions);
+              return;
+            }
+
+            const quizKey = getQuizKey(card, currentIndex);
+            const state = multiQuizState[quizKey] || {
+              selectedKeys: new Set(),
+              validated: false,
+              correct: false,
+              quizPosted: false,
+            };
+            const selectedKeys = state.selectedKeys;
+            const correctKeys = new Set(
+              choices.filter((choice) => choice.isCorrect).map((choice) => choice.key)
+            );
+            const choiceButtons = new Map();
+
+            const clearValidationStyles = () => {
+              choices.forEach((choice) => {
+                const btn = choiceButtons.get(choice.key);
+                if (btn) {
+                  btn.classList.remove("correct", "wrong");
+                }
+              });
+            };
+
+            const applyValidation = (result) => {
+              clearValidationStyles();
+              choices.forEach((choice) => {
+                const btn = choiceButtons.get(choice.key);
+                if (!btn) return;
+                if (choice.isCorrect) {
+                  btn.classList.add("correct");
+                } else if (selectedKeys.has(choice.key)) {
+                  btn.classList.add("wrong");
+                }
+              });
+              if (result.status === "correct") {
+                cardFeedbackEl.textContent =
+                  payload.correct_feedback || "Correct! You selected all the right answers.";
+                cardFeedbackEl.className = "card-feedback success";
+              } else if (result.status === "partial") {
+                cardFeedbackEl.textContent =
+                  payload.partial_feedback || "Almost there. There is more than one correct answer.";
+                cardFeedbackEl.className = "card-feedback error";
+              } else {
+                cardFeedbackEl.textContent =
+                  payload.incorrect_feedback || "Not quite. Some selections are incorrect.";
+                cardFeedbackEl.className = "card-feedback error";
+              }
+            };
+
+            const validateSelection = () => {
+              let hasWrong = false;
+              let correctSelected = 0;
+              selectedKeys.forEach((key) => {
+                if (!correctKeys.has(key)) {
+                  hasWrong = true;
+                } else {
+                  correctSelected += 1;
+                }
+              });
+              const allCorrectSelected =
+                !hasWrong && correctSelected === correctKeys.size && selectedKeys.size === correctKeys.size;
+              if (allCorrectSelected) {
+                return { status: "correct" };
+              }
+              if (!hasWrong && correctSelected > 0) {
+                return { status: "partial" };
+              }
+              return { status: "incorrect" };
+            };
 
             choices.forEach((choice) => {
               const btn = document.createElement("button");
               btn.type = "button";
               btn.className = "quiz-choice";
               btn.textContent = choice.key + ": " + choice.label;
+              choiceButtons.set(choice.key, btn);
+              if (selectedKeys.has(choice.key)) {
+                btn.classList.add("selected");
+              }
               btn.addEventListener("click", () => {
-                if (choice.key === correct) {
-                  btn.classList.add("correct");
-                  completeCard();
-                  nextBtn.disabled = false;
-                  cardFeedbackEl.textContent = card.explanation || "Correct!";
-                  cardFeedbackEl.className = "card-feedback success";
-                  postQuizAnswer(choice.key).then((result) => {
-                    if (result && result.correct) {
-                      nextBtn.disabled = false;
-                    }
-                  });
+                if (state.correct) return;
+                if (selectedKeys.has(choice.key)) {
+                  selectedKeys.delete(choice.key);
+                  btn.classList.remove("selected");
                 } else {
-                  btn.classList.add("wrong");
-                  cardFeedbackEl.textContent = "Not quite. Try again.";
-                  cardFeedbackEl.className = "card-feedback error";
+                  selectedKeys.add(choice.key);
+                  btn.classList.add("selected");
+                }
+                if (state.validated) {
+                  state.validated = false;
+                  state.correct = false;
+                  clearValidationStyles();
+                  cardFeedbackEl.textContent = "";
+                  cardFeedbackEl.className = "card-feedback";
                 }
               });
               cardQuizEl.appendChild(btn);
             });
+
+            const actions = document.createElement("div");
+            actions.className = "quiz-actions";
+            const okBtn = document.createElement("button");
+            okBtn.type = "button";
+            okBtn.className = "action-btn";
+            okBtn.textContent = "OK";
+            okBtn.addEventListener("click", () => {
+              if (state.correct) return;
+              const result = state.validate();
+              if (result.status !== "correct") {
+                return;
+              }
+              if (!completed[currentIndex]) {
+                completeCard();
+              }
+              if (!state.quizPosted) {
+                state.quizPosted = true;
+                postQuizAnswer(Array.from(state.selectedKeys).join(",")).then((quizResult) => {
+                  if (quizResult && quizResult.correct) {
+                    nextBtn.disabled = false;
+                  }
+                });
+              }
+              nextBtn.disabled = false;
+            });
+            actions.appendChild(okBtn);
+            cardQuizEl.appendChild(actions);
+
+            state.choiceButtons = choiceButtons;
+            state.choices = choices;
+            state.correctKeys = correctKeys;
+            state.validate = () => {
+              if (selectedKeys.size === 0) {
+                cardFeedbackEl.textContent = "Select at least one answer.";
+                cardFeedbackEl.className = "card-feedback error";
+                return { status: "incorrect" };
+              }
+              const result = validateSelection();
+              state.validated = true;
+              state.correct = result.status === "correct";
+              applyValidation(result);
+              return result;
+            };
+            multiQuizState[quizKey] = state;
+
+            if (state.validated) {
+              const result = state.correct ? { status: "correct" } : validateSelection();
+              applyValidation(result);
+            }
+          }
+
+          function renderMatchQuiz(card) {
+            cardQuizEl.innerHTML = "";
+            if (!stepHasQuiz) {
+              return;
+            }
+            const payload = card.action_payload || {};
+            const pairsRaw = Array.isArray(payload.pairs) ? payload.pairs : [];
+            const pairs = pairsRaw
+              .map((pair, index) => ({
+                id: String(pair.id || "pair-" + index),
+                feature: pair.feature || pair.label || "",
+                functionText: pair.function || pair.description || "",
+              }))
+              .filter((pair) => pair.feature && pair.functionText);
+
+            if (!pairs.length) {
+              return;
+            }
+
+            const features = shuffleArray(pairs.map((pair) => ({ id: pair.id, text: pair.feature })));
+            const functions = shuffleArray(pairs.map((pair) => ({ id: pair.id, text: pair.functionText })));
+            const matches = new Map();
+            const leftButtons = new Map();
+            const rightButtons = new Map();
+            let selectedLeft = "";
+            let quizLocked = false;
+            let quizPosted = false;
+
+            const matchWrap = document.createElement("div");
+            matchWrap.className = "match-quiz";
+
+            const columns = document.createElement("div");
+            columns.className = "match-columns";
+
+            const leftCol = document.createElement("div");
+            leftCol.className = "match-column";
+            const leftTitle = document.createElement("h4");
+            leftTitle.textContent = "Features";
+            leftCol.appendChild(leftTitle);
+            const leftList = document.createElement("div");
+            leftList.className = "match-list";
+            leftCol.appendChild(leftList);
+
+            const rightCol = document.createElement("div");
+            rightCol.className = "match-column";
+            const rightTitle = document.createElement("h4");
+            rightTitle.textContent = "Functions";
+            rightCol.appendChild(rightTitle);
+            const rightList = document.createElement("div");
+            rightList.className = "match-list";
+            rightCol.appendChild(rightList);
+
+            columns.appendChild(leftCol);
+            columns.appendChild(rightCol);
+            matchWrap.appendChild(columns);
+
+            const resetSelections = () => {
+              leftButtons.forEach((btn) => btn.classList.remove("selected"));
+              selectedLeft = "";
+            };
+
+            const unpairLeft = (leftId) => {
+              if (!matches.has(leftId)) return;
+              const rightId = matches.get(leftId);
+              matches.delete(leftId);
+              const leftBtn = leftButtons.get(leftId);
+              const rightBtn = rightButtons.get(rightId);
+              if (leftBtn) leftBtn.classList.remove("matched", "correct", "wrong");
+              if (rightBtn) rightBtn.classList.remove("matched", "correct", "wrong");
+            };
+
+            const unpairRight = (rightId) => {
+              let leftToRemove = "";
+              matches.forEach((value, key) => {
+                if (value === rightId) {
+                  leftToRemove = key;
+                }
+              });
+              if (leftToRemove) {
+                unpairLeft(leftToRemove);
+              }
+            };
+
+            const applyPair = (leftId, rightId) => {
+              unpairLeft(leftId);
+              unpairRight(rightId);
+              matches.set(leftId, rightId);
+              const leftBtn = leftButtons.get(leftId);
+              const rightBtn = rightButtons.get(rightId);
+              if (leftBtn) leftBtn.classList.add("matched");
+              if (rightBtn) rightBtn.classList.add("matched");
+            };
+
+            features.forEach((item) => {
+              const btn = document.createElement("button");
+              btn.type = "button";
+              btn.className = "match-item";
+              btn.textContent = item.text;
+              leftButtons.set(item.id, btn);
+              btn.addEventListener("click", () => {
+                if (quizLocked) return;
+                if (selectedLeft === item.id) {
+                  resetSelections();
+                  return;
+                }
+                if (matches.has(item.id)) {
+                  unpairLeft(item.id);
+                }
+                resetSelections();
+                selectedLeft = item.id;
+                btn.classList.add("selected");
+                cardFeedbackEl.textContent = "Now choose the matching function.";
+                cardFeedbackEl.className = "card-feedback";
+              });
+              leftList.appendChild(btn);
+            });
+
+            functions.forEach((item) => {
+              const btn = document.createElement("button");
+              btn.type = "button";
+              btn.className = "match-item";
+              btn.textContent = item.text;
+              rightButtons.set(item.id, btn);
+              btn.addEventListener("click", () => {
+                if (quizLocked) return;
+                if (!selectedLeft) {
+                  cardFeedbackEl.textContent = "Pick a feature first.";
+                  cardFeedbackEl.className = "card-feedback error";
+                  return;
+                }
+                applyPair(selectedLeft, item.id);
+                resetSelections();
+                cardFeedbackEl.textContent = "";
+                cardFeedbackEl.className = "card-feedback";
+              });
+              rightList.appendChild(btn);
+            });
+
+            const actions = document.createElement("div");
+            actions.className = "quiz-actions";
+            const okBtn = document.createElement("button");
+            okBtn.type = "button";
+            okBtn.className = "action-btn";
+            okBtn.textContent = "OK";
+            okBtn.addEventListener("click", () => {
+              if (quizLocked) return;
+              if (matches.size !== pairs.length) {
+                cardFeedbackEl.textContent = "Match every feature before checking.";
+                cardFeedbackEl.className = "card-feedback error";
+                return;
+              }
+              let allCorrect = true;
+              pairs.forEach((pair) => {
+                const leftBtn = leftButtons.get(pair.id);
+                const rightBtn = rightButtons.get(pair.id);
+                const matchId = matches.get(pair.id);
+                const isCorrect = matchId === pair.id;
+                if (!isCorrect) {
+                  allCorrect = false;
+                }
+                if (leftBtn) {
+                  leftBtn.classList.toggle("correct", isCorrect);
+                  leftBtn.classList.toggle("wrong", !isCorrect);
+                }
+                if (rightBtn) {
+                  rightBtn.classList.toggle("correct", isCorrect);
+                  rightBtn.classList.toggle("wrong", !isCorrect);
+                }
+              });
+              if (allCorrect) {
+                quizLocked = true;
+                completeCard();
+                nextBtn.disabled = false;
+                cardFeedbackEl.textContent =
+                  payload.correct_feedback || "Correct! You matched every feature.";
+                cardFeedbackEl.className = "card-feedback success";
+                if (!quizPosted) {
+                  quizPosted = true;
+                  postQuizAnswer("MATCH").then((result) => {
+                    if (result && result.correct) {
+                      nextBtn.disabled = false;
+                    }
+                  });
+                }
+              } else {
+                cardFeedbackEl.textContent =
+                  payload.incorrect_feedback || "Not quite. Check the matches and try again.";
+                cardFeedbackEl.className = "card-feedback error";
+              }
+            });
+            actions.appendChild(okBtn);
+            matchWrap.appendChild(actions);
+            cardQuizEl.appendChild(matchWrap);
           }
 
           function renderCode(card) {
@@ -1003,6 +1924,10 @@
               navContainer.style.display = "none";
             }
             cardActionEl.classList.add("card-action--center");
+            const baseBody = card.body || ("You have completed " + lessonTitle + ".");
+            const earnedXp = xpTotal;
+            const rewardBody = baseBody + "\n\nYou earned " + earnedXp + " XP in this lesson.";
+            renderBody(rewardBody);
             const button = document.createElement("button");
             button.type = "button";
             button.className = "action-btn";
@@ -1042,7 +1967,12 @@
               }
             }
             if (card.card_type === "quiz" && stepHasQuiz) {
-              renderQuiz(card);
+              const payload = card.action_payload || {};
+              if (payload.quiz_type === "match") {
+                renderMatchQuiz(card);
+              } else {
+                renderQuiz(card);
+              }
             }
             if (card.card_type === "code") {
               renderCode(card);
@@ -1091,8 +2021,9 @@
                 if (typeof result.xp_total === "number" && typeof result.xp_percent === "number") {
                   updateXpSummary(result.xp_total, result.xp_percent);
                 }
-                nextBtn.textContent = "Completed";
-                nextBtn.disabled = true;
+                if (continueUrl) {
+                  window.location.href = continueUrl;
+                }
               }
             });
           }
@@ -1151,8 +2082,8 @@
           {% else %}
             <p>Video coming soon.</p>
           {% endif %}
-          <button class="action-btn" id="video-complete" type="button" {% if step_completed or not can_track_progress %}disabled{% endif %}>
-            {% if step_completed %}Step Completed{% else %}Mark Step Complete{% endif %}
+          <button class="action-btn" id="video-complete" type="button" {% if not can_track_progress %}disabled{% endif %}>
+            {% if step_completed %}Review +5 XP{% else %}Mark Step Complete{% endif %}
           </button>
           <div class="card-engine__nav">
             <button class="nav-btn" id="video-back" type="button">Back</button>
@@ -1180,6 +2111,7 @@
           const completeBtn = document.getElementById("video-complete");
           const nextBtn = document.getElementById("video-next");
           const backBtn = document.getElementById("video-back");
+          const continueUrl = "{{ continue_url }}";
           if (backBtn) {
             backBtn.addEventListener("click", () => window.history.back());
           }
@@ -1247,7 +2179,7 @@
           });
 
           nextBtn.addEventListener("click", () => {
-            window.location.href = "{{ next_url }}";
+            window.location.href = continueUrl;
           });
         })();
       </script>

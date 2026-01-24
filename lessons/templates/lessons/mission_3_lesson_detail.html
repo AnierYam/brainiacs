@@ -233,8 +233,8 @@
         <button class="nav-btn" id="video-back" type="button">Back</button>
         <button class="nav-btn primary" id="video-next" type="button" {% if not step_completed %}disabled{% endif %}>Next</button>
       </div>
-      <button class="action-btn" id="video-complete" type="button" {% if step_completed or not can_track_progress %}disabled{% endif %}>
-        {% if step_completed %}Step Completed{% else %}Mark Step Complete{% endif %}
+      <button class="action-btn" id="video-complete" type="button" {% if not can_track_progress %}disabled{% endif %}>
+        {% if step_completed %}Review +5 XP{% else %}Mark Step Complete{% endif %}
       </button>
     {% elif step and step.content_mode == 'cards' %}
       <div class="card-engine" id="card-engine" data-step-id="{{ step.id }}">
@@ -261,7 +261,7 @@
       {% endif %}
 
       {% if step and step.has_quiz %}
-        <div class="quiz-block" data-step-id="{{ step.id }}" data-next-url="{{ next_url }}">
+        <div class="quiz-block" data-step-id="{{ step.id }}" data-next-url="{{ continue_url }}">
           <h3>Quick Check</h3>
           <p class="quiz-question">What is the best next move after this step?</p>
           <button class="quiz-choice" type="button" data-answer="A">A. Test your build and follow the guide.</button>
@@ -372,7 +372,7 @@
         if (completionPosted) return;
         completionPosted = true;
         if (!window.__postStepComplete) return;
-        window.__postStepComplete().then((result) => {
+        return window.__postStepComplete().then((result) => {
           if (result && result.success) {
             if (result.xp_awarded) {
               window.__showXpToast(result.xp_awarded);
@@ -396,9 +396,14 @@
           renderCard();
           return;
         }
-        completeStep();
-        nextBtn.textContent = "Completed";
-        nextBtn.disabled = true;
+        const completion = completeStep();
+        if (completion && typeof completion.then === "function") {
+          completion.then(() => {
+            window.location.href = "{{ continue_url }}";
+          });
+          return;
+        }
+        window.location.href = "{{ continue_url }}";
       });
 
       renderCard();
@@ -430,7 +435,7 @@
       });
 
       nextBtn.addEventListener("click", () => {
-        window.location.href = "{{ next_url }}";
+        window.location.href = "{{ continue_url }}";
       });
     })();
 

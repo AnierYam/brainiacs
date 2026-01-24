@@ -151,17 +151,21 @@ class Command(BaseCommand):
         order += 1
         add_step("usb-input", "\U0001F50C USB Power Port", parent, order, "cards", True, 10, quiz_xp)
         order += 1
-        add_step("power-input", "\u26A1 Power Plug Spot", parent, order, "cards", True, 10, quiz_xp)
+        add_step("power-input", "\u26A1 Power Connector", parent, order, "cards", True, 10, quiz_xp)
+        order += 1
+        add_step("microcontroller", "\U0001F9E0 The Brain Chip", parent, order, "cards", True, 10, quiz_xp)
         order += 1
         add_step("reset-button", "\U0001F504 Reset Button", parent, order, "cards", True, 10, quiz_xp)
         order += 1
-        add_step("microcontroller", "\U0001F9E0 Tiny Brain Chip", parent, order, "cards", True, 10, quiz_xp)
+        add_step("checkpoint-quiz", "\U0001F9E9 Checkpoint Quiz", parent, order, "cards", True, 10, quiz_xp)
         order += 1
         add_step("power-output", "\U0001F50B Power Out Pins", parent, order, "cards", True, 10, quiz_xp)
         order += 1
         add_step("digital-vs-analog", "\U0001F313 Digital vs Analog", parent, order, "cards", True, 10, quiz_xp)
         order += 1
         add_step("arduino-pinout", "\U0001F4CD Pin Map", parent, order, "cards", True, 10, quiz_xp)
+        order += 1
+        add_step("arduino-board-quiz", "\U0001F4DD Arduino Board Quiz", parent, order, "cards", True, 10, quiz_xp)
 
         # Mission 2 - Breadboard (cards, emoji titles)
         order = 1

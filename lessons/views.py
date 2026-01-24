@@ -4,6 +4,7 @@ from urllib.parse import urlencode
 
 from django.contrib.auth import get_user_model
 from django.db.models import Sum
+from django.utils import timezone
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
@@ -13,10 +14,12 @@ from lessons.models import (
     BadgeAward as LessonBadgeAward,
     Step as LessonStep,
     StepCompletion as LessonStepCompletion,
+    StepReview as LessonStepReview,
 )
 from levels.models import Lesson as LevelLesson
 
 DEMO_MODE = True
+REVIEW_XP = 5
 
 
 def _get_demo_user():
@@ -97,6 +100,8 @@ def _get_xp_stats(prefix, user):
         or 0
     )
     xp_percent = int((xp_total / xp_max) * 100) if xp_max else 0
+    if xp_percent > 100:
+        xp_percent = 100
     return xp_total, xp_max, xp_percent
 
 
@@ -130,6 +135,26 @@ def _record_quiz_pass(step, user):
         completion.save(update_fields=["quiz_passed", "xp_earned"])
         return True
     return False
+
+
+def _record_step_review(step, user):
+    if not step or not user:
+        return 0
+    completion = _completion_qs(user).filter(step=step, is_complete=True).first()
+    if not completion:
+        return 0
+    reviewed_on = timezone.localdate()
+    review, created = LessonStepReview.objects.get_or_create(
+        step=step,
+        user=user,
+        reviewed_on=reviewed_on,
+        defaults={"xp_awarded": REVIEW_XP},
+    )
+    if not created:
+        return 0
+    completion.xp_earned += REVIEW_XP
+    completion.save(update_fields=["xp_earned"])
+    return REVIEW_XP
 
 
 def _award_badges(user):
@@ -217,6 +242,8 @@ def step_complete(request):
     if changed:
         _award_badges(user)
     xp_awarded = step.xp_on_complete if changed else 0
+    if not changed:
+        xp_awarded = _record_step_review(step, user)
     prefix = _mission_prefix(step.parent_slug)
     xp_total, xp_max, xp_percent = _get_xp_stats(prefix, user)
     return JsonResponse(
@@ -395,8 +422,12 @@ def mission_1_lesson_detail(request, slug):
         action = request.POST.get("action", "complete")
         if action == "quiz":
             changed = _record_quiz_pass(step, user)
+            if not changed:
+                _record_step_review(step, user)
         else:
             changed = _ensure_step_completion(step, user)
+            if not changed:
+                _record_step_review(step, user)
         if changed:
             new_badges = _award_badges(user)
     step_completed = (
@@ -433,8 +464,12 @@ def mission_1_part_1_quiz(request):
         action = request.POST.get("action", "complete")
         if action == "quiz":
             changed = _record_quiz_pass(step, user)
+            if not changed:
+                _record_step_review(step, user)
         else:
             changed = _ensure_step_completion(step, user)
+            if not changed:
+                _record_step_review(step, user)
         if changed:
             new_badges = _award_badges(user)
     step_completed = (
@@ -470,8 +505,12 @@ def mission_1_part_2_quiz(request):
         action = request.POST.get("action", "complete")
         if action == "quiz":
             changed = _record_quiz_pass(step, user)
+            if not changed:
+                _record_step_review(step, user)
         else:
             changed = _ensure_step_completion(step, user)
+            if not changed:
+                _record_step_review(step, user)
         if changed:
             new_badges = _award_badges(user)
     step_completed = (
@@ -540,6 +579,13 @@ MISSION2_LESSON1 = [
         "zoom": "300%",
     },
     {
+        "slug": "microcontroller",
+        "title": "The Brain Chip",
+        "part": 1,
+        "focus": "55% 52%",
+        "zoom": "170%",
+    },
+    {
         "slug": "reset-button",
         "title": "Reset Button",
         "part": 1,
@@ -547,11 +593,11 @@ MISSION2_LESSON1 = [
         "zoom": "260%",
     },
     {
-        "slug": "microcontroller",
-        "title": "The Microcontroller",
+        "slug": "checkpoint-quiz",
+        "title": "Checkpoint Quiz",
         "part": 1,
-        "focus": "55% 52%",
-        "zoom": "170%",
+        "focus": "50% 50%",
+        "zoom": "160%",
     },
     {
         "slug": "power-output",
@@ -572,6 +618,13 @@ MISSION2_LESSON1 = [
         "title": "The Arduino Pinout",
         "part": 1,
         "focus": "60% 48%",
+        "zoom": "160%",
+    },
+    {
+        "slug": "arduino-board-quiz",
+        "title": "Arduino Board Quiz",
+        "part": 1,
+        "focus": "50% 50%",
         "zoom": "160%",
     },
 ]
@@ -694,6 +747,12 @@ def mission_2_lesson_detail(request, slug):
     card_lesson_titles = {
         "introduction": "Mission 2 Lesson 1",
         "usb-input": "Mission 2 Lesson 1 - USB Power Port",
+        "power-input": "Mission 2 Lesson 1 - Power Connector",
+        "microcontroller": "Mission 2 Lesson 1 - The Brain Chip",
+        "reset-button": "Mission 2 Lesson 1 - Reset Button",
+        "checkpoint-quiz": "Mission 2 Lesson 1 - Checkpoint Quiz",
+        "arduino-pinout": "Mission 2 Lesson 1 - Arduino Pinout",
+        "arduino-board-quiz": "Mission 2 Lesson 1 - Arduino Board Quiz",
         "upload-your-first-code": "Mission 2 Lesson 3 - Upload Your First Code",
     }
     card_lesson_title = card_lesson_titles.get(lesson.get("slug"))
@@ -730,8 +789,12 @@ def mission_2_lesson_detail(request, slug):
         action = request.POST.get("action", "complete")
         if action == "quiz":
             changed = _record_quiz_pass(step, user)
+            if not changed:
+                _record_step_review(step, user)
         else:
             changed = _ensure_step_completion(step, user)
+            if not changed:
+                _record_step_review(step, user)
         if changed:
             new_badges = _award_badges(user)
     step_completed = (
@@ -908,38 +971,53 @@ def mission_3_lesson_detail(request, system_slug, lesson_slug):
     else:
         video_id = MISSION3_VIDEO_IDS.get(lesson_slug, "")
 
-    next_url = reverse("lessons:mission_3_page")
-    system_index = next(
-        (index for index, item in enumerate(MISSION3_SYSTEMS) if item["slug"] == system_slug),
-        None,
+    ordered_lessons = []
+    for system_item in MISSION3_SYSTEMS:
+        for lesson_item in system_item.get("lessons", []):
+            ordered_lessons.append(
+                {
+                    "system": system_item["slug"],
+                    "lesson": lesson_item["slug"],
+                }
+            )
+
+    current_index = next(
+        (
+            index
+            for index, item in enumerate(ordered_lessons)
+            if item["system"] == system_slug and item["lesson"] == lesson_slug
+        ),
+        -1,
     )
-    if system_index is not None:
-        lesson_slugs = [item["slug"] for item in system["lessons"]]
-        try:
-            lesson_index = lesson_slugs.index(lesson_slug)
-        except ValueError:
-            lesson_index = -1
-        if lesson_index >= 0:
-            if lesson_index + 1 < len(lesson_slugs):
-                next_url = reverse(
-                    "lessons:mission_3_lesson_detail",
-                    args=[system_slug, lesson_slugs[lesson_index + 1]],
-                )
-            elif system_index + 1 < len(MISSION3_SYSTEMS):
-                next_system = MISSION3_SYSTEMS[system_index + 1]
-                if next_system.get("lessons"):
-                    next_url = reverse(
-                        "lessons:mission_3_lesson_detail",
-                        args=[next_system["slug"], next_system["lessons"][0]["slug"]],
-                    )
+    current_item = ordered_lessons[current_index] if current_index >= 0 else None
+    next_item = (
+        ordered_lessons[current_index + 1]
+        if current_index >= 0 and current_index + 1 < len(ordered_lessons)
+        else None
+    )
+
+    continue_url = reverse("lessons:mission_3_page")
+    params = {}
+    if current_item:
+        params["focus_prev"] = f"{current_item['system']}-{current_item['lesson']}"
+    if next_item:
+        params["focus_next"] = f"{next_item['system']}-{next_item['lesson']}"
+    if params:
+        continue_url = f"{continue_url}?{urlencode(params)}"
+    if next_item:
+        continue_url = f"{continue_url}#lesson-{next_item['system']}-{next_item['lesson']}"
 
     new_badges = []
     if request.method == "POST" and step:
         action = request.POST.get("action", "complete")
         if action == "quiz":
             changed = _record_quiz_pass(step, user)
+            if not changed:
+                _record_step_review(step, user)
         else:
             changed = _ensure_step_completion(step, user)
+            if not changed:
+                _record_step_review(step, user)
         if changed:
             new_badges = _award_badges(user)
     step_completed = (
@@ -961,7 +1039,7 @@ def mission_3_lesson_detail(request, system_slug, lesson_slug):
             "xp_max": xp_max,
             "xp_percent": xp_percent,
             "can_track_progress": bool(user),
-            "next_url": next_url,
+            "continue_url": continue_url,
             "video_id": video_id,
         },
     )
@@ -1032,25 +1110,36 @@ def mission_4_step_detail(request, slug):
     else:
         video_id = MISSION4_VIDEO_IDS.get(slug, "")
 
-    next_url = reverse("lessons:mission_4_page")
     step_slugs = [item["slug"] for item in MISSION4_STEPS]
     try:
         step_index = step_slugs.index(slug)
     except ValueError:
         step_index = -1
-    if step_index >= 0 and step_index + 1 < len(step_slugs):
-        next_url = reverse(
-            "lessons:mission_4_step_detail",
-            args=[step_slugs[step_index + 1]],
-        )
+    current_slug = step_slugs[step_index] if step_index >= 0 else ""
+    next_slug = step_slugs[step_index + 1] if step_index >= 0 and step_index + 1 < len(step_slugs) else ""
+
+    continue_url = reverse("lessons:mission_4_page")
+    params = {}
+    if current_slug:
+        params["focus_prev"] = current_slug
+    if next_slug:
+        params["focus_next"] = next_slug
+    if params:
+        continue_url = f"{continue_url}?{urlencode(params)}"
+    if next_slug:
+        continue_url = f"{continue_url}#lesson-{next_slug}"
 
     new_badges = []
     if request.method == "POST" and step_meta:
         action = request.POST.get("action", "complete")
         if action == "quiz":
             changed = _record_quiz_pass(step_meta, user)
+            if not changed:
+                _record_step_review(step_meta, user)
         else:
             changed = _ensure_step_completion(step_meta, user)
+            if not changed:
+                _record_step_review(step_meta, user)
         if changed:
             new_badges = _award_badges(user)
     step_completed = (
@@ -1074,7 +1163,7 @@ def mission_4_step_detail(request, slug):
             "xp_max": xp_max,
             "xp_percent": xp_percent,
             "can_track_progress": bool(user),
-            "next_url": next_url,
+            "continue_url": continue_url,
             "video_id": video_id,
         },
     )

@@ -57,6 +57,19 @@ class StepCompletion(models.Model):
         return f"{self.user} - {self.step}"
 
 
+class StepReview(models.Model):
+    step = models.ForeignKey(Step, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    reviewed_on = models.DateField(auto_now_add=True)
+    xp_awarded = models.PositiveIntegerField(default=5)
+
+    class Meta:
+        unique_together = ("step", "user", "reviewed_on")
+
+    def __str__(self):
+        return f"{self.user} reviewed {self.step} on {self.reviewed_on}"
+
+
 class BadgeAward(models.Model):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,

@@ -388,6 +388,29 @@
 
   <script>
     (function() {
+      const params = new URLSearchParams(window.location.search);
+      const focusPrev = params.get("focus_prev");
+      const focusNext = params.get("focus_next");
+      if (focusPrev) {
+        const prevEl = document.getElementById("lesson-" + focusPrev);
+        const nextEl = focusNext ? document.getElementById("lesson-" + focusNext) : null;
+        if (prevEl) {
+          window.setTimeout(() => {
+            const prevRect = prevEl.getBoundingClientRect();
+            const prevTop = prevRect.top + window.scrollY;
+            let targetTop = prevTop - 40;
+            if (nextEl) {
+              const nextRect = nextEl.getBoundingClientRect();
+              const nextTop = nextRect.top + window.scrollY;
+              const prevCenter = prevTop + prevRect.height / 2;
+              const nextCenter = nextTop + nextRect.height / 2;
+              const mid = (prevCenter + nextCenter) / 2;
+              targetTop = mid - window.innerHeight / 2;
+            }
+            window.scrollTo({ top: Math.max(targetTop, 0), behavior: "smooth" });
+          }, 0);
+        }
+      }
       const selectors = ["a.circle-link", "a.quiz-link", "a.mission-link"];
       const focusables = Array.from(document.querySelectorAll(selectors.join(",")));
       const isEditable = (el) => {

@@ -247,8 +247,8 @@
         <form method="post" class="actions">
           {% csrf_token %}
           <input type="hidden" name="action" value="complete" />
-          <button class="btn btn-primary" type="submit" {% if step_completed or not can_track_progress %}disabled{% endif %}>
-            {% if step_completed %}Step Completed{% else %}Mark Step Complete{% endif %}
+          <button class="btn btn-primary" type="submit" {% if not can_track_progress %}disabled{% endif %}>
+            {% if step_completed %}Review +5 XP{% else %}Mark Step Complete{% endif %}
           </button>
         </form>
       {% endif %}
