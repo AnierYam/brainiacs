@@ -15,22 +15,22 @@ def update_checkpoint_quiz_card2_match(apps, schema_editor):
             {
                 "id": "usb-port",
                 "feature": "USB Port",
-                "function": "Lets you upload code and power the Arduino.",
+                "function": "Sends code and power to the Arduino",
             },
             {
                 "id": "power-jack",
                 "feature": "Power Connector",
-                "function": "Lets you power the Arduino with an external adapter.",
+                "function": "Powers the Arduino",
             },
             {
                 "id": "microcontroller",
                 "feature": "Microcontroller",
-                "function": "Runs the code and controls what the board does.",
+                "function": "Runs the code",
             },
             {
                 "id": "reset-button",
                 "feature": "Reset Button",
-                "function": "Restarts the program from the beginning.",
+                "function": "Restarts the program",
             },
         ],
         "correct_feedback": "Correct! ✅ You matched every feature with its function.",
