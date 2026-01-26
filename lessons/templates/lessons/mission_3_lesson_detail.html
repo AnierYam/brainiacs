@@ -217,7 +217,7 @@
       {% if video_id %}
         <div class="video-wrapper">
           <iframe
-            src="https://www.youtube-nocookie.com/embed/{{ video_id }}?rel=0&modestbranding=1&playsinline=1&origin=http%3A%2F%2F127.0.0.1%3A8000"
+            src="https://www.youtube-nocookie.com/embed/{{ video_id }}?rel=0&modestbranding=1&playsinline=1"
             title="Brainiacs video"
             loading="lazy"
             frameborder="0"
@@ -231,7 +231,7 @@
       {% endif %}
       <div class="card-engine__nav">
         <button class="nav-btn" id="video-back" type="button">Back</button>
-        <button class="nav-btn primary" id="video-next" type="button" {% if not step_completed %}disabled{% endif %}>Next</button>
+        <button class="nav-btn primary" id="video-next" type="button" {% if not step_completed and can_track_progress %}disabled{% endif %}>Next</button>
       </div>
       <button class="action-btn" id="video-complete" type="button" {% if not can_track_progress %}disabled{% endif %}>
         {% if step_completed %}Review +5 XP{% else %}Mark Step Complete{% endif %}
@@ -278,6 +278,8 @@
     </div>
 
   <script>
+    const continueUrl = "{{ continue_url|escapejs }}";
+
     (function() {
       const stepId = {{ step.id|default:"null" }};
       const canTrackProgress = {{ can_track_progress|yesno:"true,false" }};
@@ -399,11 +401,11 @@
         const completion = completeStep();
         if (completion && typeof completion.then === "function") {
           completion.then(() => {
-            window.location.href = "{{ continue_url }}";
+            window.location.href = continueUrl;
           });
           return;
         }
-        window.location.href = "{{ continue_url }}";
+        window.location.href = continueUrl;
       });
 
       renderCard();
@@ -435,7 +437,7 @@
       });
 
       nextBtn.addEventListener("click", () => {
-        window.location.href = "{{ continue_url }}";
+        window.location.href = continueUrl;
       });
     })();
 

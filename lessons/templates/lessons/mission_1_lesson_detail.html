@@ -120,6 +120,7 @@
       padding: 0.7rem 1.4rem;
       border-radius: 999px;
       border: none;
+      text-decoration: none;
       cursor: pointer;
       font-size: 0.9rem;
       font-weight: 600;
@@ -204,9 +205,9 @@
 
     <div class="xp-summary" aria-label="Mission 1 XP progress">
       <div class="xp-pill">XP {{ xp_total|default:"0" }}</div>
-      <div class="xp-progress" role="progressbar" aria-valuenow="{{ xp_total|default:'0' }}" aria-valuemin="0" aria-valuemax="{{ xp_max|default:'0' }}">
-        <div class="xp-progress__fill" style="width: {{ xp_percent|default:'0' }}%;"></div>
-      </div>
+    <div class="xp-progress" role="progressbar" aria-valuenow="{{ xp_total|default:'0' }}" aria-valuemin="0" aria-valuemax="{{ xp_max|default:'0' }}">
+      <div class="xp-progress__fill" data-xp-percent="{{ xp_percent|default:'0' }}" style="width: 0%;"></div>
+    </div>
       <div class="xp-label">{{ xp_total|default:"0" }} / {{ xp_max|default:"0" }} XP</div>
     </div>
 
@@ -232,14 +233,12 @@
       {% endif %}
 
       <div class="actions">
-        <button class="btn btn-primary">
+        <button class="btn btn-primary" type="button">
           {% if step_meta and step_meta.has_quiz %}Start Quiz{% else %}Start Lesson{% endif %}
         </button>
 
-        <a href="{% url 'lessons:mission_1' %}#{{ lesson.anchor_id }}">
-          <button type="button" class="btn btn-secondary">
-            Back to Mission 1 Path
-          </button>
+        <a class="btn btn-secondary" href="{% url 'lessons:mission_1' %}#{{ lesson.anchor_id }}">
+          Back to Mission 1 Path
         </a>
       </div>
 
@@ -267,6 +266,11 @@
 
   <script>
     (function() {
+      const xpFill = document.querySelector(".xp-progress__fill");
+      if (xpFill) {
+        const percent = parseFloat(xpFill.dataset.xpPercent || "0");
+        xpFill.style.width = percent + "%";
+      }
       const selectors = ["a.circle-link", "a.quiz-link", "a.mission-link"];
       const focusables = Array.from(document.querySelectorAll(selectors.join(",")));
       const isEditable = (el) => {

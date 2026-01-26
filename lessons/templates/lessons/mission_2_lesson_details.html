@@ -579,7 +579,17 @@
   </style>
 </head>
 <body>
-  <div class="page">
+  <div
+    class="page"
+    id="lesson-page"
+    data-can-track-progress="{{ can_track_progress|yesno:'true,false' }}"
+    data-step-has-quiz="{{ step_meta.has_quiz|yesno:'true,false,false' }}"
+    data-step-id="{{ step.id|default:'' }}"
+    data-step-locked="{{ step_locked|yesno:'true,false' }}"
+    data-step-complete-url="{% url 'lessons:step_complete' %}"
+    data-step-quiz-url="{% url 'lessons:step_quiz' %}"
+    data-continue-url="{{ continue_url }}"
+  >
     <div class="xp-toast" id="xp-toast" role="status" aria-live="polite"></div>
     {% if new_badge %}
       <div class="badge-toast" role="status">
@@ -594,7 +604,7 @@
   <div class="xp-summary" aria-label="Mission 2 XP progress">
     <div class="xp-pill">XP <span id="xp-total-value">{{ xp_total|default:"0" }}</span></div>
     <div class="xp-progress" role="progressbar" aria-valuenow="{{ xp_total|default:'0' }}" aria-valuemin="0" aria-valuemax="{{ xp_max|default:'0' }}">
-      <div class="xp-progress__fill" id="xp-progress-fill" style="width: {{ xp_percent|default:'0' }}%;"></div>
+      <div class="xp-progress__fill" id="xp-progress-fill" data-xp-percent="{{ xp_percent|default:'0' }}" style="width: 0%;"></div>
     </div>
     <div class="xp-label"><span id="xp-total-label">{{ xp_total|default:"0" }}</span> / {{ xp_max|default:"0" }} XP</div>
   </div>
@@ -612,8 +622,8 @@
           </div>
           {% if step_meta %}
             <div class="card-engine__nav">
-              <button class="nav-btn primary" id="cards-complete" type="button" {% if not can_track_progress or step_locked %}disabled{% endif %}>
-                {% if step_completed %}Review +5 XP{% else %}Mark Step Complete{% endif %}
+              <button class="nav-btn primary" id="cards-complete" type="button" {% if step_locked %}disabled{% endif %}>
+                {% if not can_track_progress %}Continue{% elif step_completed %}Review +5 XP{% else %}Mark Step Complete{% endif %}
               </button>
             </div>
             {% if step_locked %}
@@ -626,10 +636,11 @@
             (function() {
               const completeBtn = document.getElementById("cards-complete");
               if (!completeBtn) return;
-              const stepId = {{ step.id|default:"null" }};
-              const canTrackProgress = {{ can_track_progress|yesno:"true,false" }};
-              const stepCompleteUrl = "{% url 'lessons:step_complete' %}";
-              const continueUrl = "{{ continue_url }}";
+              const pageEl = document.getElementById("lesson-page");
+              const stepId = pageEl ? Number(pageEl.dataset.stepId || 0) : 0;
+              const canTrackProgress = pageEl ? pageEl.dataset.canTrackProgress === "true" : false;
+              const stepCompleteUrl = pageEl ? pageEl.dataset.stepCompleteUrl : "";
+              const continueUrl = pageEl ? pageEl.dataset.continueUrl : "";
 
               function getCookie(name) {
                 if (!document.cookie) return null;
@@ -660,9 +671,19 @@
               }
 
               completeBtn.addEventListener("click", () => {
-                if (!canTrackProgress || !stepId) return;
+                if (!canTrackProgress || !stepId) {
+                  if (continueUrl) {
+                    window.location.href = continueUrl;
+                  }
+                  return;
+                }
                 const csrfToken = getCookie("csrftoken");
-                if (!csrfToken) return;
+                if (!csrfToken) {
+                  if (continueUrl) {
+                    window.location.href = continueUrl;
+                  }
+                  return;
+                }
                 const body = new URLSearchParams();
                 body.append("step_id", stepId);
                 fetch(stepCompleteUrl, {
@@ -744,11 +765,13 @@
           const completed = new Array(CARDS.length).fill(false);
           let currentIndex = 0;
           let xpTotal = 0;
-          const canTrackProgress = {{ can_track_progress|yesno:"true,false" }};
-          const stepHasQuiz = {{ step_meta.has_quiz|yesno:"true,false,false" }};
-          const stepId = {{ step.id|default:"null" }};
-          const stepCompleteUrl = "{% url 'lessons:step_complete' %}";
-          const stepLocked = {{ step_locked|yesno:"true,false" }};
+          const pageEl = document.getElementById("lesson-page");
+          const canTrackProgress = pageEl ? pageEl.dataset.canTrackProgress === "true" : false;
+          const stepHasQuiz = pageEl ? pageEl.dataset.stepHasQuiz === "true" : false;
+          const stepId = pageEl ? Number(pageEl.dataset.stepId || 0) : 0;
+          const stepCompleteUrl = pageEl ? pageEl.dataset.stepCompleteUrl : "";
+          const stepQuizUrl = pageEl ? pageEl.dataset.stepQuizUrl : "";
+          const stepLocked = pageEl ? pageEl.dataset.stepLocked === "true" : false;
           const stepLockMessage = "Complete Meet the Arduino first to unlock this step.";
           let completionPosted = false;
           let quizPosted = false;
@@ -767,7 +790,7 @@
           const prevBtn = document.getElementById("prev-btn");
           const nextBtn = document.getElementById("next-btn");
           const navContainer = document.getElementById("card-nav");
-          const continueUrl = "{{ continue_url }}";
+          const continueUrl = pageEl ? pageEl.dataset.continueUrl : "";
           const multiQuizState = {};
 
           function getQuizKey(card, index) {
@@ -826,7 +849,10 @@
             body.append("chosen_answer", chosenAnswer);
 
             quizPosted = true;
-            return fetch("{% url 'lessons:step_quiz' %}", {
+            if (!stepQuizUrl) {
+              return Promise.resolve({ correct: false, xp_awarded: 0 });
+            }
+            return fetch(stepQuizUrl, {
               method: "POST",
               headers: {
                 "Content-Type": "application/x-www-form-urlencoded",
@@ -1087,7 +1113,7 @@
               const frame = document.createElement("div");
               frame.className = "card-media__frame";
               const iframe = document.createElement("iframe");
-              iframe.src = "https://www.youtube-nocookie.com/embed/" + card.youtube_id + "?rel=0&modestbranding=1&playsinline=1&origin=http%3A%2F%2F127.0.0.1%3A8000";
+              iframe.src = "https://www.youtube-nocookie.com/embed/" + card.youtube_id + "?rel=0&modestbranding=1&playsinline=1";
               iframe.title = "Brainiacs video";
               iframe.setAttribute("loading", "lazy");
               iframe.setAttribute("allowfullscreen", "");
@@ -2052,10 +2078,8 @@
       <header class="header">
         <div
           class="lesson-hero"
-          style="
-            --pos: {{ lesson.focus|default:'50% 50%' }};
-            --zoom: {{ lesson.zoom|default:'160%' }};
-          "
+          data-focus="{{ lesson.focus|default:'50% 50%' }}"
+          data-zoom="{{ lesson.zoom|default:'160%' }}"
           role="img"
           aria-label="Arduino board focus image"
         ></div>
@@ -2070,7 +2094,7 @@
           {% if step and step.youtube_id %}
             <div class="video-wrapper">
               <iframe
-                src="https://www.youtube-nocookie.com/embed/{{ step.youtube_id }}?rel=0&modestbranding=1&playsinline=1&origin=http%3A%2F%2F127.0.0.1%3A8000"
+                src="https://www.youtube-nocookie.com/embed/{{ step.youtube_id }}?rel=0&modestbranding=1&playsinline=1"
                 title="Brainiacs video"
                 loading="lazy"
                 frameborder="0"
@@ -2087,7 +2111,7 @@
           </button>
           <div class="card-engine__nav">
             <button class="nav-btn" id="video-back" type="button">Back</button>
-            <button class="nav-btn primary" id="video-next" type="button" {% if not step_completed %}disabled{% endif %}>Next</button>
+            <button class="nav-btn primary" id="video-next" type="button" {% if not step_completed and can_track_progress %}disabled{% endif %}>Next</button>
           </div>
         </section>
       {% else %}
@@ -2111,14 +2135,15 @@
           const completeBtn = document.getElementById("video-complete");
           const nextBtn = document.getElementById("video-next");
           const backBtn = document.getElementById("video-back");
-          const continueUrl = "{{ continue_url }}";
+          const pageEl = document.getElementById("lesson-page");
+          const continueUrl = pageEl ? pageEl.dataset.continueUrl : "";
           if (backBtn) {
             backBtn.addEventListener("click", () => window.history.back());
           }
           if (!completeBtn || !nextBtn) return;
-          const stepId = {{ step.id|default:"null" }};
-          const canTrackProgress = {{ can_track_progress|yesno:"true,false" }};
-          const stepCompleteUrl = "{% url 'lessons:step_complete' %}";
+          const stepId = pageEl ? Number(pageEl.dataset.stepId || 0) : 0;
+          const canTrackProgress = pageEl ? pageEl.dataset.canTrackProgress === "true" : false;
+          const stepCompleteUrl = pageEl ? pageEl.dataset.stepCompleteUrl : "";
 
           function getCookie(name) {
             if (!document.cookie) return null;
@@ -2188,6 +2213,18 @@
 
   <script>
     (function() {
+      const xpFill = document.getElementById("xp-progress-fill");
+      if (xpFill) {
+        const percent = parseFloat(xpFill.dataset.xpPercent || "0");
+        xpFill.style.width = percent + "%";
+      }
+      const hero = document.querySelector(".lesson-hero");
+      if (hero) {
+        const focus = hero.dataset.focus;
+        const zoom = hero.dataset.zoom;
+        if (focus) hero.style.setProperty("--pos", focus);
+        if (zoom) hero.style.setProperty("--zoom", zoom);
+      }
       const isEditable = (el) => {
         if (!el) return false;
         const tag = el.tagName;

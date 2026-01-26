@@ -250,9 +250,9 @@
 
   <div class="xp-summary" aria-label="Mission 2 XP progress">
     <div class="xp-pill">XP {{ xp_total|default:"0" }}</div>
-    <div class="xp-progress" role="progressbar" aria-valuenow="{{ xp_total|default:'0' }}" aria-valuemin="0" aria-valuemax="{{ xp_max|default:'0' }}">
-      <div class="xp-progress__fill" style="width: {{ xp_percent|default:'0' }}%;"></div>
-    </div>
+  <div class="xp-progress" role="progressbar" aria-valuenow="{{ xp_total|default:'0' }}" aria-valuemin="0" aria-valuemax="{{ xp_max|default:'0' }}">
+    <div class="xp-progress__fill" data-xp-percent="{{ xp_percent|default:'0' }}" style="width: 0%;"></div>
+  </div>
     <div class="xp-label">{{ xp_total|default:"0" }} / {{ xp_max|default:"0" }} XP</div>
   </div>
 
@@ -348,6 +348,11 @@
 	  </section>
   <script>
     (function() {
+      const xpFill = document.querySelector(".xp-progress__fill");
+      if (xpFill) {
+        const percent = parseFloat(xpFill.dataset.xpPercent || "0");
+        xpFill.style.width = percent + "%";
+      }
       const params = new URLSearchParams(window.location.search);
       const focusPrev = params.get("focus_prev");
       const focusNext = params.get("focus_next");
