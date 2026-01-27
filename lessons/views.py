@@ -751,6 +751,7 @@ def mission_2_lesson_detail(request, slug):
         "microcontroller": "Mission 2 Lesson 1 - The Brain Chip",
         "reset-button": "Mission 2 Lesson 1 - Reset Button",
         "checkpoint-quiz": "Mission 2 Lesson 1 - Checkpoint Quiz",
+        "power-output": "Mission 2 Lesson 1 - Power Out Pins",
         "arduino-pinout": "Mission 2 Lesson 1 - Arduino Pinout",
         "arduino-board-quiz": "Mission 2 Lesson 1 - Arduino Board Quiz",
         "upload-your-first-code": "Mission 2 Lesson 3 - Upload Your First Code",

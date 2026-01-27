@@ -173,6 +173,32 @@
       margin: 0.25rem 0;
     }
 
+    #card-body {
+      line-height: 1.45;
+    }
+
+    .card-body-gap {
+      display: block;
+      height: 0.0005rem;
+    }
+
+    .line-highlight {
+      font-weight: 700;
+    }
+
+    .line-highlight--gnd {
+      color: #111827;
+    }
+
+    .line-highlight--5v {
+      color: #dc2626;
+    }
+
+    .card-body-hint {
+      display: block;
+      margin-top: 1rem;
+    }
+
     .card-media img {
       width: 100%;
       max-height: 320px;
@@ -180,6 +206,65 @@
       border-radius: 12px;
       background: #ffffff;
       border: 1px solid #e5e7eb;
+    }
+
+    .card-media__image-frame {
+      border-radius: 12px;
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+    }
+
+    .card-media__image-frame img {
+      width: 100%;
+      max-height: 320px;
+      object-fit: contain;
+      display: block;
+    }
+
+    .card-media__image-frame--zoom img {
+      cursor: zoom-in;
+    }
+
+    .image-zoom-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.75);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+      z-index: 40;
+      padding: 1rem;
+    }
+
+    .image-zoom-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .image-zoom-overlay img {
+      max-width: min(1400px, 96vw);
+      max-height: 92vh;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      border-radius: 12px;
+      background: #ffffff;
+      box-shadow: 0 18px 36px rgba(15, 23, 42, 0.25);
+    }
+
+    .image-zoom-close {
+      position: absolute;
+      top: 1.2rem;
+      right: 1.2rem;
+      border: none;
+      background: transparent;
+      color: #ffffff;
+      font-size: 1.4rem;
+      font-weight: 700;
+      cursor: pointer;
     }
 
     .card-media__frame {
@@ -424,6 +509,16 @@
       background: #1d4ed8;
     }
 
+    .action-btn.secondary {
+      background: #e2e8f0;
+      color: #1f2937;
+      box-shadow: none;
+    }
+
+    .action-btn.secondary:hover {
+      background: #cbd5f5;
+    }
+
     .card-quiz {
       margin-top: 1rem;
     }
@@ -490,6 +585,7 @@
     .card-feedback {
       margin-top: 0.75rem;
       font-weight: 600;
+      white-space: pre-line;
     }
 
     .card-feedback.success {
@@ -966,9 +1062,11 @@
             blocks.forEach((block) => {
               if (block.type === "blank") {
                 if (needsBreak) {
-                  cardBodyEl.appendChild(document.createElement("br"));
+                  const gap = document.createElement("span");
+                  gap.className = "card-body-gap";
+                  cardBodyEl.appendChild(gap);
                 }
-                needsBreak = true;
+                needsBreak = false;
                 return;
               }
 
@@ -980,10 +1078,21 @@
                 if (hintMatch) {
                   const strong = document.createElement("strong");
                   strong.textContent = "HINT:";
+                  strong.className = "card-body-hint";
                   cardBodyEl.appendChild(strong);
                   if (hintMatch[1]) {
                     cardBodyEl.appendChild(document.createTextNode(" " + hintMatch[1]));
                   }
+                } else if (block.text.trim().startsWith("GND")) {
+                  const span = document.createElement("span");
+                  span.className = "line-highlight line-highlight--gnd";
+                  span.textContent = block.text;
+                  cardBodyEl.appendChild(span);
+                } else if (block.text.trim().startsWith("5V")) {
+                  const span = document.createElement("span");
+                  span.className = "line-highlight line-highlight--5v";
+                  span.textContent = block.text;
+                  cardBodyEl.appendChild(span);
                 } else {
                   cardBodyEl.appendChild(document.createTextNode(block.text));
                 }
@@ -996,7 +1105,20 @@
                 list.className = "card-list";
                 block.items.forEach((item) => {
                   const li = document.createElement("li");
-                  li.textContent = item;
+                  const trimmedItem = item.trim();
+                  if (trimmedItem.startsWith("GND")) {
+                    const span = document.createElement("span");
+                    span.className = "line-highlight line-highlight--gnd";
+                    span.textContent = item;
+                    li.appendChild(span);
+                  } else if (trimmedItem.startsWith("5V")) {
+                    const span = document.createElement("span");
+                    span.className = "line-highlight line-highlight--5v";
+                    span.textContent = item;
+                    li.appendChild(span);
+                  } else {
+                    li.textContent = item;
+                  }
                   list.appendChild(li);
                 });
                 cardBodyEl.appendChild(list);
@@ -1106,6 +1228,21 @@
               const img = document.createElement("img");
               img.src = card.image_url;
               img.alt = card.title || "Lesson image";
+              if (
+                card.image_url.includes("power-out-pins") ||
+                card.image_url.includes("Power Out Pins - connecting to the breadboard")
+              ) {
+                const frame = document.createElement("div");
+                frame.className = "card-media__image-frame card-media__image-frame--zoom";
+                frame.appendChild(img);
+                img.addEventListener("click", () => {
+                  if (window.__openLessonImageZoom) {
+                    window.__openLessonImageZoom(img.src, img.alt);
+                  }
+                });
+                cardMediaEl.appendChild(frame);
+                return;
+              }
               cardMediaEl.appendChild(img);
               return;
             }
@@ -1451,6 +1588,8 @@
             const payload = card.action_payload || {};
             const isMultiSelect = Boolean(payload.multi_select);
             const payloadOptions = Array.isArray(payload.options) ? payload.options : [];
+            const formatFeedback = (text) =>
+              String(text || "").replace(/([.!?])\s+(?=[A-Z0-9])/g, "$1\n");
 
             const choices = payloadOptions.length
               ? payloadOptions.map((choice) => ({
@@ -1472,8 +1611,12 @@
 
             if (!isMultiSelect) {
               const correct = (card.correct_choice || "").toUpperCase();
-              const correctFeedback = payload.correct_feedback || card.explanation || "Correct!";
-              const incorrectFeedback = payload.incorrect_feedback || "Not quite. Try again.";
+              const correctFeedback = formatFeedback(
+                payload.correct_feedback || card.explanation || "Correct!"
+              );
+              const redoFeedback = formatFeedback(
+                "There is an error. Please redo your answer."
+              );
               const lockOnSelect = Boolean(payload.lock_on_select);
               let selectedKey = "";
               let quizLocked = false;
@@ -1496,22 +1639,27 @@
                 choiceButtons.forEach((btn) => btn.classList.remove("correct", "wrong"));
               };
 
+              const resetSingleSelection = () => {
+                selectedKey = "";
+                choiceButtons.forEach((btn) => {
+                  btn.classList.remove("selected", "correct", "wrong");
+                  btn.disabled = false;
+                });
+                resetSingleFeedback();
+              };
+
               const applySingleValidation = () => {
                 if (!selectedKey) return;
-                choiceButtons.forEach((btn, key) => {
-                  btn.classList.remove("correct", "wrong");
-                  if (key === correct) {
-                    btn.classList.add("correct");
-                  } else if (key === selectedKey) {
-                    btn.classList.add("wrong");
-                  }
-                });
                 if (selectedKey === correct) {
                   quizLocked = true;
                   completeCard();
                   nextBtn.disabled = false;
                   cardFeedbackEl.textContent = correctFeedback;
                   cardFeedbackEl.className = "card-feedback success";
+                  choiceButtons.forEach((btn, key) => {
+                    btn.classList.toggle("correct", key === selectedKey);
+                    btn.classList.remove("wrong");
+                  });
                   if (!quizPosted) {
                     quizPosted = true;
                     postQuizAnswer(selectedKey).then((result) => {
@@ -1524,8 +1672,12 @@
                     setChoiceDisabled(true);
                   }
                 } else {
-                  cardFeedbackEl.textContent = incorrectFeedback;
-                  cardFeedbackEl.className = "card-feedback error";
+                  cardFeedbackEl.textContent = redoFeedback;
+                  cardFeedbackEl.className = "card-feedback";
+                  choiceButtons.forEach((btn, key) => {
+                    btn.classList.toggle("correct", key === selectedKey && key === correct);
+                    btn.classList.toggle("wrong", key === selectedKey && key !== correct);
+                  });
                   setChoiceDisabled(false);
                 }
               };
@@ -1566,13 +1718,22 @@
               okBtn.addEventListener("click", () => {
                 if (quizLocked) return;
                 if (!selectedKey) {
-                  cardFeedbackEl.textContent = "Select an answer.";
-                  cardFeedbackEl.className = "card-feedback error";
+                  cardFeedbackEl.textContent = formatFeedback("Select an answer.");
+                  cardFeedbackEl.className = "card-feedback";
                   return;
                 }
                 applySingleValidation();
               });
               actions.appendChild(okBtn);
+              const redoBtn = document.createElement("button");
+              redoBtn.type = "button";
+              redoBtn.className = "action-btn secondary";
+              redoBtn.textContent = "Redo";
+              redoBtn.addEventListener("click", () => {
+                if (quizLocked) return;
+                resetSingleSelection();
+              });
+              actions.appendChild(redoBtn);
               cardQuizEl.appendChild(actions);
               return;
             }
@@ -1589,6 +1750,15 @@
               choices.filter((choice) => choice.isCorrect).map((choice) => choice.key)
             );
             const choiceButtons = new Map();
+            const correctFeedback = formatFeedback(
+              payload.correct_feedback || "Correct! You selected all the right answers."
+            );
+            const incorrectFeedback = formatFeedback(
+              payload.incorrect_feedback || "There is an error. Please redo your answers."
+            );
+            const partialFeedback = formatFeedback(
+              payload.partial_feedback || incorrectFeedback
+            );
 
             const clearValidationStyles = () => {
               choices.forEach((choice) => {
@@ -1601,27 +1771,41 @@
 
             const applyValidation = (result) => {
               clearValidationStyles();
-              choices.forEach((choice) => {
-                const btn = choiceButtons.get(choice.key);
-                if (!btn) return;
-                if (choice.isCorrect) {
-                  btn.classList.add("correct");
-                } else if (selectedKeys.has(choice.key)) {
-                  btn.classList.add("wrong");
-                }
-              });
               if (result.status === "correct") {
-                cardFeedbackEl.textContent =
-                  payload.correct_feedback || "Correct! You selected all the right answers.";
+                cardFeedbackEl.textContent = correctFeedback;
                 cardFeedbackEl.className = "card-feedback success";
+                choices.forEach((choice) => {
+                  const btn = choiceButtons.get(choice.key);
+                  if (!btn) return;
+                  btn.classList.toggle("correct", selectedKeys.has(choice.key));
+                  btn.classList.remove("wrong");
+                });
               } else if (result.status === "partial") {
-                cardFeedbackEl.textContent =
-                  payload.partial_feedback || "Almost there. There is more than one correct answer.";
-                cardFeedbackEl.className = "card-feedback error";
+                cardFeedbackEl.textContent = partialFeedback;
+                cardFeedbackEl.className = "card-feedback";
+                choices.forEach((choice) => {
+                  const btn = choiceButtons.get(choice.key);
+                  if (!btn) return;
+                  const isCorrectSelected =
+                    selectedKeys.has(choice.key) && correctKeys.has(choice.key);
+                  const isSelectedWrong =
+                    selectedKeys.has(choice.key) && !correctKeys.has(choice.key);
+                  btn.classList.toggle("correct", isCorrectSelected);
+                  btn.classList.toggle("wrong", isSelectedWrong);
+                });
               } else {
-                cardFeedbackEl.textContent =
-                  payload.incorrect_feedback || "Not quite. Some selections are incorrect.";
-                cardFeedbackEl.className = "card-feedback error";
+                cardFeedbackEl.textContent = incorrectFeedback;
+                cardFeedbackEl.className = "card-feedback";
+                choices.forEach((choice) => {
+                  const btn = choiceButtons.get(choice.key);
+                  if (!btn) return;
+                  const isCorrectSelected =
+                    selectedKeys.has(choice.key) && correctKeys.has(choice.key);
+                  const isSelectedWrong =
+                    selectedKeys.has(choice.key) && !correctKeys.has(choice.key);
+                  btn.classList.toggle("correct", isCorrectSelected);
+                  btn.classList.toggle("wrong", isSelectedWrong);
+                });
               }
             };
 
@@ -1701,6 +1885,21 @@
               nextBtn.disabled = false;
             });
             actions.appendChild(okBtn);
+            const redoBtn = document.createElement("button");
+            redoBtn.type = "button";
+            redoBtn.className = "action-btn secondary";
+            redoBtn.textContent = "Redo";
+            redoBtn.addEventListener("click", () => {
+              if (state.correct) return;
+              selectedKeys.clear();
+              state.validated = false;
+              state.correct = false;
+              clearValidationStyles();
+              choiceButtons.forEach((btn) => btn.classList.remove("selected"));
+              cardFeedbackEl.textContent = "";
+              cardFeedbackEl.className = "card-feedback";
+            });
+            actions.appendChild(redoBtn);
             cardQuizEl.appendChild(actions);
 
             state.choiceButtons = choiceButtons;
@@ -1708,8 +1907,8 @@
             state.correctKeys = correctKeys;
             state.validate = () => {
               if (selectedKeys.size === 0) {
-                cardFeedbackEl.textContent = "Select at least one answer.";
-                cardFeedbackEl.className = "card-feedback error";
+                cardFeedbackEl.textContent = formatFeedback("Select at least one answer.");
+                cardFeedbackEl.className = "card-feedback";
                 return { status: "incorrect" };
               }
               const result = validateSelection();
@@ -1732,6 +1931,7 @@
               return;
             }
             const payload = card.action_payload || {};
+            const shouldShuffleOnWrong = Boolean(payload.shuffle_on_wrong);
             const pairsRaw = Array.isArray(payload.pairs) ? payload.pairs : [];
             const pairs = pairsRaw
               .map((pair, index) => ({
@@ -1745,8 +1945,6 @@
               return;
             }
 
-            const features = shuffleArray(pairs.map((pair) => ({ id: pair.id, text: pair.feature })));
-            const functions = shuffleArray(pairs.map((pair) => ({ id: pair.id, text: pair.functionText })));
             const matches = new Map();
             const leftButtons = new Map();
             const rightButtons = new Map();
@@ -1819,50 +2017,64 @@
               if (rightBtn) rightBtn.classList.add("matched");
             };
 
-            features.forEach((item) => {
-              const btn = document.createElement("button");
-              btn.type = "button";
-              btn.className = "match-item";
-              btn.textContent = item.text;
-              leftButtons.set(item.id, btn);
-              btn.addEventListener("click", () => {
-                if (quizLocked) return;
-                if (selectedLeft === item.id) {
-                  resetSelections();
-                  return;
-                }
-                if (matches.has(item.id)) {
-                  unpairLeft(item.id);
-                }
-                resetSelections();
-                selectedLeft = item.id;
-                btn.classList.add("selected");
-                cardFeedbackEl.textContent = "Now choose the matching function.";
-                cardFeedbackEl.className = "card-feedback";
-              });
-              leftList.appendChild(btn);
-            });
+            const buildLists = () => {
+              leftList.innerHTML = "";
+              rightList.innerHTML = "";
+              leftButtons.clear();
+              rightButtons.clear();
+              matches.clear();
+              selectedLeft = "";
 
-            functions.forEach((item) => {
-              const btn = document.createElement("button");
-              btn.type = "button";
-              btn.className = "match-item";
-              btn.textContent = item.text;
-              rightButtons.set(item.id, btn);
-              btn.addEventListener("click", () => {
-                if (quizLocked) return;
-                if (!selectedLeft) {
-                  cardFeedbackEl.textContent = "Pick a feature first.";
-                  cardFeedbackEl.className = "card-feedback error";
-                  return;
-                }
-                applyPair(selectedLeft, item.id);
-                resetSelections();
-                cardFeedbackEl.textContent = "";
-                cardFeedbackEl.className = "card-feedback";
+              const features = shuffleArray(pairs.map((pair) => ({ id: pair.id, text: pair.feature })));
+              const functions = shuffleArray(pairs.map((pair) => ({ id: pair.id, text: pair.functionText })));
+
+              features.forEach((item) => {
+                const btn = document.createElement("button");
+                btn.type = "button";
+                btn.className = "match-item";
+                btn.textContent = item.text;
+                leftButtons.set(item.id, btn);
+                btn.addEventListener("click", () => {
+                  if (quizLocked) return;
+                  if (selectedLeft === item.id) {
+                    resetSelections();
+                    return;
+                  }
+                  if (matches.has(item.id)) {
+                    unpairLeft(item.id);
+                  }
+                  resetSelections();
+                  selectedLeft = item.id;
+                  btn.classList.add("selected");
+                  cardFeedbackEl.textContent = "Now choose the matching function.";
+                  cardFeedbackEl.className = "card-feedback";
+                });
+                leftList.appendChild(btn);
               });
-              rightList.appendChild(btn);
-            });
+
+              functions.forEach((item) => {
+                const btn = document.createElement("button");
+                btn.type = "button";
+                btn.className = "match-item";
+                btn.textContent = item.text;
+                rightButtons.set(item.id, btn);
+                btn.addEventListener("click", () => {
+                  if (quizLocked) return;
+                  if (!selectedLeft) {
+                    cardFeedbackEl.textContent = "Pick a feature first.";
+                    cardFeedbackEl.className = "card-feedback error";
+                    return;
+                  }
+                  applyPair(selectedLeft, item.id);
+                  resetSelections();
+                  cardFeedbackEl.textContent = "";
+                  cardFeedbackEl.className = "card-feedback";
+                });
+                rightList.appendChild(btn);
+              });
+            };
+
+            buildLists();
 
             const actions = document.createElement("div");
             actions.className = "quiz-actions";
@@ -1878,22 +2090,19 @@
                 return;
               }
               let allCorrect = true;
-              pairs.forEach((pair) => {
-                const leftBtn = leftButtons.get(pair.id);
-                const rightBtn = rightButtons.get(pair.id);
-                const matchId = matches.get(pair.id);
-                const isCorrect = matchId === pair.id;
+              leftButtons.forEach((btn) => btn.classList.remove("correct", "wrong"));
+              rightButtons.forEach((btn) => btn.classList.remove("correct", "wrong"));
+              matches.forEach((rightId, leftId) => {
+                const isCorrect = leftId === rightId;
                 if (!isCorrect) {
                   allCorrect = false;
                 }
-                if (leftBtn) {
-                  leftBtn.classList.toggle("correct", isCorrect);
-                  leftBtn.classList.toggle("wrong", !isCorrect);
-                }
-                if (rightBtn) {
-                  rightBtn.classList.toggle("correct", isCorrect);
-                  rightBtn.classList.toggle("wrong", !isCorrect);
-                }
+                const leftBtn = leftButtons.get(leftId);
+                const rightBtn = rightButtons.get(rightId);
+                if (leftBtn) leftBtn.classList.toggle("correct", isCorrect);
+                if (rightBtn) rightBtn.classList.toggle("correct", isCorrect);
+                if (leftBtn) leftBtn.classList.toggle("wrong", !isCorrect);
+                if (rightBtn) rightBtn.classList.toggle("wrong", !isCorrect);
               });
               if (allCorrect) {
                 quizLocked = true;
@@ -1914,6 +2123,9 @@
                 cardFeedbackEl.textContent =
                   payload.incorrect_feedback || "Not quite. Check the matches and try again.";
                 cardFeedbackEl.className = "card-feedback error";
+                if (shouldShuffleOnWrong) {
+                  buildLists();
+                }
               }
             });
             actions.appendChild(okBtn);
@@ -2065,6 +2277,32 @@
 
           if (CARDS.length) {
             renderCard();
+          }
+
+          if (!window.__openLessonImageZoom) {
+            const overlay = document.createElement("div");
+            overlay.className = "image-zoom-overlay";
+            const overlayImg = document.createElement("img");
+            const closeBtn = document.createElement("button");
+            closeBtn.type = "button";
+            closeBtn.className = "image-zoom-close";
+            closeBtn.textContent = "×";
+            overlay.appendChild(overlayImg);
+            overlay.appendChild(closeBtn);
+            const closeOverlay = () => {
+              overlay.classList.remove("active");
+            };
+            closeBtn.addEventListener("click", (event) => {
+              event.stopPropagation();
+              closeOverlay();
+            });
+            document.body.appendChild(overlay);
+
+            window.__openLessonImageZoom = (src, alt) => {
+              overlayImg.src = src;
+              overlayImg.alt = alt || "Zoomed image";
+              overlay.classList.add("active");
+            };
           }
 
           window.__lessonCardNav = {

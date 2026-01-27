@@ -37,7 +37,7 @@ def add_brain_chip_quiz_card(apps, schema_editor):
             "card_type": "quiz",
             "title": "Quick Check 🧠 The Brain of Arduino",
             "body": "",
-            "question": "Why is the ATmega microcontroller called the brain of the Arduino board?",
+            "question": "Why is the microcontroller called the brain of the Arduino board?",
             "choice_a": "",
             "choice_b": "",
             "choice_c": "",
