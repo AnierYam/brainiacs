@@ -173,6 +173,590 @@
       margin: 0.25rem 0;
     }
 
+    .digital-analog-card {
+      margin-top: 0.5rem;
+    }
+
+    .digital-analog-explainer {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 1rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .digital-analog-explainer .digital-analog-title {
+      margin-bottom: 0.6rem;
+    }
+
+    .digital-analog-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1.5rem;
+      min-height: 0;
+    }
+
+    .digital-analog-col {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 0.85rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .digital-analog-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 0.75rem;
+      text-align: center;
+    }
+
+    .digital-analog-list {
+      margin: 0 0 0.85rem 1.1rem;
+    }
+
+    .digital-analog-hint {
+      margin: 0 0 0.75rem 0;
+      font-size: 0.9rem;
+      color: #64748b;
+      text-align: left;
+      font-weight: 600;
+    }
+
+    .digital-analog-hint__sub {
+      display: block;
+      margin-top: 0.35rem;
+      font-weight: 500;
+      color: #6b7280;
+    }
+
+    .digital-analog-hint__line {
+      display: block;
+      margin-top: 0.25rem;
+    }
+
+    .digital-analog-hint__sub strong {
+      color: #111827;
+    }
+
+    .digital-analog-visual {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: auto;
+      margin-bottom: auto;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+
+    .digital-lamp {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: #1f2937;
+      position: relative;
+      box-shadow: inset 0 -6px 0 rgba(0, 0, 0, 0.2);
+      transition: background 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .digital-lamp::after {
+      content: "";
+      position: absolute;
+      bottom: -7px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 24px;
+      height: 10px;
+      border-radius: 0 0 8px 8px;
+      background: #334155;
+    }
+
+    .digital-toggle {
+      width: 42px;
+      height: 78px;
+      border-radius: 999px;
+      background: #e2e8f0;
+      border: 1px solid #cbd5f5;
+      position: relative;
+      cursor: pointer;
+      transition: background 0.2s ease, border-color 0.2s ease;
+    }
+
+    .digital-toggle__knob {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: #94a3b8;
+      position: absolute;
+      left: 50%;
+      bottom: 7px;
+      transform: translateX(-50%);
+      transition: transform 0.2s ease, background 0.2s ease;
+    }
+
+    .digital-toggle:focus-visible {
+      outline: 2px solid #22c55e;
+      outline-offset: 3px;
+    }
+
+    .digital-analog-card[data-digital-on="true"] .digital-analog-col[data-example="digital"] .digital-lamp {
+      background: #22c55e;
+      box-shadow: 0 0 14px rgba(34, 197, 94, 0.65), inset 0 -6px 0 rgba(0, 0, 0, 0.15);
+    }
+
+    .digital-analog-card[data-digital-on="true"] .digital-analog-col[data-example="digital"] .digital-toggle {
+      background: #bbf7d0;
+      border-color: #22c55e;
+    }
+
+    .digital-analog-card[data-digital-on="true"] .digital-analog-col[data-example="digital"] .digital-toggle__knob {
+      transform: translate(-50%, -42px);
+      background: #16a34a;
+    }
+
+    .analog-led {
+      --analog-brightness: 0.2;
+      --analog-glow-alpha: 0.2;
+      --analog-glow-size: 6px;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: rgba(245, 158, 11, var(--analog-brightness));
+      box-shadow: 0 0 var(--analog-glow-size) rgba(245, 158, 11, var(--analog-glow-alpha));
+      transition: background 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .analog-led.digital-lamp::after {
+      background: #334155;
+    }
+
+    .analog-dimmer {
+      position: relative;
+      width: 100px;
+      height: 100px;
+      display: grid;
+      place-items: center;
+    }
+
+    .analog-dial {
+      width: 66px;
+      height: 66px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, #ffffff, #e2e8f0);
+      border: 2px solid #cbd5f5;
+      position: relative;
+      transition: transform 0.2s ease;
+    }
+
+    .analog-dial::after {
+      content: "";
+      position: absolute;
+      width: 5px;
+      height: 18px;
+      background: #1f2937;
+      top: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-radius: 999px;
+    }
+
+    .analog-stop {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #fff7ed;
+      border: 1px solid #f59e0b;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(var(--stop-angle)) translate(0, -44px);
+      transform-origin: center;
+      cursor: pointer;
+      transition: box-shadow 0.2s ease, background 0.2s ease;
+    }
+
+    .analog-stop.active {
+      background: #f59e0b;
+      box-shadow: 0 0 6px rgba(245, 158, 11, 0.6);
+    }
+
+    .analog-stop:focus-visible {
+      outline: 2px solid #f59e0b;
+      outline-offset: 2px;
+    }
+
+    .digital-analog-card .analog-stop {
+      pointer-events: none;
+    }
+
+    .digital-analog-col.choice-correct {
+      border-color: #22c55e;
+      box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.18);
+    }
+
+    .digital-analog-col.choice-selected {
+      border-color: #60a5fa;
+      box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.2);
+    }
+
+    .digital-analog-card.choice-locked .digital-analog-col:not(.choice-correct) {
+      opacity: 0.75;
+    }
+
+    .digital-analog-col.choice-wrong {
+      animation: digital-shake 0.25s ease;
+      border-color: #ef4444;
+    }
+
+    @keyframes digital-shake {
+      0% { transform: translateX(0); }
+      25% { transform: translateX(-3px); }
+      50% { transform: translateX(3px); }
+      75% { transform: translateX(-2px); }
+      100% { transform: translateX(0); }
+    }
+
+    .digital-analog-quiz {
+      margin-top: 0.5rem;
+    }
+
+    .digital-analog-quiz__intro {
+      margin: 0 0 1rem 0;
+      color: #4b5563;
+      font-weight: 600;
+    }
+
+    .digital-analog-quiz__columns {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+    }
+
+    .digital-analog-quiz__column {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 0.85rem;
+      min-height: 170px;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .digital-analog-quiz__column-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #0f172a;
+      text-align: center;
+    }
+
+    .digital-analog-quiz__column-subtitle {
+      font-size: 0.9rem;
+      color: #64748b;
+      text-align: center;
+    }
+
+    .digital-analog-quiz__dropzone {
+      flex: 1;
+      border: 2px dashed #cbd5f5;
+      border-radius: 12px;
+      padding: 0.6rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      transition: border-color 0.2s ease, background 0.2s ease;
+    }
+
+    .digital-analog-quiz__dropzone.active {
+      border-color: #22c55e;
+      background: #ecfdf5;
+    }
+
+    .digital-analog-quiz__items {
+      margin-top: 1rem;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.9rem;
+    }
+
+    .drag-item {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 0.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      cursor: grab;
+      transition: box-shadow 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+    }
+
+    .drag-item:active {
+      cursor: grabbing;
+    }
+
+    .drag-item.dragging {
+      opacity: 0.7;
+      transform: scale(0.98);
+    }
+
+    .drag-item--correct {
+      border-color: #22c55e;
+      box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.2);
+    }
+
+    .drag-item__title {
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .drag-item__test {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+
+    .drag-item__test--center {
+      justify-content: center;
+      gap: 1.25rem;
+    }
+
+    .drag-item__feedback {
+      font-weight: 600;
+      color: #16a34a;
+      min-height: 1.1rem;
+    }
+
+    .drag-item__feedback.error {
+      color: #dc2626;
+    }
+
+    .drag-item__shake {
+      animation: drag-shake 0.25s ease;
+    }
+
+    @keyframes drag-shake {
+      0% { transform: translateX(0); }
+      25% { transform: translateX(-4px); }
+      50% { transform: translateX(4px); }
+      75% { transform: translateX(-3px); }
+      100% { transform: translateX(0); }
+    }
+
+    .push-button-press {
+      border: none;
+      background: transparent;
+      padding: 0;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .push-button-press:focus-visible {
+      outline: 2px solid #2563eb;
+      outline-offset: 3px;
+      border-radius: 10px;
+    }
+
+    .push-button-press:focus {
+      outline: none;
+    }
+
+    .push-button-svg {
+      width: 120px;
+      height: 92px;
+      display: block;
+    }
+
+    .push-button-cap {
+      transform-box: fill-box;
+      transform-origin: center;
+      transition: transform 0.12s ease;
+    }
+
+    .drag-item[data-on="true"] .push-button-cap {
+      transform: translateY(16px);
+    }
+
+    .push-button-row {
+      justify-content: center;
+      gap: 1.25rem;
+      min-height: 96px;
+      margin-top: auto;
+      margin-bottom: auto;
+    }
+
+
+    .push-button__state {
+      font-weight: 700;
+      color: #dc2626;
+      display: inline-block;
+      width: 3ch;
+      text-align: center;
+    }
+
+    .push-button__state.on {
+      color: #16a34a;
+    }
+
+    .drag-item[data-on="true"] .digital-lamp {
+      background: #22c55e;
+      box-shadow: 0 0 14px rgba(34, 197, 94, 0.65), inset 0 -6px 0 rgba(0, 0, 0, 0.15);
+    }
+
+    .drag-item[data-on="true"] .digital-toggle {
+      background: #bbf7d0;
+      border-color: #22c55e;
+    }
+
+    .drag-item[data-on="true"] .digital-toggle__knob {
+      transform: translate(-50%, -42px);
+      background: #16a34a;
+    }
+
+    .pot-row {
+      justify-content: center;
+      align-items: center;
+      flex-direction: row;
+      gap: 0.85rem;
+      width: 100%;
+    }
+
+    .pot-dimmer {
+      width: 96px;
+      height: 96px;
+    }
+
+    .pot-dial {
+      width: 64px;
+      height: 64px;
+    }
+
+    .pot-stop {
+      width: 14px;
+      height: 14px;
+      transform: translate(-50%, -50%) rotate(var(--stop-angle)) translate(0, -42px);
+      position: absolute;
+    }
+
+    .pot-stop::before {
+      content: "";
+      position: absolute;
+      inset: -10px;
+    }
+
+    .pot-meter {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 160px;
+      width: 45%;
+      max-width: 200px;
+      min-height: 64px;
+    }
+
+    .pot-bar {
+      width: 100%;
+      height: 8px;
+      border-radius: 999px;
+      background: #e2e8f0;
+      overflow: hidden;
+    }
+
+    .pot-bar__fill {
+      height: 100%;
+      width: 0%;
+      background: #f59e0b;
+      transition: width 0.2s ease;
+    }
+
+    .pot-value {
+      font-weight: 700;
+      color: #475569;
+      position: absolute;
+      top: 50%;
+      transform: translateY(12px);
+    }
+
+    .servo-row {
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+    }
+
+    .servo-btn {
+      border: none;
+      background: transparent;
+      padding: 0;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .servo-btn:focus-visible {
+      outline: 2px solid #f59e0b;
+      outline-offset: 3px;
+      border-radius: 12px;
+    }
+
+    .servo-stack {
+      position: relative;
+      width: 190px;
+      max-width: 100%;
+      aspect-ratio: 1416 / 633;
+      display: block;
+    }
+
+    .servo-base,
+    .servo-arm {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      pointer-events: none;
+    }
+
+    .servo-arm {
+      transform-origin: 50% 50%;
+      transition: transform 0.25s ease;
+      filter: drop-shadow(0 0 6px rgba(234, 179, 8, 0.9));
+    }
+
+    .digital-analog-quiz__complete {
+      margin-top: 1rem;
+      padding: 0.75rem 1rem;
+      border-radius: 12px;
+      background: #ecfdf5;
+      color: #166534;
+      font-weight: 700;
+      white-space: pre-line;
+      display: none;
+    }
+
+    @media (max-width: 768px) {
+      .digital-analog-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .digital-analog-quiz__columns {
+        grid-template-columns: 1fr;
+      }
+
+      .digital-analog-quiz__items {
+        grid-template-columns: 1fr;
+      }
+    }
+
     #card-body {
       line-height: 1.45;
     }
@@ -679,6 +1263,7 @@
     class="page"
     id="lesson-page"
     data-can-track-progress="{{ can_track_progress|yesno:'true,false' }}"
+    data-lesson-slug="{{ lesson.slug }}"
     data-step-has-quiz="{{ step_meta.has_quiz|yesno:'true,false,false' }}"
     data-step-id="{{ step.id|default:'' }}"
     data-step-locked="{{ step_locked|yesno:'true,false' }}"
@@ -838,9 +1423,20 @@
         </div>
 
         <script>
-          const CARDS = JSON.parse('{{ cards_json|escapejs }}');
+          let CARDS = JSON.parse('{{ cards_json|escapejs }}');
           const lessonTitle = "{{ lesson.title|escapejs }}";
           const lessonSlug = "{{ lesson.slug|escapejs }}";
+          const isDigitalAnalogLesson = lessonSlug === "digital-vs-analog";
+          if (isDigitalAnalogLesson) {
+            CARDS = CARDS.filter((card) => {
+              if (card.card_type === "reward") return true;
+              const title = (card.title || "").trim();
+              if (title === "Connect the Power Pins") return false;
+              const body = card.body || "";
+              if (body.includes("Connect each Arduino pin to the correct side on the breadboard")) return false;
+              return true;
+            });
+          }
           const rewardBody =
             "You have completed " +
             lessonTitle +
@@ -1153,6 +1749,777 @@
             completed[currentIndex] = true;
             xpTotal += XP_PER_CARD;
             setXp();
+          }
+
+          function isDigitalAnalogDigitalCard(card) {
+            return lessonSlug === "digital-vs-analog" && Number(card.order) === 1;
+          }
+
+          function isDigitalAnalogAnalogCard(card) {
+            return lessonSlug === "digital-vs-analog" && Number(card.order) === 2;
+          }
+
+          function isDigitalAnalogQuizCard(card) {
+            return lessonSlug === "digital-vs-analog" && Number(card.order) === 3;
+          }
+
+          function renderDigitalAnalogCard(mode) {
+            clearElement(cardBodyEl);
+            cardBodyEl.style.display = "block";
+
+            const isDigitalMode = mode === "digital";
+            const wrapper = document.createElement("div");
+            wrapper.className = "digital-analog-card";
+            wrapper.dataset.digitalOn = "false";
+            wrapper.dataset.analogLevel = "0";
+            wrapper.innerHTML = `
+              <div class="digital-analog-explainer">
+                <div class="digital-analog-title">${isDigitalMode ? "DIGITAL" : "ANALOG"}</div>
+                <ul class="card-list digital-analog-list">
+                  ${
+                    isDigitalMode
+                      ? `
+                    <li>Only ON or OFF</li>
+                    <li>Like a light switch</li>
+                    <li>Uses Digital pins</li>
+                    `
+                      : `
+                    <li>Changing value</li>
+                    <li>Like a volume knob</li>
+                    <li>Uses the ANALOG IN pins</li>
+                    `
+                  }
+                </ul>
+              </div>
+              <p class="digital-analog-hint">
+                ${isDigitalMode ? "Choose the DIGITAL connection for the light bulb" : "Choose the ANALOG connection for the light bulb"}
+                <span class="digital-analog-hint__sub">
+                  <strong>Hint:</strong>
+                  <span class="digital-analog-hint__line">• Observe how the light behaves in each example</span>
+                  <span class="digital-analog-hint__line">• The switches are digital or analog not the light bulb</span>
+                </span>
+              </p>
+              <div class="digital-analog-grid">
+                <div class="digital-analog-col" data-example="digital">
+                  <div class="digital-analog-visual">
+                    <div class="digital-lamp" aria-hidden="true"></div>
+                    <button class="digital-toggle" type="button" role="switch" aria-checked="false" aria-label="Toggle digital lamp">
+                      <span class="digital-toggle__knob"></span>
+                    </button>
+                  </div>
+                </div>
+                <div class="digital-analog-col" data-example="analog">
+                  <div class="digital-analog-visual">
+                    <div class="digital-lamp analog-led" aria-hidden="true"></div>
+                    <div class="analog-dimmer" role="group" aria-label="Analog brightness">
+                      <div class="analog-dial" aria-hidden="true"></div>
+                      <button class="analog-stop" type="button" data-level="0" aria-pressed="true" aria-label="Set analog level to 0 percent" style="--stop-angle: -120deg;"></button>
+                      <button class="analog-stop" type="button" data-level="25" aria-pressed="false" aria-label="Set analog level to 25 percent" style="--stop-angle: -60deg;"></button>
+                      <button class="analog-stop" type="button" data-level="50" aria-pressed="false" aria-label="Set analog level to 50 percent" style="--stop-angle: 0deg;"></button>
+                      <button class="analog-stop" type="button" data-level="75" aria-pressed="false" aria-label="Set analog level to 75 percent" style="--stop-angle: 60deg;"></button>
+                      <button class="analog-stop" type="button" data-level="100" aria-pressed="false" aria-label="Set analog level to 100 percent" style="--stop-angle: 120deg;"></button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            `;
+            cardBodyEl.appendChild(wrapper);
+
+            const toggleBtn = wrapper.querySelector(".digital-toggle");
+            const analogLed = wrapper.querySelector(".analog-led");
+            const analogDial = wrapper.querySelector(".analog-dial");
+            const analogStops = wrapper.querySelectorAll(".analog-stop");
+            const digitalCol = wrapper.querySelector('.digital-analog-col[data-example="digital"]');
+            const analogCol = wrapper.querySelector('.digital-analog-col[data-example="analog"]');
+
+            const setDigitalState = (isOn) => {
+              wrapper.dataset.digitalOn = isOn ? "true" : "false";
+              if (toggleBtn) {
+                toggleBtn.setAttribute("aria-checked", isOn ? "true" : "false");
+              }
+            };
+
+            const levelToAngle = (level) => -120 + (240 * level) / 100;
+
+            const setAnalogLevel = (level) => {
+              const nextLevel = Math.max(0, Math.min(100, Number(level) || 0));
+              wrapper.dataset.analogLevel = String(nextLevel);
+              if (analogDial) {
+                analogDial.style.transform = `rotate(${levelToAngle(nextLevel)}deg)`;
+              }
+              if (analogLed) {
+                const intensity = nextLevel / 100;
+                const opacity = 0.15 + intensity * 0.85;
+                const glow = 6 + intensity * 18;
+                const glowAlpha = 0.2 + intensity * 0.55;
+                analogLed.style.setProperty("--analog-brightness", opacity.toFixed(2));
+                analogLed.style.setProperty("--analog-glow-alpha", glowAlpha.toFixed(2));
+                analogLed.style.setProperty("--analog-glow-size", `${glow}px`);
+              }
+              analogStops.forEach((btn) => {
+                const isActive = Number(btn.dataset.level) === nextLevel;
+                btn.classList.toggle("active", isActive);
+                btn.setAttribute("aria-pressed", isActive ? "true" : "false");
+              });
+            };
+
+            let digitalDemoTimer = null;
+            let analogDemoTimer = null;
+            let digitalHoverTimer = null;
+            let analogHoverTimer = null;
+            let digitalAutoSource = "";
+            let analogAutoSource = "";
+            const hoverStepMs = 550;
+            const canHover = window.matchMedia ? window.matchMedia("(hover: hover)").matches : true;
+
+            const playDigitalDemo = () => {
+              if (digitalDemoTimer) return;
+              setDigitalState(true);
+              digitalDemoTimer = window.setTimeout(() => {
+                setDigitalState(false);
+                digitalDemoTimer = null;
+              }, 650);
+            };
+
+            const playAnalogDemo = () => {
+              if (analogDemoTimer) return;
+              setAnalogLevel(100);
+              analogDemoTimer = window.setTimeout(() => {
+                setAnalogLevel(0);
+                analogDemoTimer = null;
+              }, 650);
+            };
+
+            const stopDigitalAuto = () => {
+              if (digitalHoverTimer) {
+                window.clearInterval(digitalHoverTimer);
+                digitalHoverTimer = null;
+              }
+              digitalAutoSource = "";
+              setDigitalState(false);
+            };
+
+            const stopAnalogAuto = () => {
+              if (analogHoverTimer) {
+                window.clearInterval(analogHoverTimer);
+                analogHoverTimer = null;
+              }
+              analogAutoSource = "";
+              setAnalogLevel(0);
+            };
+
+            const startDigitalAuto = (durationMs, source) => {
+              if (digitalHoverTimer) return;
+              digitalAutoSource = source || "hover";
+              let state = wrapper.dataset.digitalOn === "true";
+              digitalHoverTimer = window.setInterval(() => {
+                state = !state;
+                setDigitalState(state);
+              }, hoverStepMs);
+              if (durationMs) {
+                window.setTimeout(() => {
+                  if (digitalAutoSource === (source || "hover")) {
+                    stopDigitalAuto();
+                  }
+                }, durationMs);
+              }
+            };
+
+            const startAnalogAuto = (durationMs, source) => {
+              if (analogHoverTimer) return;
+              analogAutoSource = source || "hover";
+              const levels = [0, 25, 50, 75, 100];
+              analogHoverTimer = window.setInterval(() => {
+                const nextLevel = levels[Math.floor(Math.random() * levels.length)];
+                setAnalogLevel(nextLevel);
+              }, hoverStepMs);
+              if (durationMs) {
+                window.setTimeout(() => {
+                  if (analogAutoSource === (source || "hover")) {
+                    stopAnalogAuto();
+                  }
+                }, durationMs);
+              }
+            };
+
+            const canHoverExample = (example) => {
+              const selected = wrapper.dataset.selected;
+              return !selected || selected === example;
+            };
+
+            const resetChoiceClasses = () => {
+              if (digitalCol) {
+                digitalCol.classList.remove("choice-correct", "choice-wrong", "choice-selected");
+              }
+              if (analogCol) {
+                analogCol.classList.remove("choice-correct", "choice-wrong", "choice-selected");
+              }
+            };
+
+            const setChoice = (choice) => {
+              resetChoiceClasses();
+              wrapper.classList.remove("choice-locked");
+              wrapper.dataset.selected = choice;
+              if (choice === "digital") {
+                stopAnalogAuto();
+              } else if (choice === "analog") {
+                stopDigitalAuto();
+              }
+              const chosenCol = choice === "digital" ? digitalCol : analogCol;
+              if (chosenCol) {
+                chosenCol.classList.add("choice-selected");
+              }
+              if (cardFeedbackEl) {
+                cardFeedbackEl.textContent = "";
+                cardFeedbackEl.className = "card-feedback";
+              }
+            };
+
+            cardActionEl.classList.add("card-action--center");
+            const okBtn = document.createElement("button");
+            okBtn.type = "button";
+            okBtn.className = "action-btn";
+            okBtn.textContent = "OK";
+            okBtn.disabled = Boolean(completed[currentIndex]);
+            okBtn.addEventListener("click", () => {
+              const selected = wrapper.dataset.selected || "";
+              if (!selected) {
+                if (cardFeedbackEl) {
+                  cardFeedbackEl.textContent = "Tap an example first.";
+                  cardFeedbackEl.className = "card-feedback error";
+                }
+                return;
+              }
+              if (selected !== mode) {
+                resetChoiceClasses();
+                const wrongCol = selected === "digital" ? digitalCol : analogCol;
+                if (wrongCol) {
+                  wrongCol.classList.add("choice-wrong");
+                }
+                if (cardFeedbackEl) {
+                  cardFeedbackEl.textContent = mode === "digital"
+                    ? "Not quite. Choose the Digital connection"
+                    : "Not quite. Choose the Analog connection";
+                  cardFeedbackEl.className = "card-feedback error";
+                }
+                return;
+              }
+              if (!completed[currentIndex]) {
+                completeCard();
+              }
+              resetChoiceClasses();
+              const correctCol = selected === "digital" ? digitalCol : analogCol;
+              if (correctCol) {
+                correctCol.classList.add("choice-correct");
+              }
+              wrapper.classList.add("choice-locked");
+              if (cardFeedbackEl) {
+                cardFeedbackEl.textContent = mode === "digital"
+                  ? "Nice! This is the Digital connection\nPress next to continue"
+                  : "Nice! This is the Analog connection\nPress next to continue";
+                cardFeedbackEl.className = "card-feedback success";
+              }
+              nextBtn.disabled = false;
+              okBtn.disabled = true;
+            });
+            cardActionEl.appendChild(okBtn);
+
+            if (toggleBtn) {
+              toggleBtn.addEventListener("click", () => {
+                stopDigitalAuto();
+                startDigitalAuto(10000, "click");
+                setChoice("digital");
+              });
+            }
+
+            if (digitalCol) {
+              digitalCol.addEventListener("click", () => {
+                stopDigitalAuto();
+                startDigitalAuto(10000, "click");
+                setChoice("digital");
+              });
+            }
+
+            if (analogCol) {
+              analogCol.addEventListener("click", () => {
+                stopAnalogAuto();
+                startAnalogAuto(10000, "click");
+                setChoice("analog");
+              });
+            }
+
+            analogStops.forEach((btn) => {
+              btn.addEventListener("click", () => {
+                stopAnalogAuto();
+                startAnalogAuto(10000, "click");
+                setChoice("analog");
+              });
+            });
+
+            if (digitalCol && canHover) {
+              digitalCol.addEventListener("mouseenter", () => {
+                if (!canHoverExample("digital")) return;
+                startDigitalAuto(undefined, "hover");
+              });
+              digitalCol.addEventListener("mouseleave", () => {
+                if (digitalAutoSource === "hover") {
+                  stopDigitalAuto();
+                }
+              });
+            }
+
+            if (analogCol && canHover) {
+              analogCol.addEventListener("mouseenter", () => {
+                if (!canHoverExample("analog")) return;
+                startAnalogAuto(undefined, "hover");
+              });
+              analogCol.addEventListener("mouseleave", () => {
+                if (analogAutoSource === "hover") {
+                  stopAnalogAuto();
+                }
+              });
+            }
+
+            setDigitalState(false);
+            setAnalogLevel(0);
+          }
+
+          function renderDigitalAnalogQuizCard() {
+            clearElement(cardBodyEl);
+            cardBodyEl.style.display = "block";
+
+            const wrapper = document.createElement("div");
+            wrapper.className = "digital-analog-quiz";
+            wrapper.dataset.complete = "false";
+            wrapper.innerHTML = `
+              <p class="digital-analog-quiz__intro">Test each part, then drag it to the correct column.</p>
+              <div class="digital-analog-quiz__columns">
+                <div class="digital-analog-quiz__column">
+                  <div class="digital-analog-quiz__column-title">DIGITAL</div>
+                  <div class="digital-analog-quiz__column-subtitle">ON or OFF</div>
+                  <div class="digital-analog-quiz__dropzone" data-drop="digital" aria-label="Digital drop zone"></div>
+                </div>
+                <div class="digital-analog-quiz__column">
+                  <div class="digital-analog-quiz__column-title">ANALOG</div>
+                  <div class="digital-analog-quiz__column-subtitle">Changes smoothly</div>
+                  <div class="digital-analog-quiz__dropzone" data-drop="analog" aria-label="Analog drop zone"></div>
+                </div>
+              </div>
+              <div class="digital-analog-quiz__items" aria-label="Drag items">
+                <div class="drag-item" draggable="true" data-item-id="push-button" data-correct="digital" data-on="false">
+                  <div class="drag-item__title">Push Button</div>
+                  <div class="drag-item__test drag-item__test--center push-button-row">
+                    <button class="push-button-press" type="button" data-no-drag="true" aria-pressed="false" aria-label="Press push button">
+                      <svg class="push-button-svg" viewBox="0 0 781 696" role="img" aria-label="Push button">
+                        <defs>
+                          <mask id="push-button-base-mask" maskUnits="userSpaceOnUse">
+                            <rect width="781" height="696" fill="#ffffff"></rect>
+                            <ellipse cx="379" cy="134" rx="165" ry="110" fill="#000000"></ellipse>
+                          </mask>
+                          <mask id="push-button-cap-mask" maskUnits="userSpaceOnUse">
+                            <rect width="781" height="696" fill="#000000"></rect>
+                            <ellipse cx="379" cy="134" rx="165" ry="110" fill="#ffffff"></ellipse>
+                          </mask>
+                        </defs>
+                        <image href="{% static 'lessons/mission2/Push button.png' %}" width="781" height="696" mask="url(#push-button-base-mask)"></image>
+                        <g class="push-button-cap">
+                          <image href="{% static 'lessons/mission2/Push button.png' %}" width="781" height="696" mask="url(#push-button-cap-mask)"></image>
+                        </g>
+                      </svg>
+                    </button>
+                    <span class="push-button__state" aria-live="polite">OFF</span>
+                  </div>
+                  <div class="drag-item__feedback" aria-live="polite"></div>
+                </div>
+                <div class="drag-item" draggable="true" data-item-id="led" data-correct="digital" data-on="false">
+                  <div class="drag-item__title">LED (On / Off)</div>
+                  <div class="drag-item__test drag-item__test--center">
+                    <div class="digital-lamp" aria-hidden="true"></div>
+                    <button class="digital-toggle led-toggle" type="button" role="switch" data-no-drag="true" aria-checked="false" aria-label="Toggle LED">
+                      <span class="digital-toggle__knob"></span>
+                    </button>
+                  </div>
+                  <div class="drag-item__feedback" aria-live="polite"></div>
+                </div>
+                <div class="drag-item" draggable="true" data-item-id="pot" data-correct="analog" data-level="0">
+                  <div class="drag-item__title">Potentiometer (Knob)</div>
+                  <div class="drag-item__test pot-row">
+                    <div class="analog-dimmer pot-dimmer" role="group" aria-label="Potentiometer levels">
+                      <div class="analog-dial pot-dial" aria-hidden="true"></div>
+                      <button class="analog-stop pot-stop" type="button" data-no-drag="true" data-level="0" aria-pressed="true" aria-label="Set potentiometer to 0 percent" style="--stop-angle: -120deg;"></button>
+                      <button class="analog-stop pot-stop" type="button" data-no-drag="true" data-level="25" aria-pressed="false" aria-label="Set potentiometer to 25 percent" style="--stop-angle: -60deg;"></button>
+                      <button class="analog-stop pot-stop" type="button" data-no-drag="true" data-level="50" aria-pressed="false" aria-label="Set potentiometer to 50 percent" style="--stop-angle: 0deg;"></button>
+                      <button class="analog-stop pot-stop" type="button" data-no-drag="true" data-level="75" aria-pressed="false" aria-label="Set potentiometer to 75 percent" style="--stop-angle: 60deg;"></button>
+                      <button class="analog-stop pot-stop" type="button" data-no-drag="true" data-level="100" aria-pressed="false" aria-label="Set potentiometer to 100 percent" style="--stop-angle: 120deg;"></button>
+                    </div>
+                    <div class="pot-meter">
+                      <div class="pot-bar"><div class="pot-bar__fill"></div></div>
+                      <div class="pot-value" aria-live="polite">0%</div>
+                    </div>
+                  </div>
+                  <div class="drag-item__feedback" aria-live="polite"></div>
+                </div>
+                <div class="drag-item" draggable="true" data-item-id="servo" data-correct="analog" data-angle="0">
+                  <div class="drag-item__title">Servo Motor</div>
+                  <div class="drag-item__test drag-item__test--center servo-row">
+                    <button class="servo-btn" type="button" data-no-drag="true" aria-label="Rotate servo arm">
+                      <span class="servo-stack" aria-hidden="true">
+                        <img class="servo-base" src="{% static 'lessons/mission2/servo_base.png' %}" alt="">
+                        <img class="servo-arm" src="{% static 'lessons/mission2/servo_arm.png' %}" alt="">
+                      </span>
+                    </button>
+                  </div>
+                  <div class="drag-item__feedback" aria-live="polite"></div>
+                </div>
+              </div>
+              <div class="digital-analog-quiz__complete">
+Great job!
+Digital is ON or OFF.
+Analog changes little by little.
+              </div>
+            `;
+            cardBodyEl.appendChild(wrapper);
+
+            const dropzones = wrapper.querySelectorAll(".digital-analog-quiz__dropzone");
+            const items = Array.from(wrapper.querySelectorAll(".drag-item"));
+            const completionEl = wrapper.querySelector(".digital-analog-quiz__complete");
+            const totalItems = items.length;
+            let correctCount = items.filter((item) => item.classList.contains("drag-item--correct")).length;
+            let draggedItem = null;
+            const hoverStepMs = 550;
+            const canHover = window.matchMedia ? window.matchMedia("(hover: hover)").matches : true;
+            let activeAutoKey = "";
+
+            const setPushState = (item, isOn) => {
+              item.dataset.on = isOn ? "true" : "false";
+              const btn = item.querySelector(".push-button-press");
+              const stateEl = item.querySelector(".push-button__state");
+              if (btn) btn.setAttribute("aria-pressed", isOn ? "true" : "false");
+              if (stateEl) {
+                stateEl.textContent = isOn ? "ON" : "OFF";
+                stateEl.classList.toggle("on", isOn);
+              }
+            };
+
+            const pushItem = wrapper.querySelector('[data-item-id="push-button"]');
+            if (pushItem) {
+              const pressBtn = pushItem.querySelector(".push-button-press");
+              const release = () => setPushState(pushItem, false);
+              if (pressBtn) {
+                pressBtn.addEventListener("pointerdown", (event) => {
+                  event.preventDefault();
+                  setPushState(pushItem, true);
+                  if (typeof pressBtn.setPointerCapture === "function") {
+                    pressBtn.setPointerCapture(event.pointerId);
+                  }
+                });
+                pressBtn.addEventListener("pointerup", release);
+                pressBtn.addEventListener("pointerleave", release);
+                pressBtn.addEventListener("pointercancel", release);
+                pressBtn.addEventListener("keydown", (event) => {
+                  if (event.key === " " || event.key === "Enter") {
+                    event.preventDefault();
+                    setPushState(pushItem, true);
+                  }
+                });
+                pressBtn.addEventListener("keyup", (event) => {
+                  if (event.key === " " || event.key === "Enter") {
+                    event.preventDefault();
+                    setPushState(pushItem, false);
+                  }
+                });
+              }
+              setPushState(pushItem, false);
+            }
+
+            const ledItem = wrapper.querySelector('[data-item-id="led"]');
+            let setLedState = null;
+            if (ledItem) {
+              const ledToggle = ledItem.querySelector(".digital-toggle");
+              setLedState = (isOn) => {
+                ledItem.dataset.on = isOn ? "true" : "false";
+                if (ledToggle) {
+                  ledToggle.setAttribute("aria-checked", isOn ? "true" : "false");
+                }
+              };
+              if (ledToggle) {
+                ledToggle.addEventListener("click", () => {
+                  setLedState(ledItem.dataset.on !== "true");
+                });
+              }
+              setLedState(false);
+            }
+
+            const potItem = wrapper.querySelector('[data-item-id="pot"]');
+            let setPotLevel = null;
+            const potLevels = [0, 25, 50, 75, 100];
+            if (potItem) {
+              const potDial = potItem.querySelector(".pot-dial");
+              const potStops = potItem.querySelectorAll(".pot-stop");
+              const potFill = potItem.querySelector(".pot-bar__fill");
+              const potValue = potItem.querySelector(".pot-value");
+              const levelToAngle = (level) => -120 + (240 * level) / 100;
+              setPotLevel = (level) => {
+                const nextLevel = Math.max(0, Math.min(100, Number(level) || 0));
+                potItem.dataset.level = String(nextLevel);
+                if (potDial) {
+                  potDial.style.transform = `rotate(${levelToAngle(nextLevel)}deg)`;
+                }
+                if (potFill) {
+                  potFill.style.width = `${nextLevel}%`;
+                }
+                if (potValue) {
+                  potValue.textContent = `${nextLevel}%`;
+                }
+                potStops.forEach((btn) => {
+                  const isActive = Number(btn.dataset.level) === nextLevel;
+                  btn.classList.toggle("active", isActive);
+                  btn.setAttribute("aria-pressed", isActive ? "true" : "false");
+                });
+              };
+              potStops.forEach((btn) => {
+                btn.addEventListener("click", () => {
+                  setPotLevel(btn.dataset.level);
+                });
+              });
+              setPotLevel(0);
+            }
+
+            const servoItem = wrapper.querySelector('[data-item-id="servo"]');
+            let setServoAngle = null;
+            const servoAngles = [0, 25, 50, 75, 100, 125, 150, 175, 200, 225, 250, 260];
+            let servoAngleIndex = 0;
+            let servoAngleDirection = 1;
+            if (servoItem) {
+              const servoArm = servoItem.querySelector(".servo-arm");
+              const servoBtn = servoItem.querySelector(".servo-btn");
+              setServoAngle = (angle) => {
+                const nextAngle = Number(angle) || 0;
+                servoItem.dataset.angle = String(nextAngle);
+                if (servoArm) {
+                  servoArm.style.transform = `rotate(${nextAngle}deg)`;
+                }
+              };
+              if (servoBtn) {
+                servoBtn.addEventListener("click", () => {
+                  if (servoAngleIndex === servoAngles.length - 1) {
+                    servoAngleDirection = -1;
+                  } else if (servoAngleIndex === 0) {
+                    servoAngleDirection = 1;
+                  }
+                  servoAngleIndex = Math.max(0, Math.min(servoAngles.length - 1, servoAngleIndex + servoAngleDirection));
+                  setServoAngle(servoAngles[servoAngleIndex]);
+                });
+              }
+              setServoAngle(servoAngles[servoAngleIndex]);
+            }
+
+            const autoState = {
+              push: { interval: null, timeout: null, source: "" },
+              led: { interval: null, timeout: null, source: "" },
+              pot: { interval: null, timeout: null, source: "" },
+              servo: { interval: null, timeout: null, source: "" },
+            };
+
+            const stopAuto = (key) => {
+              const state = autoState[key];
+              if (!state) return;
+              if (state.interval) {
+                window.clearInterval(state.interval);
+                state.interval = null;
+              }
+              if (state.timeout) {
+                window.clearTimeout(state.timeout);
+                state.timeout = null;
+              }
+              state.source = "";
+              if (key === "push" && pushItem) {
+                setPushState(pushItem, false);
+              }
+              if (key === "led" && ledItem && typeof setLedState === "function") {
+                setLedState(false);
+              }
+              if (key === "pot" && potItem && typeof setPotLevel === "function") {
+                setPotLevel(0);
+              }
+              if (key === "servo" && servoItem && typeof setServoAngle === "function") {
+                servoAngleIndex = 0;
+                servoAngleDirection = 1;
+                setServoAngle(servoAngles[0]);
+              }
+            };
+
+            const stopAllAuto = (exceptKey = "") => {
+              ["push", "led", "pot", "servo"].forEach((key) => {
+                if (key !== exceptKey) {
+                  stopAuto(key);
+                }
+              });
+            };
+
+            const startAuto = (key, durationMs, source) => {
+              const state = autoState[key];
+              if (!state || state.interval) return;
+              state.source = source || "hover";
+              if (key === "push" && pushItem) {
+                let isOn = pushItem.dataset.on === "true";
+                state.interval = window.setInterval(() => {
+                  isOn = !isOn;
+                  setPushState(pushItem, isOn);
+                }, hoverStepMs);
+              }
+              if (key === "led" && ledItem && typeof setLedState === "function") {
+                let isOn = ledItem.dataset.on === "true";
+                state.interval = window.setInterval(() => {
+                  isOn = !isOn;
+                  setLedState(isOn);
+                }, hoverStepMs);
+              }
+              if (key === "pot" && potItem && typeof setPotLevel === "function") {
+                state.interval = window.setInterval(() => {
+                  const nextLevel = potLevels[Math.floor(Math.random() * potLevels.length)];
+                  setPotLevel(nextLevel);
+                }, hoverStepMs);
+              }
+              if (key === "servo" && servoItem && typeof setServoAngle === "function") {
+                state.interval = window.setInterval(() => {
+                  if (servoAngleIndex === servoAngles.length - 1) {
+                    servoAngleDirection = -1;
+                  } else if (servoAngleIndex === 0) {
+                    servoAngleDirection = 1;
+                  }
+                  servoAngleIndex = Math.max(
+                    0,
+                    Math.min(servoAngles.length - 1, servoAngleIndex + servoAngleDirection)
+                  );
+                  setServoAngle(servoAngles[servoAngleIndex]);
+                }, hoverStepMs);
+              }
+              if (durationMs) {
+                state.timeout = window.setTimeout(() => {
+                  if (activeAutoKey === key && state.source === "click") {
+                    stopAuto(key);
+                    activeAutoKey = "";
+                  }
+                }, durationMs);
+              }
+            };
+
+            const canHoverItem = (key) => !activeAutoKey || activeAutoKey === key;
+
+            const registerAutoHover = (item, key) => {
+              if (!item || !canHover) return;
+              const testEl = item.querySelector(".drag-item__test") || item;
+              testEl.addEventListener("mouseenter", () => {
+                if (!canHoverItem(key)) return;
+                startAuto(key, undefined, "hover");
+              });
+              testEl.addEventListener("mouseleave", () => {
+                if (autoState[key].source === "hover") {
+                  stopAuto(key);
+                }
+              });
+            };
+
+            const registerAutoClick = (item, key, target) => {
+              if (!item) return;
+              const clickEl = target || item.querySelector(".drag-item__test") || item;
+              clickEl.addEventListener("click", () => {
+                activeAutoKey = key;
+                stopAllAuto(key);
+                stopAuto(key);
+                startAuto(key, 10000, "click");
+              });
+            };
+
+            registerAutoHover(pushItem, "push");
+            registerAutoHover(ledItem, "led");
+            registerAutoHover(potItem, "pot");
+            registerAutoHover(servoItem, "servo");
+
+            const pushBtn = pushItem ? pushItem.querySelector(".push-button-press") : null;
+            const ledToggle = ledItem ? ledItem.querySelector(".digital-toggle") : null;
+            const potStops = potItem ? potItem.querySelectorAll(".pot-stop") : [];
+            const servoBtn = servoItem ? servoItem.querySelector(".servo-btn") : null;
+
+            registerAutoClick(pushItem, "push", pushBtn);
+            registerAutoClick(ledItem, "led", ledToggle);
+            if (potStops.length) {
+              potStops.forEach((btn) => registerAutoClick(potItem, "pot", btn));
+            } else {
+              registerAutoClick(potItem, "pot");
+            }
+            registerAutoClick(servoItem, "servo", servoBtn);
+
+            const markComplete = () => {
+              if (correctCount < totalItems) return;
+              wrapper.dataset.complete = "true";
+              if (completionEl) {
+                completionEl.style.display = "block";
+              }
+              if (!completed[currentIndex]) {
+                completeCard();
+              }
+              nextBtn.disabled = false;
+            };
+
+            items.forEach((item) => {
+              item.addEventListener("dragstart", (event) => {
+                if (event.target.closest("[data-no-drag='true']")) {
+                  event.preventDefault();
+                  return;
+                }
+                draggedItem = item;
+                item.classList.add("dragging");
+                event.dataTransfer.setData("text/plain", item.dataset.itemId || "");
+                event.dataTransfer.effectAllowed = "move";
+              });
+              item.addEventListener("dragend", () => {
+                item.classList.remove("dragging");
+                draggedItem = null;
+              });
+            });
+
+            dropzones.forEach((zone) => {
+              zone.addEventListener("dragover", (event) => {
+                event.preventDefault();
+                zone.classList.add("active");
+              });
+              zone.addEventListener("dragleave", () => {
+                zone.classList.remove("active");
+              });
+              zone.addEventListener("drop", (event) => {
+                event.preventDefault();
+                zone.classList.remove("active");
+                const itemId = event.dataTransfer.getData("text/plain");
+                const item =
+                  wrapper.querySelector(`.drag-item[data-item-id="${itemId}"]`) || draggedItem;
+                if (!item || item.classList.contains("drag-item--correct")) return;
+                const feedback = item.querySelector(".drag-item__feedback");
+                const isCorrect = item.dataset.correct === zone.dataset.drop;
+                if (isCorrect) {
+                  zone.appendChild(item);
+                  item.classList.add("drag-item--correct");
+                  item.setAttribute("draggable", "false");
+                  if (feedback) {
+                    feedback.textContent = "Nice! 👍";
+                    feedback.classList.remove("error");
+                  }
+                  correctCount += 1;
+                  markComplete();
+                } else {
+                  if (feedback) {
+                    feedback.textContent = "Try again!";
+                    feedback.classList.add("error");
+                  }
+                  item.classList.remove("drag-item__shake");
+                  void item.offsetWidth;
+                  item.classList.add("drag-item__shake");
+                }
+              });
+            });
+
+            markComplete();
           }
 
           function parseBounds(bounds) {
@@ -2176,13 +3543,33 @@
 
           function renderCard() {
             const card = CARDS[currentIndex];
-            cardTypeEl.textContent = card.card_type ? card.card_type.toUpperCase() : "";
+            const isDigitalAnalogDigital = isDigitalAnalogDigitalCard(card);
+            const isDigitalAnalogAnalog = isDigitalAnalogAnalogCard(card);
+            const isDigitalAnalogQuiz = isDigitalAnalogQuizCard(card);
+            if (isDigitalAnalogDigital || isDigitalAnalogAnalog) {
+              cardTypeEl.textContent = "INTRO";
+            } else if (isDigitalAnalogQuiz) {
+              cardTypeEl.textContent = "QUIZ";
+            } else {
+              cardTypeEl.textContent = card.card_type ? card.card_type.toUpperCase() : "";
+            }
             cardIndexEl.textContent = "Card " + (currentIndex + 1) + " of " + CARDS.length;
 
-            cardTitleEl.textContent = card.title || "";
-            cardTitleEl.style.display = card.title ? "block" : "none";
-            renderBody(card.body || "");
+            if (isDigitalAnalogDigital) {
+              cardTitleEl.textContent = "Understanding Digital vs. Analog";
+              cardTitleEl.style.display = "block";
+            } else if (isDigitalAnalogAnalog) {
+              cardTitleEl.textContent = "Understanding Digital vs. Analog";
+              cardTitleEl.style.display = "block";
+            } else if (isDigitalAnalogQuiz) {
+              cardTitleEl.textContent = "Digital or Analog?";
+              cardTitleEl.style.display = "block";
+            } else {
+              cardTitleEl.textContent = card.title || "";
+              cardTitleEl.style.display = card.title ? "block" : "none";
+            }
 
+            clearElement(cardBodyEl);
             clearElement(cardMediaEl);
             clearElement(cardActionEl);
             clearElement(cardQuizEl);
@@ -2195,34 +3582,54 @@
               navContainer.style.display = "flex";
             }
 
-            renderMedia(card);
+            cardMediaEl.style.display = (isDigitalAnalogDigital || isDigitalAnalogAnalog || isDigitalAnalogQuiz) ? "none" : "block";
 
-            if (card.card_type === "action") {
-              if (hasHotspotAction(card)) {
-                renderHotspotAction(card);
-              } else {
-                renderAction(card);
+            if (isDigitalAnalogDigital) {
+              renderDigitalAnalogCard("digital");
+            } else if (isDigitalAnalogAnalog) {
+              renderDigitalAnalogCard("analog");
+            } else if (isDigitalAnalogQuiz) {
+              renderDigitalAnalogQuizCard();
+            } else {
+              renderBody(card.body || "");
+            }
+
+            if (!isDigitalAnalogDigital && !isDigitalAnalogAnalog && !isDigitalAnalogQuiz) {
+              renderMedia(card);
+            }
+
+            if (!isDigitalAnalogDigital && !isDigitalAnalogAnalog && !isDigitalAnalogQuiz) {
+              if (card.card_type === "action") {
+                if (hasHotspotAction(card)) {
+                  renderHotspotAction(card);
+                } else {
+                  renderAction(card);
+                }
               }
-            }
-            if (card.card_type === "quiz" && stepHasQuiz) {
-              const payload = card.action_payload || {};
-              if (payload.quiz_type === "match") {
-                renderMatchQuiz(card);
-              } else {
-                renderQuiz(card);
+              if (card.card_type === "quiz" && stepHasQuiz) {
+                const payload = card.action_payload || {};
+                if (payload.quiz_type === "match") {
+                  renderMatchQuiz(card);
+                } else {
+                  renderQuiz(card);
+                }
               }
-            }
-            if (card.card_type === "code") {
-              renderCode(card);
-            }
-            if (card.card_type === "reward") {
-              renderReward(card);
+              if (card.card_type === "code") {
+                renderCode(card);
+              }
+              if (card.card_type === "reward") {
+                renderReward(card);
+              }
             }
 
             prevBtn.disabled = currentIndex === 0;
             nextBtn.textContent = currentIndex === CARDS.length - 1 ? "Finish" : "Next";
 
-            if (isGateCard(card)) {
+            if (isDigitalAnalogDigital || isDigitalAnalogAnalog) {
+              nextBtn.disabled = !completed[currentIndex];
+            } else if (isDigitalAnalogQuiz) {
+              nextBtn.disabled = !completed[currentIndex];
+            } else if (isGateCard(card)) {
               nextBtn.disabled = !completed[currentIndex];
             } else {
               nextBtn.disabled = false;
