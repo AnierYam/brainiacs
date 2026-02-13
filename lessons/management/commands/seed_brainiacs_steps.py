@@ -144,28 +144,34 @@ class Command(BaseCommand):
 
         quiz_xp = 15
 
-        # Mission 2 - Arduino Board (cards, emoji titles)
+        # Mission 2 - Arduino Board (cards, unit ordering)
         order = 1
         parent = "mission-2-arduino-board"
-        add_step("introduction", "\U0001F44B Meet the Arduino!", parent, order, "cards", True, 10, quiz_xp)
+        add_step("introduction", "Meet the Arduino", parent, order, "cards", True, 10, quiz_xp)
         order += 1
-        add_step("usb-input", "\U0001F50C USB Power Port", parent, order, "cards", True, 10, quiz_xp)
+        add_step("power-input", "Power Connector", parent, order, "cards", True, 10, quiz_xp)
         order += 1
-        add_step("power-input", "\u26A1 Power Connector", parent, order, "cards", True, 10, quiz_xp)
+        add_step("usb-input", "USB Power Port", parent, order, "cards", True, 10, quiz_xp)
         order += 1
-        add_step("microcontroller", "\U0001F9E0 The Brain Chip", parent, order, "cards", True, 10, quiz_xp)
+        add_step("on-led", "Power On Light", parent, order, "cards", True, 10, quiz_xp)
         order += 1
-        add_step("reset-button", "\U0001F504 Reset Button", parent, order, "cards", True, 10, quiz_xp)
+        add_step("microcontroller", "The Brain Chip", parent, order, "cards", True, 10, quiz_xp)
         order += 1
-        add_step("checkpoint-quiz", "\U0001F9E9 Checkpoint Quiz", parent, order, "cards", True, 10, quiz_xp)
+        add_step("reset-button", "Reset Button", parent, order, "cards", True, 10, quiz_xp)
         order += 1
-        add_step("power-output", "\U0001F50B Power Out Pins", parent, order, "cards", True, 10, quiz_xp)
+        add_step("tx-rx-lights", "TX/RX Lights", parent, order, "cards", True, 10, quiz_xp)
         order += 1
-        add_step("digital-vs-analog", "\U0001F313 Digital vs Analog", parent, order, "cards", True, 10, quiz_xp)
+        add_step("l-led", "The L Light (Pin 13 LED)", parent, order, "cards", True, 10, quiz_xp)
         order += 1
-        add_step("arduino-pinout", "\U0001F4CD Pin Map", parent, order, "cards", True, 10, quiz_xp)
+        add_step("checkpoint-quiz", "Checkpoint Quiz", parent, order, "cards", True, 10, quiz_xp)
         order += 1
-        add_step("arduino-board-quiz", "\U0001F4DD Arduino Board Quiz", parent, order, "cards", True, 10, quiz_xp)
+        add_step("digital-vs-analog", "Digital vs Analog", parent, order, "cards", True, 10, quiz_xp)
+        order += 1
+        add_step("power-output", "Analog Input / Output", parent, order, "cards", True, 10, quiz_xp)
+        order += 1
+        add_step("arduino-pinout", "Digital Input / Output", parent, order, "cards", True, 10, quiz_xp)
+        order += 1
+        add_step("arduino-board-quiz", "Checkpoint Quiz", parent, order, "cards", True, 10, quiz_xp)
 
         # Mission 2 - Breadboard (cards, emoji titles)
         order = 1

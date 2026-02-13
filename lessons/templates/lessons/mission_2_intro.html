@@ -137,6 +137,109 @@
       position: relative;
     }
 
+    .lesson-unit {
+      margin-bottom: 2.2rem;
+      position: relative;
+    }
+
+    .lesson-unit:last-child {
+      margin-bottom: 0;
+    }
+
+    .unit-banner {
+      max-width: 540px;
+      margin: 0 auto 1rem;
+      border-radius: 18px;
+      padding: 0.9rem 1.1rem;
+      color: #ffffff;
+      box-shadow: 0 10px 26px rgba(15, 23, 42, 0.2);
+      border: 2px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .unit-banner-live {
+      position: sticky;
+      top: 0.75rem;
+      z-index: 25;
+    }
+
+    .unit-split {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      margin: 0.4rem auto 1.3rem;
+      max-width: 760px;
+    }
+
+    .unit-split__line {
+      flex: 1;
+      height: 2px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, rgba(15, 23, 42, 0), rgba(15, 23, 42, 0.35), rgba(15, 23, 42, 0));
+    }
+
+    .unit-split__pill {
+      min-width: 250px;
+      border-radius: 999px;
+      padding: 0.65rem 1.1rem;
+      box-shadow: 0 8px 18px rgba(15, 23, 42, 0.18);
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      text-align: center;
+      color: #ffffff;
+    }
+
+    .unit-split__meta {
+      display: block;
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 700;
+      opacity: 0.95;
+    }
+
+    .unit-split__title {
+      display: block;
+      margin-top: 0.18rem;
+      font-size: 1rem;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .unit-split--2 .unit-split__pill {
+      background: linear-gradient(135deg, #8b5cf6, #a855f7);
+    }
+
+    .unit-split--3 .unit-split__pill {
+      background: linear-gradient(135deg, #0ea5e9, #2563eb);
+    }
+
+    .unit-banner__meta {
+      font-size: 0.8rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      opacity: 0.92;
+      font-weight: 700;
+    }
+
+    .unit-banner__title {
+      margin-top: 0.2rem;
+      font-size: 1.3rem;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .unit-banner--1 {
+      background: linear-gradient(135deg, #1f9d55, #16a34a);
+    }
+
+    .unit-banner--2 {
+      background: linear-gradient(135deg, #8b5cf6, #a855f7);
+    }
+
+    .unit-banner--3 {
+      background: linear-gradient(135deg, #0ea5e9, #2563eb);
+    }
+
     .circle-card {
       width: 190px;
       height: 190px;
@@ -245,6 +348,31 @@
         margin-left: 0;
         margin-right: 0;
       }
+
+      .unit-banner {
+        border-radius: 14px;
+      }
+
+      .unit-banner__title {
+        font-size: 1.15rem;
+      }
+
+      .unit-banner-live {
+        top: 0.5rem;
+      }
+
+      .unit-split {
+        gap: 0.5rem;
+      }
+
+      .unit-split__pill {
+        min-width: 210px;
+        padding: 0.55rem 0.9rem;
+      }
+
+      .unit-split__title {
+        font-size: 0.92rem;
+      }
     }
   </style>
 </head>
@@ -284,24 +412,58 @@
     </div>
     <h2 class="section-title">Lesson 1: Arduino Board</h2>
 
-    <div class="vertical-path">
-      {% for lesson in lesson1_lessons %}
-            <div class="circle-card{% if lesson.is_complete %} is-complete{% endif %}" id="lesson-{{ lesson.slug }}">
-          <a href="{% url 'lessons:mission_2_lesson_detail' lesson.slug %}" class="circle-link">
-            <div class="circle-image-wrapper lesson1-icon">
-              <img
-                src="{% static 'lessons/mission2/arduino_chip_icon.png' %}"
-                alt="{{ lesson.title }}"
-                class="circle-image"
-              />
-            </div>
-            <div class="circle-name">
-              {{ lesson.title }}
-            </div>
-          </a>
+    {% if lesson1_units %}
+      <div
+        class="unit-banner unit-banner-live unit-banner--{{ lesson1_units.0.unit }}"
+        id="lesson1-unit-live"
+      >
+        <div class="unit-banner__meta" id="lesson1-unit-live-meta">
+          Lesson 1, Unit {{ lesson1_units.0.unit }}
         </div>
-      {% endfor %}
-    </div>
+        <div class="unit-banner__title" id="lesson1-unit-live-title">
+          {{ lesson1_units.0.title }}
+        </div>
+      </div>
+    {% endif %}
+
+    {% for unit in lesson1_units %}
+      <div
+        class="lesson-unit"
+        id="{{ unit.slug }}"
+        data-unit="{{ unit.unit }}"
+        data-unit-title="{{ unit.title }}"
+        data-unit-class="unit-banner--{{ unit.unit }}"
+      >
+        {% if not forloop.first %}
+          <div class="unit-split unit-split--{{ unit.unit }}">
+            <div class="unit-split__line"></div>
+            <div class="unit-split__pill">
+              <span class="unit-split__meta">Lesson 1, Unit {{ unit.unit }}</span>
+              <span class="unit-split__title">{{ unit.title }}</span>
+            </div>
+            <div class="unit-split__line"></div>
+          </div>
+        {% endif %}
+        <div class="vertical-path">
+          {% for lesson in unit.lessons %}
+            <div class="circle-card{% if lesson.is_complete %} is-complete{% endif %}" id="lesson-{{ lesson.slug }}">
+              <a href="{% url 'lessons:mission_2_lesson_detail' lesson.slug %}" class="circle-link">
+                <div class="circle-image-wrapper lesson1-icon">
+                  <img
+                    src="{% static 'lessons/mission2/arduino_chip_icon.png' %}"
+                    alt="{{ lesson.title }}"
+                    class="circle-image"
+                  />
+                </div>
+                <div class="circle-name">
+                  {{ lesson.title }}
+                </div>
+              </a>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    {% endfor %}
   </section>
 
   <!-- LESSON 2 -->
@@ -394,6 +556,42 @@
           }, 0);
         }
       }
+
+      const liveBanner = document.getElementById("lesson1-unit-live");
+      const liveMeta = document.getElementById("lesson1-unit-live-meta");
+      const liveTitle = document.getElementById("lesson1-unit-live-title");
+      const unitSections = Array.from(document.querySelectorAll(".lesson-unit[data-unit]"));
+      if (liveBanner && liveMeta && liveTitle && unitSections.length) {
+        const setLiveBanner = (unitEl) => {
+          const unitNumber = unitEl.dataset.unit || "";
+          const unitTitle = unitEl.dataset.unitTitle || "";
+          const unitClass = unitEl.dataset.unitClass || "";
+          liveMeta.textContent = "Lesson 1, Unit " + unitNumber;
+          liveTitle.textContent = unitTitle;
+          liveBanner.classList.remove("unit-banner--1", "unit-banner--2", "unit-banner--3");
+          if (unitClass) {
+            liveBanner.classList.add(unitClass);
+          }
+        };
+
+        const syncLiveUnitBanner = () => {
+          const threshold = 130;
+          let active = unitSections[0];
+          for (const unitEl of unitSections) {
+            if (unitEl.getBoundingClientRect().top - threshold <= 0) {
+              active = unitEl;
+            } else {
+              break;
+            }
+          }
+          setLiveBanner(active);
+        };
+
+        syncLiveUnitBanner();
+        window.addEventListener("scroll", syncLiveUnitBanner, { passive: true });
+        window.addEventListener("resize", syncLiveUnitBanner);
+      }
+
       const selectors = ["a.circle-link", "a.quiz-link", "a.mission-link"];
       const focusables = Array.from(document.querySelectorAll(selectors.join(",")));
       const isEditable = (el) => {

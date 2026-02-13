@@ -557,31 +557,43 @@ def mission_1_assembly_parts(request):
 MISSION2_LESSON1 = [
     {
         "slug": "introduction",
-        "title": "Introduction",
+        "title": "Meet the Arduino",
         "part": 1,
+        "unit": 1,
         "focus": "50% 50%",
         "zoom": "220%",
     },
     {
-        "slug": "usb-input",
-        "title": "USB Input",
+        "slug": "power-input",
+        "title": "Power Connector",
         "part": 1,
+        "unit": 1,
+        "focus": "30% 48%",
+        "zoom": "300%",
+    },
+    {
+        "slug": "usb-input",
+        "title": "USB Power Port",
+        "part": 1,
+        "unit": 2,
         "focus": "18% 24%",
         "zoom": "300%",
         # Use dedicated USB icon instead of board crop
         "image": "lessons/mission2/usb-logo-black-and-white.png",
     },
     {
-        "slug": "power-input",
-        "title": "Power Input",
+        "slug": "on-led",
+        "title": "Power On Light",
         "part": 1,
-        "focus": "30% 48%",
-        "zoom": "300%",
+        "unit": 2,
+        "focus": "85% 30%",
+        "zoom": "360%",
     },
     {
         "slug": "microcontroller",
         "title": "The Brain Chip",
         "part": 1,
+        "unit": 2,
         "focus": "55% 52%",
         "zoom": "170%",
     },
@@ -589,43 +601,99 @@ MISSION2_LESSON1 = [
         "slug": "reset-button",
         "title": "Reset Button",
         "part": 1,
+        "unit": 2,
         "focus": "47% 16%",
         "zoom": "260%",
+    },
+    {
+        "slug": "tx-rx-lights",
+        "title": "TX/RX Lights",
+        "part": 1,
+        "unit": 2,
+        "focus": "40% 31%",
+        "zoom": "420%",
+    },
+    {
+        "slug": "l-led",
+        "title": "The L Light (Pin 13 LED)",
+        "part": 1,
+        "unit": 2,
+        "focus": "40% 21%",
+        "zoom": "460%",
     },
     {
         "slug": "checkpoint-quiz",
         "title": "Checkpoint Quiz",
         "part": 1,
+        "unit": 2,
         "focus": "50% 50%",
         "zoom": "160%",
     },
     {
-        "slug": "power-output",
-        "title": "Power output",
-        "part": 1,
-        "focus": "78% 34%",
-        "zoom": "280%",
-    },
-    {
         "slug": "digital-vs-analog",
-        "title": "Digital vs. Analog",
+        "title": "Digital vs Analog",
         "part": 1,
+        "unit": 3,
         "focus": "84% 22%",
         "zoom": "240%",
     },
     {
-        "slug": "arduino-pinout",
-        "title": "The Arduino Pinout",
+        "slug": "power-output",
+        "title": "Analog Input / Output",
         "part": 1,
-        "focus": "60% 48%",
-        "zoom": "160%",
+        "unit": 3,
+        "focus": "74% 88%",
+        "zoom": "290%",
+    },
+    {
+        "slug": "arduino-pinout",
+        "title": "Digital Input / Output",
+        "part": 1,
+        "unit": 3,
+        "focus": "68% 10%",
+        "zoom": "260%",
     },
     {
         "slug": "arduino-board-quiz",
-        "title": "Arduino Board Quiz",
+        "title": "Checkpoint Quiz",
         "part": 1,
+        "unit": 3,
         "focus": "50% 50%",
         "zoom": "160%",
+    },
+]
+
+MISSION2_LESSON1_UNITS = [
+    {
+        "unit": 1,
+        "title": "Meet the Board",
+        "slug": "lesson1-unit-1",
+        "lessons": ["introduction", "power-input"],
+    },
+    {
+        "unit": 2,
+        "title": "Processing the code",
+        "slug": "lesson1-unit-2",
+        "lessons": [
+            "usb-input",
+            "on-led",
+            "microcontroller",
+            "reset-button",
+            "tx-rx-lights",
+            "l-led",
+            "checkpoint-quiz",
+        ],
+    },
+    {
+        "unit": 3,
+        "title": "Data Input and Output",
+        "slug": "lesson1-unit-3",
+        "lessons": [
+            "digital-vs-analog",
+            "power-output",
+            "arduino-pinout",
+            "arduino-board-quiz",
+        ],
     },
 ]
 
@@ -683,12 +751,26 @@ def mission_2_intro(request):
             lesson["has_quiz"] = step.has_quiz
             lesson["is_complete"] = step.id in completed_ids
 
+    lesson1_map = {lesson["slug"]: lesson for lesson in lesson1_lessons}
+    lesson1_units = []
+    for unit in MISSION2_LESSON1_UNITS:
+        unit_lessons = [lesson1_map[slug] for slug in unit["lessons"] if slug in lesson1_map]
+        lesson1_units.append(
+            {
+                "unit": unit["unit"],
+                "title": unit["title"],
+                "slug": unit["slug"],
+                "lessons": unit_lessons,
+            }
+        )
+
     xp_total, xp_max, xp_percent = _get_xp_stats("mission-2", user)
     return render(
         request,
         "lessons/mission_2_intro.html",
         {
             "lesson1_lessons": lesson1_lessons,
+            "lesson1_units": lesson1_units,
             "lesson2_lessons": lesson2_lessons,
             "lesson3_lessons": lesson3_lessons,
             "xp_total": xp_total,
@@ -748,8 +830,11 @@ def mission_2_lesson_detail(request, slug):
         "introduction": "Mission 2 Lesson 1",
         "usb-input": "Mission 2 Lesson 1 - USB Power Port",
         "power-input": "Mission 2 Lesson 1 - Power Connector",
+        "on-led": "Mission 2 Lesson 1 - Power On Light",
         "microcontroller": "Mission 2 Lesson 1 - The Brain Chip",
         "reset-button": "Mission 2 Lesson 1 - Reset Button",
+        "tx-rx-lights": "Mission 2 Lesson 1 - TX/RX Lights",
+        "l-led": "Mission 2 Lesson 1 - The L Light (Pin 13 LED)",
         "checkpoint-quiz": "Mission 2 Lesson 1 - Checkpoint Quiz",
         "power-output": "Mission 2 Lesson 1 - Power Out Pins",
         "digital-vs-analog": "Mission 2 Lesson 1 - Digital vs Analog",
