@@ -149,7 +149,7 @@ class Command(BaseCommand):
         parent = "mission-2-arduino-board"
         add_step("introduction", "Meet the Arduino", parent, order, "cards", True, 10, quiz_xp)
         order += 1
-        add_step("power-input", "Power Connector", parent, order, "cards", True, 10, quiz_xp)
+        add_step("power-input", "Power Connector", parent, order, "cards", False, 10, 0)
         order += 1
         add_step("usb-input", "USB Power Port", parent, order, "cards", True, 10, quiz_xp)
         order += 1
