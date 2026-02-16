@@ -18,7 +18,7 @@ from lessons.models import (
 )
 from levels.models import Lesson as LevelLesson
 
-DEMO_MODE = True
+DEMO_MODE = False
 REVIEW_XP = 5
 
 
