@@ -10,30 +10,6 @@ from landing.models import ActivationCode, normalize_activation_code
 class ActivationRequiredAuthenticationForm(AuthenticationForm):
     def confirm_login_allowed(self, user):
         super().confirm_login_allowed(user)
-        if user.is_staff or user.is_superuser:
-            return
-        activation = ActivationCode.objects.filter(user=user).first()
-        if not activation:
-            raise ValidationError(
-                "This account is not linked to an activation code. "
-                "Activate your kit before signing in.",
-                code="activation_required",
-            )
-        if activation.email_verified_at is None:
-            # Backward compatibility: accounts linked before email verification
-            # rollout had no verification challenge issued.
-            if (
-                activation.email_verification_sent_at is None
-                and not (activation.email_verification_code or "").strip()
-            ):
-                activation.email_verified_at = timezone.now()
-                activation.save(update_fields=["email_verified_at"])
-                return
-            raise ValidationError(
-                "You must confirm your email before signing in. "
-                "Check your inbox for the verification code.",
-                code="email_verification_required",
-            )
 
 
 class ActivationCodeSignupForm(UserCreationForm):
