@@ -74,18 +74,53 @@
       flex: 1;
     }
     .password-toggle {
-      width: auto;
+      width: 40px;
+      min-width: 40px;
+      height: 40px;
       background: #e2e8f0;
       color: #1f2a37;
       border: 1px solid var(--line);
       border-radius: 10px;
-      padding: 10px 12px;
-      font-weight: 600;
-      font-size: 13px;
+      padding: 0;
       cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
     }
     .password-toggle:hover {
       background: #cbd5e1;
+    }
+    .password-toggle svg {
+      width: 20px;
+      height: 20px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .password-toggle .icon-eye-open {
+      display: none;
+    }
+    .password-toggle .icon-eye-closed {
+      display: inline-block;
+    }
+    .password-toggle[aria-pressed="true"] .icon-eye-open {
+      display: inline-block;
+    }
+    .password-toggle[aria-pressed="true"] .icon-eye-closed {
+      display: none;
+    }
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
     }
     .errors {
       margin: 6px 0 0;
@@ -161,8 +196,19 @@
             data-target="{{ form.password1.id_for_label }}"
             aria-label="Show password"
             aria-pressed="false"
+            title="Show password"
           >
-            Show
+            <svg class="icon-eye-closed" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M3 3l18 18"></path>
+              <path d="M10.58 10.58a2 2 0 0 0 2.83 2.83"></path>
+              <path d="M9.88 5.09A10.94 10.94 0 0 1 12 5c6.5 0 10 7 10 7a17.6 17.6 0 0 1-3.03 3.94"></path>
+              <path d="M6.1 6.1A17.5 17.5 0 0 0 2 12s3.5 7 10 7a10.9 10.9 0 0 0 4.12-.81"></path>
+            </svg>
+            <svg class="icon-eye-open" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"></path>
+              <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+            <span class="sr-only">Toggle password visibility</span>
           </button>
         </div>
         {% if form.password1.errors %}
@@ -180,8 +226,19 @@
             data-target="{{ form.password2.id_for_label }}"
             aria-label="Show password"
             aria-pressed="false"
+            title="Show password"
           >
-            Show
+            <svg class="icon-eye-closed" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M3 3l18 18"></path>
+              <path d="M10.58 10.58a2 2 0 0 0 2.83 2.83"></path>
+              <path d="M9.88 5.09A10.94 10.94 0 0 1 12 5c6.5 0 10 7 10 7a17.6 17.6 0 0 1-3.03 3.94"></path>
+              <path d="M6.1 6.1A17.5 17.5 0 0 0 2 12s3.5 7 10 7a10.9 10.9 0 0 0 4.12-.81"></path>
+            </svg>
+            <svg class="icon-eye-open" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"></path>
+              <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+            <span class="sr-only">Toggle password visibility</span>
           </button>
         </div>
         {% if form.password2.errors %}
@@ -205,14 +262,14 @@
           const targetId = this.getAttribute("data-target");
           const input = document.getElementById(targetId);
           if (!input) return;
-          const showing = input.type === "text";
-          input.type = showing ? "password" : "text";
-          this.textContent = showing ? "Show" : "Hide";
-          this.setAttribute("aria-pressed", showing ? "false" : "true");
+          const nextVisible = input.type !== "text";
+          input.type = nextVisible ? "text" : "password";
+          this.setAttribute("aria-pressed", nextVisible ? "true" : "false");
           this.setAttribute(
             "aria-label",
-            showing ? "Show password" : "Hide password"
+            nextVisible ? "Hide password" : "Show password"
           );
+          this.setAttribute("title", nextVisible ? "Hide password" : "Show password");
         });
       });
     })();
