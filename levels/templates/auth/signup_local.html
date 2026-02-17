@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sign In | Brainiacs</title>
+  <title>Create Local Account | Brainiacs</title>
   <style>
     :root {
       color-scheme: light;
@@ -29,25 +29,16 @@
     }
     .card {
       width: 100%;
-      max-width: 420px;
+      max-width: 460px;
       background: var(--card);
       border: 1px solid var(--line);
       border-radius: 16px;
       padding: 28px;
       box-shadow: 0 20px 40px rgba(30, 64, 175, 0.12);
     }
-    h1 {
-      margin: 0 0 8px;
-      font-size: 28px;
-    }
-    .subtitle {
-      margin: 0 0 22px;
-      color: var(--muted);
-      font-size: 14px;
-    }
-    .field {
-      margin-bottom: 14px;
-    }
+    h1 { margin: 0 0 8px; font-size: 28px; }
+    .subtitle { margin: 0 0 22px; color: var(--muted); font-size: 14px; }
+    .field { margin-bottom: 14px; }
     .field label {
       display: block;
       margin-bottom: 6px;
@@ -65,14 +56,8 @@
       outline: 2px solid #bfdbfe;
       border-color: #93c5fd;
     }
-    .password-row {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-    }
-    .password-row input {
-      flex: 1;
-    }
+    .password-row { display: flex; gap: 8px; align-items: center; }
+    .password-row input { flex: 1; }
     .password-toggle {
       width: 40px;
       min-width: 40px;
@@ -87,9 +72,7 @@
       align-items: center;
       justify-content: center;
     }
-    .password-toggle:hover {
-      background: #cbd5e1;
-    }
+    .password-toggle:hover { background: #cbd5e1; }
     .password-toggle svg {
       width: 20px;
       height: 20px;
@@ -99,18 +82,10 @@
       stroke-linecap: round;
       stroke-linejoin: round;
     }
-    .password-toggle .icon-eye-open {
-      display: none;
-    }
-    .password-toggle .icon-eye-closed {
-      display: inline-block;
-    }
-    .password-toggle[aria-pressed="true"] .icon-eye-open {
-      display: inline-block;
-    }
-    .password-toggle[aria-pressed="true"] .icon-eye-closed {
-      display: none;
-    }
+    .password-toggle .icon-eye-open { display: none; }
+    .password-toggle .icon-eye-closed { display: inline-block; }
+    .password-toggle[aria-pressed="true"] .icon-eye-open { display: inline-block; }
+    .password-toggle[aria-pressed="true"] .icon-eye-closed { display: none; }
     .sr-only {
       position: absolute;
       width: 1px;
@@ -122,11 +97,7 @@
       white-space: nowrap;
       border: 0;
     }
-    .errors {
-      margin: 6px 0 0;
-      color: var(--danger);
-      font-size: 13px;
-    }
+    .errors { margin: 6px 0 0; color: var(--danger); font-size: 13px; line-height: 1.35; }
     button {
       width: 100%;
       border: 0;
@@ -155,8 +126,8 @@
 </head>
 <body>
   <main class="card">
-    <h1>Welcome Back</h1>
-    <p class="subtitle">Sign in to access Brainiacs lessons and save progress.</p>
+    <h1>Create Local Account</h1>
+    <p class="subtitle">Local development mode: activation code is bypassed.</p>
 
     {% if form.non_field_errors %}
       <p class="errors">{{ form.non_field_errors|striptags }}</p>
@@ -175,13 +146,13 @@
       </div>
 
       <div class="field">
-        <label for="{{ form.password.id_for_label }}">Password</label>
+        <label for="{{ form.password1.id_for_label }}">Password</label>
         <div class="password-row">
-          {{ form.password }}
+          {{ form.password1 }}
           <button
             class="password-toggle"
             type="button"
-            data-target="{{ form.password.id_for_label }}"
+            data-target="{{ form.password1.id_for_label }}"
             aria-label="Show password"
             aria-pressed="false"
             title="Show password"
@@ -199,22 +170,47 @@
             <span class="sr-only">Toggle password visibility</span>
           </button>
         </div>
-        {% if form.password.errors %}
-          <p class="errors">{{ form.password.errors|striptags }}</p>
+        {% if form.password1.errors %}
+          <p class="errors">{{ form.password1.errors|striptags }}</p>
         {% endif %}
       </div>
 
-      <button type="submit">Sign In</button>
+      <div class="field">
+        <label for="{{ form.password2.id_for_label }}">Confirm password</label>
+        <div class="password-row">
+          {{ form.password2 }}
+          <button
+            class="password-toggle"
+            type="button"
+            data-target="{{ form.password2.id_for_label }}"
+            aria-label="Show password"
+            aria-pressed="false"
+            title="Show password"
+          >
+            <svg class="icon-eye-closed" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M3 3l18 18"></path>
+              <path d="M10.7 5.1A10.2 10.2 0 0 1 12 5c4.7 0 8.2 2.8 10 7-0.7 1.6-1.7 3-3 4.1"></path>
+              <path d="M6.2 6.3C4.4 7.5 3 9.3 2 12c1.8 4.2 5.3 7 10 7a10 10 0 0 0 4.1-.9"></path>
+              <path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"></path>
+            </svg>
+            <svg class="icon-eye-open" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M2 12c1.8-4.2 5.3-7 10-7s8.2 2.8 10 7c-1.8 4.2-5.3 7-10 7s-8.2-2.8-10-7z"></path>
+              <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+            <span class="sr-only">Toggle password visibility</span>
+          </button>
+        </div>
+        {% if form.password2.errors %}
+          <p class="errors">{{ form.password2.errors|striptags }}</p>
+        {% endif %}
+      </div>
+
+      <button type="submit">Create Account</button>
     </form>
 
     <p class="switch">
-      {% if local_auth_bypass %}
-        Need an account?
-        <a href="{{ signup_url }}">Create a local account</a>
-      {% else %}
-        New here?
-        <a href="{{ activate_url }}">Activate your kit to create an account</a>
-      {% endif %}
+      Already have an account?
+      <a href="{{ signin_url }}">Sign in</a>
     </p>
   </main>
   <script>

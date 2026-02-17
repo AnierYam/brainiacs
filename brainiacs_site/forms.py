@@ -1,3 +1,4 @@
+from django.conf import settings
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.core.exceptions import ValidationError
@@ -10,6 +11,8 @@ from landing.models import ActivationCode, normalize_activation_code
 class ActivationRequiredAuthenticationForm(AuthenticationForm):
     def confirm_login_allowed(self, user):
         super().confirm_login_allowed(user)
+        if settings.DEBUG:
+            return
         if user.is_staff or user.is_superuser:
             return
         activation = ActivationCode.objects.filter(user=user).first()

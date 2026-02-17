@@ -1,9 +1,11 @@
 from urllib.parse import urlencode
 
+from django.contrib.auth import login
+from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.views import LoginView
 from django.conf import settings
 from django.core.mail import send_mail
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.utils import timezone
 
@@ -44,6 +46,8 @@ class BrainiacsLoginView(LoginView):
             or reverse("lessons:missions_home")
         )
         context["next_url"] = next_url
+        context["local_auth_bypass"] = settings.DEBUG
+        context["signup_url"] = f"{reverse('signup')}?{urlencode({'next': next_url})}"
         context["activate_url"] = (
             f"{reverse('landing:activate')}?{urlencode({'next': next_url})}"
         )
@@ -65,6 +69,28 @@ def signup_view(request):
         or request.POST.get("next")
         or reverse("lessons:missions_home")
     )
+    if settings.DEBUG:
+        if request.method == "POST":
+            form = UserCreationForm(request.POST)
+            if form.is_valid():
+                user = form.save()
+                login(request, user)
+                return redirect(next_url)
+        else:
+            form = UserCreationForm()
+        form.fields["username"].widget.attrs.update({"placeholder": "Username"})
+        form.fields["password1"].widget.attrs.update({"placeholder": "Password"})
+        form.fields["password2"].widget.attrs.update({"placeholder": "Confirm Password"})
+        return render(
+            request,
+            "auth/signup_local.html",
+            {
+                "form": form,
+                "next_url": next_url,
+                "signin_url": f"{reverse('login')}?{urlencode({'next': next_url})}",
+            },
+        )
+
     params = {"next": next_url}
     activation_code = request.GET.get("activation_code") or request.POST.get(
         "activation_code"
