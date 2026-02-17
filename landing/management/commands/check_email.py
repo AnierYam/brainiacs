@@ -22,6 +22,15 @@ class Command(BaseCommand):
         self.stdout.write(f"EMAIL_USE_TLS={settings.EMAIL_USE_TLS}")
         self.stdout.write(f"EMAIL_TIMEOUT={settings.EMAIL_TIMEOUT}")
         self.stdout.write(f"DEFAULT_FROM_EMAIL={settings.DEFAULT_FROM_EMAIL!r}")
+        self.stdout.write(
+            f"BRAINIACS_OUTBOUND_FROM_EMAIL={settings.BRAINIACS_OUTBOUND_FROM_EMAIL!r}"
+        )
+        if settings.EMAIL_BACKEND == "django.core.mail.backends.console.EmailBackend":
+            self.stdout.write(
+                self.style.WARNING(
+                    "Console backend active: this writes email to logs, not inboxes."
+                )
+            )
 
         to_email = options.get("to_email")
         if not to_email:
@@ -32,7 +41,7 @@ class Command(BaseCommand):
             sent = send_mail(
                 subject="Brainiacs email test",
                 message="This is a Brainiacs SMTP test email.",
-                from_email=settings.DEFAULT_FROM_EMAIL,
+                from_email=settings.BRAINIACS_OUTBOUND_FROM_EMAIL,
                 recipient_list=[to_email],
                 fail_silently=False,
             )

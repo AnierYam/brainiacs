@@ -25,7 +25,7 @@ def _send_verification_email(email: str, verification_code: str) -> bool:
                 f"{verification_code}\n\n"
                 "If you did not request this, you can ignore this email."
             ),
-            from_email=getattr(settings, "DEFAULT_FROM_EMAIL", None),
+            from_email=getattr(settings, "BRAINIACS_OUTBOUND_FROM_EMAIL", None),
             recipient_list=[email],
             fail_silently=False,
         )
@@ -43,7 +43,7 @@ def _send_activation_alert(username: str, email: str, activation_code: str) -> N
             f"Email: {email}\n"
             f"Username: {username}"
         ),
-        from_email=getattr(settings, "DEFAULT_FROM_EMAIL", None),
+        from_email=getattr(settings, "BRAINIACS_OUTBOUND_FROM_EMAIL", None),
         recipient_list=[
             getattr(settings, "BRAINIACS_SUPPORT_EMAIL", "hello@brainiacs.academy")
         ],

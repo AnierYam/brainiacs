@@ -163,6 +163,10 @@ DEFAULT_FROM_EMAIL = os.getenv(
     "DJANGO_DEFAULT_FROM_EMAIL",
     EMAIL_HOST_USER or "hello@brainiacs.academy",
 )
+BRAINIACS_OUTBOUND_FROM_EMAIL = os.getenv(
+    "BRAINIACS_OUTBOUND_FROM_EMAIL",
+    EMAIL_HOST_USER or DEFAULT_FROM_EMAIL,
+)
 BRAINIACS_SUPPORT_EMAIL = os.getenv(
     "BRAINIACS_SUPPORT_EMAIL",
     "hello@brainiacs.academy",

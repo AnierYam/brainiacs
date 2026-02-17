@@ -30,7 +30,7 @@ class BrainiacsLoginView(LoginView):
                     f"IP address: {ip_address}\n\n"
                     "If this wasn't you, please reset your password."
                 ),
-                from_email=getattr(settings, "DEFAULT_FROM_EMAIL", None),
+                from_email=getattr(settings, "BRAINIACS_OUTBOUND_FROM_EMAIL", None),
                 recipient_list=[user.email],
                 fail_silently=True,
             )
