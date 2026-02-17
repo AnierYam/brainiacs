@@ -22,12 +22,13 @@ def _env_list(name: str, default: str = "") -> list[str]:
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 HAS_WHITENOISE = importlib.util.find_spec("whitenoise") is not None
+ON_RENDER = bool(os.getenv("RENDER")) or bool(os.getenv("RENDER_EXTERNAL_HOSTNAME"))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "dev-secret-key-change-me")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = _env_bool("DJANGO_DEBUG", True)
+DEBUG = _env_bool("DJANGO_DEBUG", not ON_RENDER)
 
 ALLOWED_HOSTS = os.getenv(
     "ALLOWED_HOSTS",
@@ -146,12 +147,12 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-EMAIL_BACKEND = os.getenv(
-    "DJANGO_EMAIL_BACKEND",
+_default_email_backend = (
     "django.core.mail.backends.console.EmailBackend"
-    if DEBUG
-    else "django.core.mail.backends.smtp.EmailBackend",
+    if DEBUG and not ON_RENDER
+    else "django.core.mail.backends.smtp.EmailBackend"
 )
+EMAIL_BACKEND = os.getenv("DJANGO_EMAIL_BACKEND", _default_email_backend)
 EMAIL_HOST = os.getenv("DJANGO_EMAIL_HOST", "")
 EMAIL_PORT = int(os.getenv("DJANGO_EMAIL_PORT", "587"))
 EMAIL_HOST_USER = os.getenv("DJANGO_EMAIL_HOST_USER", "")
