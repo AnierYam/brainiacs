@@ -12,11 +12,18 @@ class ActivationRequiredAuthenticationForm(AuthenticationForm):
         super().confirm_login_allowed(user)
         if user.is_staff or user.is_superuser:
             return
-        if not ActivationCode.objects.filter(user=user).exists():
+        activation = ActivationCode.objects.filter(user=user).first()
+        if not activation:
             raise ValidationError(
                 "This account is not linked to an activation code. "
                 "Activate your kit before signing in.",
                 code="activation_required",
+            )
+        if activation.email_verified_at is None:
+            raise ValidationError(
+                "You must confirm your email before signing in. "
+                "Check your inbox for the verification code.",
+                code="email_verification_required",
             )
 
 

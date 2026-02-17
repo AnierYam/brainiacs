@@ -11,4 +11,5 @@ urlpatterns = [
     path('buy/', views.buy, name='buy'),
     path('login/', RedirectView.as_view(url='/auth/login/?next=/lessons/', permanent=False), name='legacy_login'),
     path('activate/', views.activate, name='activate'),
+    path('activate/confirm/', views.confirm_email, name='confirm_email'),
 ]

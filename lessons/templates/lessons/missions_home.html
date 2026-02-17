@@ -19,6 +19,29 @@
       max-width: 900px;
       margin: 0 auto;
       padding: 3rem 1rem 4rem;
+      position: relative;
+    }
+
+    .top-actions {
+      position: absolute;
+      top: 0.5rem;
+      right: 1rem;
+    }
+
+    .signout-btn {
+      border: none;
+      border-radius: 999px;
+      background: #1d4ed8;
+      color: #fff;
+      padding: 0.45rem 0.95rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 6px 14px rgba(29, 78, 216, 0.25);
+    }
+
+    .signout-btn:hover {
+      background: #1e40af;
     }
 
     .page-header {
@@ -90,6 +113,12 @@
 
 <body>
   <div class="page">
+    <div class="top-actions">
+      <form method="post" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <button class="signout-btn" type="submit">Sign Out</button>
+      </form>
+    </div>
 
     <!-- Header -->
     <header class="page-header">

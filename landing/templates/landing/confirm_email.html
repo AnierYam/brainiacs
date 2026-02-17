@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirm Email - BRAINIACS ACADEMY</title>
+    {% load static %}
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        :root {
+            --primary: #2F04B9;
+            --secondary: #79C93D;
+            --text: #1f2a37;
+            --danger: #b91c1c;
+            --success: #166534;
+        }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: 'Poppins', sans-serif;
+            background: radial-gradient(circle at top, #e0f2fe, #f9fafb);
+            color: var(--text);
+            display: grid;
+            place-items: center;
+            padding: 16px;
+        }
+        .card {
+            width: 100%;
+            max-width: 460px;
+            background: #fff;
+            border-radius: 16px;
+            border: 1px solid #dbe3ef;
+            box-shadow: 0 18px 40px rgba(30, 64, 175, 0.12);
+            padding: 26px;
+        }
+        h1 {
+            margin: 0 0 8px;
+            color: var(--primary);
+            font-size: 1.7rem;
+        }
+        p {
+            margin: 0 0 16px;
+            font-size: 0.95rem;
+            color: #4b5563;
+        }
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+        input {
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: 24px;
+            border: 1.5px solid #d1d1f0;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        .errors {
+            margin-top: 8px;
+            color: var(--danger);
+            font-size: 0.9rem;
+        }
+        .success {
+            margin: 0 0 14px;
+            color: var(--success);
+            font-size: 0.92rem;
+            font-weight: 500;
+        }
+        .actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 16px;
+        }
+        .btn {
+            border: none;
+            border-radius: 24px;
+            padding: 12px 16px;
+            font-weight: 600;
+            font-size: 0.96rem;
+            cursor: pointer;
+        }
+        .btn-primary {
+            background: var(--secondary);
+            color: #fff;
+            flex: 1;
+        }
+        .btn-primary:hover {
+            background: #4fa32b;
+        }
+        .btn-secondary {
+            background: #eef2ff;
+            color: var(--primary);
+            min-width: 140px;
+        }
+        .btn-secondary:hover {
+            background: #e0e7ff;
+        }
+        .help {
+            margin-top: 14px;
+            font-size: 0.88rem;
+        }
+        .help a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .help a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <main class="card">
+        <h1>Confirm Your Email</h1>
+        <p>We sent a verification code to <strong>{{ email }}</strong>. Enter it below to enable sign-in.</p>
+
+        {% if resent %}
+            <p class="success">A new verification code has been sent.</p>
+        {% endif %}
+
+        {% if form.non_field_errors %}
+            <p class="errors">{{ form.non_field_errors|striptags }}</p>
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ next_url }}">
+            <label for="{{ form.verification_code.id_for_label }}">Verification code</label>
+            {{ form.verification_code }}
+            {% if form.verification_code.errors %}
+                <p class="errors">{{ form.verification_code.errors|striptags }}</p>
+            {% endif %}
+            <div class="actions">
+                <button class="btn btn-primary" type="submit">Confirm Email</button>
+                <button class="btn btn-secondary" type="submit" name="resend" value="1">Resend Code</button>
+            </div>
+        </form>
+
+        <p class="help">
+            Wrong email? <a href="{% url 'landing:activate' %}?next={{ next_url|urlencode }}">Go back</a>
+        </p>
+    </main>
+</body>
+</html>

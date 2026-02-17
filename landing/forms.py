@@ -117,12 +117,37 @@ class ActivationSignupForm(UserCreationForm):
             activation_code.linked_at = timezone.now()
             if activation_code.activated_at is None:
                 activation_code.activated_at = timezone.now()
+            activation_code.email_verification_code = ""
+            activation_code.email_verification_sent_at = None
+            activation_code.email_verified_at = None
             activation_code.save(
                 update_fields=[
                     "user",
                     "activated_email",
                     "linked_at",
                     "activated_at",
+                    "email_verification_code",
+                    "email_verification_sent_at",
+                    "email_verified_at",
                 ]
             )
         return user
+
+
+class EmailVerificationForm(forms.Form):
+    verification_code = forms.CharField(
+        label="Email Verification Code",
+        max_length=12,
+        widget=forms.TextInput(
+            attrs={
+                "id": "verify-code",
+                "placeholder": "6-digit code",
+                "required": True,
+                "autocomplete": "one-time-code",
+                "inputmode": "numeric",
+            }
+        ),
+    )
+
+    def clean_verification_code(self) -> str:
+        return (self.cleaned_data.get("verification_code") or "").strip()
