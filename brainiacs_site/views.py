@@ -65,5 +65,14 @@ def signup_view(request):
         or request.POST.get("next")
         or reverse("lessons:missions_home")
     )
-    signin_url = f"{reverse('login')}?{urlencode({'next': next_url})}"
-    return redirect(signin_url)
+    params = {"next": next_url}
+    activation_code = request.GET.get("activation_code") or request.POST.get(
+        "activation_code"
+    )
+    email = request.GET.get("email") or request.POST.get("email")
+    if activation_code:
+        params["activation_code"] = activation_code
+    if email:
+        params["email"] = email
+    activate_url = f"{reverse('landing:activate')}?{urlencode(params)}"
+    return redirect(activate_url)
