@@ -20,6 +20,15 @@ class ActivationRequiredAuthenticationForm(AuthenticationForm):
                 code="activation_required",
             )
         if activation.email_verified_at is None:
+            # Backward compatibility: accounts linked before email verification
+            # rollout had no verification challenge issued.
+            if (
+                activation.email_verification_sent_at is None
+                and not (activation.email_verification_code or "").strip()
+            ):
+                activation.email_verified_at = timezone.now()
+                activation.save(update_fields=["email_verified_at"])
+                return
             raise ValidationError(
                 "You must confirm your email before signing in. "
                 "Check your inbox for the verification code.",
