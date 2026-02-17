@@ -3,10 +3,10 @@ from django.contrib.auth import views as auth_views
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from .views import BrainiacsLoginView, home_entry, signup_view
+from .views import BrainiacsLoginView, signup_view
 
 urlpatterns = [
-    path('', home_entry, name='home'),
+    path('', include(('landing.urls', 'landing'), namespace='landing')),
     path('auth/login/', BrainiacsLoginView.as_view(), name='login'),
     path('auth/signup/', signup_view, name='signup'),
     path('auth/logout/', auth_views.LogoutView.as_view(), name='logout'),

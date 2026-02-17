@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buy Kit - BRAINIACS ACADEMY</title>
+    {% load static %}
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        :root {
+            --primary: #2F04B9;
+            --secondary: #79C93D;
+            --accent: #867ddc;
+            --text: #000000;
+            --bg: #FFFFFF;
+            --gray-bg: #f5f7fa;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background-color: var(--bg);
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .container {
+            width: 85%;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0;
+        }
+        header {
+            background: linear-gradient(135deg, #1a1a4a 0%, #2F04B9 60%, #4315c2 100%);
+            color: white;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            transition: background 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.6rem 0;
+            position: relative;
+        }
+        .logo-text { display: flex; align-items: center; }
+        .logo-text a { text-decoration: none; }
+        .logo-text h1 {
+            margin: 0;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: white;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+            letter-spacing: 0.5px;
+            transition: color 0.2s;
+        }
+        .logo-text a:hover h1 { color: var(--secondary); }
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            z-index: 1200;
+        }
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        .nav-links a:not(.login-btn):not(.signup-btn):after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -4px;
+            left: 0;
+            background-color: var(--secondary);
+            transition: width 0.3s ease;
+        }
+        .nav-links a:not(.login-btn):not(.signup-btn):hover:after {
+            width: 100%;
+        }
+        .login-btn {
+            background: var(--secondary);
+            color: white;
+            padding: 0.5rem 1.2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+        }
+        .signup-btn {
+            background: transparent;
+            color: white;
+            padding: 0.5rem 1.2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+            margin-left: 0.25rem;
+            border: 2px solid white;
+        }
+        .login-btn:hover {
+            background-color: #68b32f;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        .signup-btn:hover {
+            background-color: white;
+            color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        .footer-bar {
+            background: var(--gray-bg);
+            color: #888;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            padding: 6px 0;
+            font-size: 0.85rem;
+            min-height: 32px;
+        }
+        .footer-link {
+            color: #888;
+            text-decoration: underline;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 0;
+            transition: text-decoration 0.2s;
+        }
+        .footer-link:hover {
+            text-decoration: none;
+            color: var(--primary);
+        }
+        .footer-divider {
+            color: #888;
+            font-size: 1em;
+            opacity: 0.5;
+        }
+        .footer-copyright {
+            color: #888;
+            font-size: 0.85rem;
+            font-weight: 400;
+        }
+        .buy-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #f8fafd;
+            border-radius: 22px;
+            box-shadow: 0 4px 32px rgba(47,4,185,0.10);
+            padding: 32px 18px;
+            max-width: 700px;
+            margin: 64px auto 0 auto;
+            width: 100%;
+        }
+        .buy-image {
+            max-width: 180px;
+            width: 140px;
+            margin-bottom: 0;
+            margin-right: 0;
+            display: block;
+        }
+        .buy-content {
+            flex: 1 1 0;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: center;
+            min-width: 220px;
+            width: 100%;
+            margin-left: 0;
+        }
+        .buy-header {
+            color: #2F04B9;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 0.7rem;
+            margin-top: 0;
+            text-align: left;
+        }
+        .buy-subtext {
+            font-size: 1.05rem;
+            color: #555;
+            font-style: normal;
+            font-weight: 400;
+            margin-bottom: 1.2rem;
+            text-align: left;
+            background: none;
+            border-radius: 0;
+            box-shadow: none;
+            display: block;
+        }
+        .buy-signup-form {
+            width: 100%;
+            margin-bottom: 0.7rem;
+        }
+        .buy-email-row {
+            display: flex;
+            flex-direction: row;
+            gap: 10px;
+            width: 100%;
+            align-items: stretch;
+        }
+        .buy-email-input {
+            flex: 4 1 0;
+            min-width: 0;
+            margin-bottom: 0;
+            padding: 14px 22px;
+            border-radius: 30px;
+            border: 1.5px solid #d1d1f0;
+            font-size: 1.1rem;
+            outline: none;
+            transition: border 0.2s;
+        }
+        .buy-submit-btn {
+            flex: 0 0 auto;
+            min-width: 90px;
+            padding: 12px 18px;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 48px;
+            box-sizing: border-box;
+            background: #79C93D;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+            box-shadow: 0 2px 10px rgba(121,201,61,0.10);
+            text-align: center;
+        }
+        .buy-submit-btn:hover {
+            background: #4fa32b;
+            transform: translateY(-2px) scale(1.04);
+        }
+        .buy-enquire-btn {
+            background: #fff;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            text-decoration: none;
+            transition: background 0.2s, color 0.2s, border 0.2s, transform 0.2s;
+            box-shadow: 0 2px 10px rgba(47,4,185,0.08);
+            text-align: center;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 1rem;
+            margin-top: 10px;
+            width: 100%;
+            padding: 12px 0;
+            display: block;
+        }
+        .buy-enquire-btn:hover {
+            background: var(--primary);
+            color: #fff;
+            border: 2px solid var(--primary);
+            transform: translateY(-2px) scale(1.04);
+        }
+        html, body {
+            height: 100%;
+        }
+        main {
+            flex: 1 0 auto;
+        }
+        footer {
+            flex-shrink: 0;
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border: none;
+        }
+        @media (max-width: 700px) {
+            .header-container {
+                flex-direction: row !important;
+                align-items: center !important;
+                padding: 0.6rem 0.5rem;
+                justify-content: space-between;
+            }
+            .hamburger {
+                margin-top: 0 !important;
+                align-self: center !important;
+            }
+            .hamburger {
+                display: block;
+                background: none;
+                border: none;
+                cursor: pointer;
+                padding: 0.5rem 0.7rem;
+                margin-left: auto;
+                margin-top: 0.2rem;
+                z-index: 1100;
+            }
+            .hamburger span {
+                display: block;
+                width: 28px;
+                height: 4px;
+                margin: 5px 0;
+                background: white;
+                border-radius: 2px;
+                transition: 0.3s;
+            }
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.5rem;
+                width: 100%;
+                margin-top: 0.5rem;
+                background: #2F04B9;
+                border-radius: 0 0 12px 12px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+                padding-bottom: 0.5rem;
+            }
+            .nav-links.open {
+                display: flex;
+            }
+            .nav-links a {
+                width: 100%;
+                text-align: left;
+                font-size: 1.1rem;
+                padding: 0.7rem 0.5rem;
+                border-radius: 8px;
+            }
+            .login-btn, .signup-btn {
+                width: 100%;
+                margin-left: 0;
+                margin-top: 0.2rem;
+            }
+            .footer-bar {
+                flex-direction: column !important;
+                align-items: center !important;
+                gap: 0.2rem !important;
+                padding: 10px 0 !important;
+                font-size: 1rem !important;
+            }
+            .footer-link, .footer-copyright {
+                text-align: center !important;
+                width: 100%;
+                margin-bottom: 0 !important;
+            }
+            .footer-divider {
+                display: none !important;
+            }
+            .buy-card {
+                flex-direction: column;
+                padding: 18px 6px;
+                max-width: 98vw;
+            }
+            .buy-image {
+                margin-top: 18px !important;
+                margin-bottom: 12px !important;
+                padding-left: 8px !important;
+                padding-right: 8px !important;
+                width: 100%;
+                box-sizing: border-box;
+                max-width: 120px;
+            }
+            .buy-content {
+                margin-left: 0;
+                width: 100%;
+            }
+            .buy-email-row {
+                flex-direction: column !important;
+                gap: 10px !important;
+                align-items: stretch !important;
+            }
+            .buy-email-input,
+            .buy-submit-btn,
+            .buy-enquire-btn {
+                width: 100% !important;
+                font-size: 1.1rem !important;
+                box-sizing: border-box !important;
+            }
+            .buy-submit-btn,
+            .buy-enquire-btn {
+                padding: 14px 0 !important;
+            }
+        }
+        @media (min-width: 701px) {
+            .hamburger { display: none; }
+            .nav-links {
+                display: flex !important;
+                position: static !important;
+                flex-direction: row !important;
+                align-items: center !important;
+                gap: 2rem !important;
+                width: auto !important;
+                margin-top: 0 !important;
+                background: none !important;
+                box-shadow: none !important;
+                border-radius: 0 !important;
+                padding-bottom: 0 !important;
+            }
+            .buy-card {
+                flex-direction: row;
+                max-width: 900px;
+                padding: 48px 48px;
+            }
+            .buy-image {
+                margin-right: 38px;
+                margin-bottom: 0;
+            }
+            .buy-content {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <div class="logo-text">
+                <a href="{% url 'landing:home' %}" class="header-logo-link"><h1>BRAINIACS ACADEMY</h1></a>
+            </div>
+            <button class="hamburger" id="hamburger-menu" aria-label="Open navigation" aria-expanded="false">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <div class="nav-links" id="nav-links">
+                <a href="{% url 'landing:buy' %}">Buy Kit</a>
+                <a href="{% url 'landing:home' %}#contact">Contact Us</a>
+                <a href="{% url 'login' %}?next=/lessons/" class="login-btn">Log In</a>
+                <a href="{% url 'landing:activate' %}" class="signup-btn">Activate Kit</a>
+            </div>
+        </div>
+    </header>
+    <main>
+        <div class="buy-card">
+            <img src="{% static 'landing/images/buy.png' %}" alt="Buy Kit" class="buy-image">
+            <div class="buy-content">
+                <h2 class="buy-header">We're Partnering with Schools & Teaching Centers!</h2>
+                <div class="buy-subtext">For now, Brainiacs kits are only available through our educational partners.<br><strong>Want to be the first to know when kits are available for individuals?</strong><br>Sign up below and we'll notify you as soon as direct shipping opens!</div>
+                <form class="buy-signup-form">
+                    <div class="buy-email-row">
+                        <input type="email" placeholder="Enter your email" required class="buy-email-input">
+                        <button type="submit" class="buy-submit-btn">Notify Me</button>
+                    </div>
+                </form>
+                <a href="{% url 'landing:home' %}#contact" class="buy-enquire-btn">Enquire</a>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <div class="footer-bar">
+            <a href="{% url 'landing:home' %}" class="footer-link">Back to Home</a>
+            <span class="footer-divider">|</span>
+            <span class="footer-copyright">&copy; 2025 BRAINIACS ACADEMY. All rights reserved.</span>
+        </div>
+    </footer>
+    <script>
+        // Hamburger menu toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            const hamburger = document.getElementById('hamburger-menu');
+            const navLinks = document.getElementById('nav-links');
+            hamburger.addEventListener('click', function() {
+                navLinks.classList.toggle('open');
+                const expanded = hamburger.getAttribute('aria-expanded') === 'true';
+                hamburger.setAttribute('aria-expanded', !expanded);
+            });
+        });
+    </script>
+</body>
+</html> 
