@@ -1,14 +1,17 @@
 from urllib.parse import urlencode
 
 from django.contrib.auth import login
-from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.views import LoginView
+from django.core.exceptions import ValidationError
 from django.shortcuts import redirect, render
 from django.urls import reverse
+
+from .forms import ActivationCodeSignupForm, ActivationRequiredAuthenticationForm
 
 
 class BrainiacsLoginView(LoginView):
     template_name = "auth/login.html"
+    form_class = ActivationRequiredAuthenticationForm
     redirect_authenticated_user = True
 
     def get_context_data(self, **kwargs):
@@ -19,7 +22,9 @@ class BrainiacsLoginView(LoginView):
             or reverse("lessons:missions_home")
         )
         context["next_url"] = next_url
-        context["signup_url"] = f"{reverse('signup')}?{urlencode({'next': next_url})}"
+        context["activate_url"] = (
+            f"{reverse('landing:activate')}?{urlencode({'next': next_url})}"
+        )
         return context
 
 
@@ -38,17 +43,31 @@ def signup_view(request):
         or request.POST.get("next")
         or reverse("lessons:missions_home")
     )
+    activation_code_seed = (
+        request.POST.get("activation_code")
+        or request.GET.get("activation_code")
+        or request.session.get("activation_code", "")
+    )
 
     if request.method == "POST":
-        form = UserCreationForm(request.POST)
+        form = ActivationCodeSignupForm(request.POST)
         if form.is_valid():
-            user = form.save()
-            login(request, user)
-            return redirect(next_url)
+            try:
+                user = form.save()
+            except ValidationError as exc:
+                form.add_error("activation_code", exc.messages[0])
+            else:
+                login(request, user)
+                request.session.pop("activation_code", None)
+                request.session.pop("activation_email", None)
+                return redirect(next_url)
     else:
-        form = UserCreationForm()
+        form = ActivationCodeSignupForm(
+            initial={"activation_code": activation_code_seed}
+        )
 
     signin_url = f"{reverse('login')}?{urlencode({'next': next_url})}"
+    activation_url = f"{reverse('landing:activate')}?{urlencode({'next': next_url})}"
     return render(
         request,
         "auth/signup.html",
@@ -56,5 +75,6 @@ def signup_view(request):
             "form": form,
             "next_url": next_url,
             "signin_url": signin_url,
+            "activation_url": activation_url,
         },
     )

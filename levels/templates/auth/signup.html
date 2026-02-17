@@ -100,7 +100,10 @@
 <body>
   <main class="card">
     <h1>Create Account</h1>
-    <p class="subtitle">Sign up once, then continue into the lessons.</p>
+    <p class="subtitle">
+      Sign up once, then continue into the lessons. You need a valid activation code.
+      <a href="{{ activation_url }}">Activate your kit first</a>.
+    </p>
 
     {% if form.non_field_errors %}
       <p class="errors">{{ form.non_field_errors|striptags }}</p>
@@ -115,6 +118,14 @@
         {{ form.username }}
         {% if form.username.errors %}
           <p class="errors">{{ form.username.errors|striptags }}</p>
+        {% endif %}
+      </div>
+
+      <div class="field">
+        <label for="{{ form.activation_code.id_for_label }}">Activation code</label>
+        {{ form.activation_code }}
+        {% if form.activation_code.errors %}
+          <p class="errors">{{ form.activation_code.errors|striptags }}</p>
         {% endif %}
       </div>
 

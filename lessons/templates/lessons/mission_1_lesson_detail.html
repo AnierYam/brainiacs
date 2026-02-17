@@ -256,7 +256,7 @@
         <p class="xp-label">
           <a href="{% url 'login' %}?next={{ request.path|urlencode }}">Sign in</a>
           or
-          <a href="{% url 'signup' %}?next={{ request.path|urlencode }}">create an account</a>
+          <a href="{% url 'landing:activate' %}?next={{ request.path|urlencode }}">activate your kit</a>
           to save progress.
         </p>
       {% endif %}

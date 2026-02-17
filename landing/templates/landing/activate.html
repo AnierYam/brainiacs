@@ -216,6 +216,12 @@
             background: #4fa32b;
             transform: translateY(-2px) scale(1.04);
         }
+        .form-errors {
+            margin-top: 0.35rem;
+            font-size: 0.92rem;
+            color: #b91c1c;
+            line-height: 1.35;
+        }
         .footer-bar {
             background: var(--gray-bg);
             color: #888;
@@ -439,14 +445,25 @@
                     <h2 class="activate-header">Activate Your Kit</h2>
                     <form class="activate-form" method="post">
                         {% csrf_token %}
-                        <label for="activate-code" class="activate-label">Activation Code</label>
-                        <input id="activate-code" type="text" name="code" placeholder="Activation Code" required>
-                        <label for="activate-email" class="activate-label">Your Email</label>
-                        <input id="activate-email" type="email" name="email" placeholder="Your Email" required>
-                        <button type="submit">Activate</button>
-                        {% if success %}
-                        <div class="success-message" style="color: #79C93D; font-weight: 600; text-align: center; margin-top: 18px;">Activation submitted! Thank you.</div>
+                        <input type="hidden" name="next" value="{{ next_url }}">
+
+                        {% if form.non_field_errors %}
+                        <div class="form-errors">{{ form.non_field_errors|striptags }}</div>
                         {% endif %}
+
+                        <label for="{{ form.code.id_for_label }}" class="activate-label">Activation Code</label>
+                        {{ form.code }}
+                        {% if form.code.errors %}
+                        <div class="form-errors">{{ form.code.errors|striptags }}</div>
+                        {% endif %}
+
+                        <label for="{{ form.email.id_for_label }}" class="activate-label">Your Email</label>
+                        {{ form.email }}
+                        {% if form.email.errors %}
+                        <div class="form-errors">{{ form.email.errors|striptags }}</div>
+                        {% endif %}
+
+                        <button type="submit">Activate</button>
                     </form>
                 </div>
             </div>
