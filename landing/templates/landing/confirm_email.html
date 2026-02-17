@@ -72,6 +72,15 @@
             font-size: 0.92rem;
             font-weight: 500;
         }
+        .warning {
+            margin: 0 0 14px;
+            color: #92400e;
+            background: #fffbeb;
+            border: 1px solid #fde68a;
+            border-radius: 10px;
+            padding: 10px 12px;
+            font-size: 0.9rem;
+        }
         .actions {
             display: flex;
             gap: 10px;
@@ -116,10 +125,15 @@
 <body>
     <main class="card">
         <h1>Confirm Your Email</h1>
-        <p>We sent a verification code to <strong>{{ email }}</strong>. Enter it below to enable sign-in.</p>
+        <p>Check your inbox for the verification code sent to <strong>{{ email }}</strong>, then enter it below.</p>
 
         {% if resent %}
             <p class="success">A new verification code has been sent.</p>
+        {% endif %}
+        {% if delivery_warning %}
+            <p class="warning">
+                Verification email was not delivered. Please use <strong>Resend Code</strong> and check spam/promotions.
+            </p>
         {% endif %}
 
         {% if form.non_field_errors %}
@@ -129,6 +143,7 @@
         <form method="post" novalidate>
             {% csrf_token %}
             <input type="hidden" name="next" value="{{ next_url }}">
+            <input type="hidden" name="token" value="{{ token }}">
             <label for="{{ form.verification_code.id_for_label }}">Verification code</label>
             {{ form.verification_code }}
             {% if form.verification_code.errors %}
