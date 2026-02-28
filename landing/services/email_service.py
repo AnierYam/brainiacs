@@ -9,7 +9,7 @@ from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils import timezone
 
-from landing.models import ActivationCode
+from ..models import ActivationCode
 
 logger = logging.getLogger("brainiacs.email")
 CONFIRM_EMAIL_SIGNING_SALT = "landing.confirm_email"
@@ -55,9 +55,18 @@ def _confirm_url(user, request=None, next_url: str | None = None) -> str:
     return _absolute_url(path, request=request)
 
 
-def _render_bodies(template_name: str, context: dict) -> tuple[str, str]:
-    text_body = render_to_string(f"emails/{template_name}.txt", context).strip()
-    html_body = render_to_string(f"emails/{template_name}.html", context)
+def _logo_url(request=None) -> str:
+    return _absolute_url("/static/icons/brainiacs_logo.png", request=request)
+
+
+def _render_bodies(
+    template_name: str,
+    context: dict,
+    request=None,
+) -> tuple[str, str]:
+    render_context = {"logo_url": _logo_url(request=request), **context}
+    text_body = render_to_string(f"emails/{template_name}.txt", render_context).strip()
+    html_body = render_to_string(f"emails/{template_name}.html", render_context)
     return text_body, html_body
 
 
@@ -121,7 +130,7 @@ def send_verification_email(user, request=None, reason: str = "signup", next_url
         "cta_label": "Confirm email",
         "reason": reason,
     }
-    text_body, html_body = _render_bodies("verification", context)
+    text_body, html_body = _render_bodies("verification", context, request=request)
     message = EmailMultiAlternatives(
         subject=subject,
         body=text_body,
@@ -151,7 +160,7 @@ def send_kit_activation_email(user, kit, request=None) -> bool:
         "cta_url": next_steps_url,
         "cta_label": "Go to lessons",
     }
-    text_body, html_body = _render_bodies("kit_activated", context)
+    text_body, html_body = _render_bodies("kit_activated", context, request=request)
     message = EmailMultiAlternatives(
         subject=subject,
         body=text_body,

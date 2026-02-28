@@ -29,6 +29,19 @@
       background: linear-gradient(90deg, #1f2a8f 0%, #2f04b9 100%);
       color: #ffffff;
       padding: 16px 20px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .brand-logo {
+      width: 30px;
+      height: 30px;
+      border-radius: 999px;
+      display: block;
+    }
+    .brand-title {
       font-size: 21px;
       font-weight: 700;
       letter-spacing: 0.2px;
@@ -81,7 +94,14 @@
 <body>
   <div class="wrapper">
     <div class="card">
-      <div class="header">Brainiacs</div>
+      <div class="header">
+        <div class="brand">
+          {% if logo_url %}
+            <img src="{{ logo_url }}" alt="Brainiacs logo" class="brand-logo">
+          {% endif %}
+          <span class="brand-title">Brainiacs</span>
+        </div>
+      </div>
       <div class="content">
         {% block content %}{% endblock %}
         {% if cta_url and cta_label %}
@@ -95,4 +115,3 @@
   </div>
 </body>
 </html>
-
