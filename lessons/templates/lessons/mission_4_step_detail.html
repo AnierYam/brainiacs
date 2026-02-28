@@ -268,7 +268,7 @@
       </div>
     {% endif %}
 
-    {% if step and step.has_quiz %}
+    {% if step and step.has_quiz and step.content_mode != "cards" %}
       <div class="quiz-block" data-step-id="{{ step.id }}" data-next-url="{{ continue_url }}">
         <h3>Quick Check</h3>
         <p class="quiz-question">What is the best next move after this step?</p>
