@@ -3,13 +3,16 @@ from urllib.parse import urlencode
 from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.views import LoginView
+from django.contrib.auth.views import LoginView, LogoutView
 from django.conf import settings
 from django.shortcuts import redirect, render
 from django.urls import reverse
 
 from .forms import ActivationRequiredAuthenticationForm
+from landing.models import ActivationCode
 from landing.services import email_service
+
+ONE_TIME_ACTIVATION_CODE = "OTP001"
 
 
 class BrainiacsLoginView(LoginView):
@@ -74,6 +77,23 @@ class BrainiacsLoginView(LoginView):
             f"{reverse('landing:activate')}?{urlencode({'next': next_url})}"
         )
         return context
+
+
+class BrainiacsLogoutView(LogoutView):
+    def post(self, request, *args, **kwargs):
+        one_time_activation = None
+        if request.user.is_authenticated:
+            one_time_activation = ActivationCode.objects.filter(
+                user=request.user,
+                code=ONE_TIME_ACTIVATION_CODE,
+            ).first()
+
+        response = super().post(request, *args, **kwargs)
+
+        if one_time_activation:
+            one_time_activation.delete()
+
+        return response
 
 
 def home_entry(request):
