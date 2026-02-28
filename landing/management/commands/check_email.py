@@ -1,3 +1,5 @@
+import os
+
 from django.conf import settings
 from django.core.mail import send_mail
 from django.core.management.base import BaseCommand, CommandError
@@ -15,16 +17,29 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         self.stdout.write(f"DEBUG={settings.DEBUG}")
+        self.stdout.write(f"EMAIL_PROVIDER={getattr(settings, 'EMAIL_PROVIDER', 'smtp')}")
         self.stdout.write(f"EMAIL_BACKEND={settings.EMAIL_BACKEND}")
         self.stdout.write(f"EMAIL_HOST={settings.EMAIL_HOST!r}")
+        self.stdout.write(f"EMAIL_HOST_SET={bool(settings.EMAIL_HOST)}")
         self.stdout.write(f"EMAIL_PORT={settings.EMAIL_PORT}")
         self.stdout.write(f"EMAIL_HOST_USER={settings.EMAIL_HOST_USER!r}")
         self.stdout.write(f"EMAIL_USE_TLS={settings.EMAIL_USE_TLS}")
         self.stdout.write(f"EMAIL_TIMEOUT={settings.EMAIL_TIMEOUT}")
         self.stdout.write(f"DEFAULT_FROM_EMAIL={settings.DEFAULT_FROM_EMAIL!r}")
+        self.stdout.write(f"SITE_URL={getattr(settings, 'SITE_URL', '')!r}")
         self.stdout.write(
             f"BRAINIACS_OUTBOUND_FROM_EMAIL={settings.BRAINIACS_OUTBOUND_FROM_EMAIL!r}"
         )
+        if (
+            not settings.DEBUG
+            and settings.EMAIL_BACKEND == "django.core.mail.backends.smtp.EmailBackend"
+            and not settings.EMAIL_HOST
+        ):
+            self.stdout.write(
+                self.style.ERROR(
+                    "SMTP backend is active but EMAIL_HOST is empty. Check Render env vars."
+                )
+            )
         if settings.EMAIL_BACKEND == "django.core.mail.backends.console.EmailBackend":
             self.stdout.write(
                 self.style.WARNING(
@@ -32,9 +47,17 @@ class Command(BaseCommand):
                 )
             )
 
-        to_email = options.get("to_email")
+        to_email = (
+            options.get("to_email")
+            or os.getenv("TEST_EMAIL_TO")
+            or getattr(settings, "BRAINIACS_SUPPORT_EMAIL", "")
+        )
         if not to_email:
-            self.stdout.write(self.style.WARNING("No --to provided; config only."))
+            self.stdout.write(
+                self.style.WARNING(
+                    "No --to, TEST_EMAIL_TO, or BRAINIACS_SUPPORT_EMAIL provided; config only."
+                )
+            )
             return
 
         try:

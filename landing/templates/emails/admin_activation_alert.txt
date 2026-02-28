@@ -1,0 +1,9 @@
+Brainiacs activation signup
+
+Username: {{ username }}
+Email: {{ email }}
+Activation code: {{ masked_activation_code }}
+
+Review in admin:
+{{ admin_url }}
+

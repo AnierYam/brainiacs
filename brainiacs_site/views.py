@@ -1,15 +1,15 @@
 from urllib.parse import urlencode
 
+from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.views import LoginView
 from django.conf import settings
-from django.core.mail import send_mail
 from django.shortcuts import redirect, render
 from django.urls import reverse
-from django.utils import timezone
 
 from .forms import ActivationRequiredAuthenticationForm
+from landing.services import email_service
 
 
 class BrainiacsLoginView(LoginView):
@@ -17,34 +17,56 @@ class BrainiacsLoginView(LoginView):
     form_class = ActivationRequiredAuthenticationForm
     redirect_authenticated_user = True
 
-    def form_valid(self, form):
-        response = super().form_valid(form)
-        user = form.get_user()
-        if getattr(user, "email", ""):
-            timestamp = timezone.localtime().strftime("%Y-%m-%d %H:%M %Z")
-            ip_address = self.request.META.get("REMOTE_ADDR", "unknown")
-            send_mail(
-                subject="Brainiacs sign-in alert",
-                message=(
-                    f"Hi {user.get_username()},\n\n"
-                    "Your Brainiacs account was signed in.\n"
-                    f"Time: {timestamp}\n"
-                    f"IP address: {ip_address}\n\n"
-                    "If this wasn't you, please reset your password."
-                ),
-                from_email=getattr(settings, "BRAINIACS_OUTBOUND_FROM_EMAIL", None),
-                recipient_list=[user.email],
-                fail_silently=True,
-            )
-        return response
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        next_url = (
+    def _next_url(self) -> str:
+        return (
             self.request.GET.get(self.redirect_field_name)
             or self.request.POST.get(self.redirect_field_name)
             or reverse("lessons:missions_home")
         )
+
+    def form_valid(self, form):
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        if getattr(form, "requires_verification", False):
+            user = getattr(form, "user_for_verification", None)
+            if user:
+                next_url = self._next_url()
+                confirm_token = email_service.build_confirm_token(user.id)
+                self.request.session["pending_verification_user_id"] = user.id
+                self.request.session["pending_verification_next"] = next_url
+                self.request.session["pending_verification_email"] = user.email
+                self.request.session["pending_verification_token"] = confirm_token
+
+                email_sent = email_service.send_verification_email(
+                    user,
+                    request=self.request,
+                    reason="login_resend",
+                    next_url=next_url,
+                )
+                self.request.session["pending_verification_delivery_failed"] = (
+                    not email_sent
+                )
+                if email_sent:
+                    messages.info(
+                        self.request,
+                        "We sent a new verification code to your email.",
+                    )
+                else:
+                    messages.warning(
+                        self.request,
+                        "Could not send verification email. Please retry in a moment.",
+                    )
+                confirm_url = (
+                    f"{reverse('landing:confirm_email')}?"
+                    f"{urlencode({'next': next_url, 'token': confirm_token})}"
+                )
+                return redirect(confirm_url)
+        return super().form_invalid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        next_url = self._next_url()
         context["next_url"] = next_url
         context["local_auth_bypass"] = settings.DEBUG
         context["signup_url"] = f"{reverse('signup')}?{urlencode({'next': next_url})}"

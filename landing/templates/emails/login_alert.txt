@@ -1,0 +1,10 @@
+Hi {{ username }},
+
+We detected a sign-in to your Brainiacs account.
+
+Time: {{ timestamp }}
+IP address: {{ ip_address }}
+{% if device_summary %}Device: {{ device_summary }}
+{% endif %}
+If this wasn't you, reset your password immediately and contact support.
+

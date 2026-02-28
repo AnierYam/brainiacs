@@ -1,0 +1,10 @@
+Hi {{ username }},
+
+Use this verification code to confirm your email and activate sign-in:
+{{ verification_code }}
+
+Confirm here:
+{{ confirm_url }}
+
+If you didn't request this, you can ignore this email.
+

@@ -1,0 +1,13 @@
+{% extends "emails/base.html" %}
+
+{% block content %}
+<p>Hi {{ username }},</p>
+<p>We detected a sign-in to your Brainiacs account.</p>
+<p class="meta"><strong>Time:</strong> {{ timestamp }}</p>
+<p class="meta"><strong>IP address:</strong> {{ ip_address }}</p>
+{% if device_summary %}
+<p class="meta"><strong>Device:</strong> {{ device_summary }}</p>
+{% endif %}
+<p>If this wasn't you, reset your password immediately and contact support.</p>
+{% endblock %}
+

@@ -1,0 +1,13 @@
+Hi {{ username }},
+
+Your kit ({{ kit_code }}) is now activated.
+
+Next steps:
+1. Confirm your email with the verification code we sent.
+2. Sign in and continue your lessons.
+
+Go to lessons:
+{{ next_steps_url }}
+
+If you didn't request this, you can ignore this email.
+

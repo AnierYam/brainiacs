@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 import importlib.util
+from django.core.exceptions import ImproperlyConfigured
 
 try:
     import dj_database_url
@@ -18,6 +19,29 @@ def _env_bool(name: str, default: bool) -> bool:
 def _env_list(name: str, default: str = "") -> list[str]:
     raw_value = os.getenv(name, default)
     return [item.strip() for item in raw_value.split(",") if item.strip()]
+
+
+def _env_first(names: tuple[str, ...], default: str = "") -> str:
+    for name in names:
+        value = os.getenv(name)
+        if value not in (None, ""):
+            return value
+    return default
+
+
+def _env_bool_first(names: tuple[str, ...], default: bool) -> bool:
+    for name in names:
+        if os.getenv(name) is not None:
+            return _env_bool(name, default)
+    return default
+
+
+def _env_int_first(names: tuple[str, ...], default: int) -> int:
+    for name in names:
+        value = os.getenv(name)
+        if value not in (None, ""):
+            return int(value)
+    return default
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -44,7 +68,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'landing',
+    'landing.apps.LandingConfig',
     'levels',
     'lessons'  # Replace with your actual app name
 ]
@@ -147,22 +171,58 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-_default_email_backend = (
-    "django.core.mail.backends.console.EmailBackend"
-    if DEBUG and not ON_RENDER
-    else "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_PROVIDER = _env_first(("EMAIL_PROVIDER",), default="smtp").strip().lower()
+SENDGRID_API_KEY = _env_first(("SENDGRID_API_KEY",), default="")
+
+if EMAIL_PROVIDER == "sendgrid" or SENDGRID_API_KEY:
+    EMAIL_PROVIDER = "sendgrid"
+    EMAIL_BACKEND = _env_first(
+        ("EMAIL_BACKEND", "DJANGO_EMAIL_BACKEND"),
+        default="django.core.mail.backends.smtp.EmailBackend",
+    )
+    EMAIL_HOST = _env_first(
+        ("EMAIL_HOST", "DJANGO_EMAIL_HOST"),
+        default="smtp.sendgrid.net",
+    )
+    EMAIL_PORT = _env_int_first(("EMAIL_PORT", "DJANGO_EMAIL_PORT"), default=587)
+    EMAIL_USE_TLS = _env_bool_first(
+        ("EMAIL_USE_TLS", "DJANGO_EMAIL_USE_TLS"),
+        default=True,
+    )
+    EMAIL_HOST_USER = _env_first(
+        ("EMAIL_HOST_USER", "DJANGO_EMAIL_HOST_USER"),
+        default="apikey",
+    )
+    EMAIL_HOST_PASSWORD = _env_first(
+        ("EMAIL_HOST_PASSWORD", "DJANGO_EMAIL_HOST_PASSWORD"),
+        default=SENDGRID_API_KEY,
+    )
+else:
+    EMAIL_PROVIDER = "smtp"
+    EMAIL_BACKEND = _env_first(
+        ("EMAIL_BACKEND", "DJANGO_EMAIL_BACKEND"),
+        default="django.core.mail.backends.smtp.EmailBackend",
+    )
+    EMAIL_HOST = _env_first(("EMAIL_HOST", "DJANGO_EMAIL_HOST"), default="")
+    EMAIL_PORT = _env_int_first(("EMAIL_PORT", "DJANGO_EMAIL_PORT"), default=587)
+    EMAIL_USE_TLS = _env_bool_first(
+        ("EMAIL_USE_TLS", "DJANGO_EMAIL_USE_TLS"),
+        default=True,
+    )
+    EMAIL_HOST_USER = _env_first(
+        ("EMAIL_HOST_USER", "DJANGO_EMAIL_HOST_USER"),
+        default="",
+    )
+    EMAIL_HOST_PASSWORD = _env_first(
+        ("EMAIL_HOST_PASSWORD", "DJANGO_EMAIL_HOST_PASSWORD"),
+        default="",
+    )
+EMAIL_TIMEOUT = _env_int_first(("EMAIL_TIMEOUT", "DJANGO_EMAIL_TIMEOUT"), default=12)
+DEFAULT_FROM_EMAIL = _env_first(
+    ("DEFAULT_FROM_EMAIL", "DJANGO_DEFAULT_FROM_EMAIL"),
+    default="Brainiacs <no-reply@brainiacs.academy>",
 )
-EMAIL_BACKEND = os.getenv("DJANGO_EMAIL_BACKEND", _default_email_backend)
-EMAIL_HOST = os.getenv("DJANGO_EMAIL_HOST", "")
-EMAIL_PORT = int(os.getenv("DJANGO_EMAIL_PORT", "587"))
-EMAIL_HOST_USER = os.getenv("DJANGO_EMAIL_HOST_USER", "")
-EMAIL_HOST_PASSWORD = os.getenv("DJANGO_EMAIL_HOST_PASSWORD", "")
-EMAIL_USE_TLS = _env_bool("DJANGO_EMAIL_USE_TLS", True)
-EMAIL_TIMEOUT = int(os.getenv("DJANGO_EMAIL_TIMEOUT", "12"))
-DEFAULT_FROM_EMAIL = os.getenv(
-    "DJANGO_DEFAULT_FROM_EMAIL",
-    EMAIL_HOST_USER or "hello@brainiacs.academy",
-)
+SERVER_EMAIL = _env_first(("SERVER_EMAIL",), default=DEFAULT_FROM_EMAIL)
 BRAINIACS_OUTBOUND_FROM_EMAIL = os.getenv(
     "BRAINIACS_OUTBOUND_FROM_EMAIL",
     EMAIL_HOST_USER or DEFAULT_FROM_EMAIL,
@@ -174,14 +234,62 @@ BRAINIACS_SUPPORT_EMAIL = os.getenv(
 BRAINIACS_EMAIL_CONFIRM_TOKEN_MAX_AGE = int(
     os.getenv("BRAINIACS_EMAIL_CONFIRM_TOKEN_MAX_AGE", "86400")
 )
+BRAINIACS_LOGIN_ALERT_COOLDOWN_SECONDS = _env_int_first(
+    ("BRAINIACS_LOGIN_ALERT_COOLDOWN_SECONDS",),
+    default=60 * 60 * 12,
+)
+SITE_URL = _env_first(
+    ("SITE_URL", "DJANGO_SITE_URL"),
+    default="http://127.0.0.1:8000",
+).rstrip("/")
+
+if DEBUG and not EMAIL_HOST:
+    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+if (
+    (not DEBUG)
+    and EMAIL_BACKEND == "django.core.mail.backends.smtp.EmailBackend"
+    and not EMAIL_HOST
+):
+    raise ImproperlyConfigured(
+        "EMAIL_HOST is not set. Configure SMTP env vars on Render."
+    )
+if (
+    (not DEBUG)
+    and EMAIL_PROVIDER == "sendgrid"
+    and EMAIL_BACKEND == "django.core.mail.backends.smtp.EmailBackend"
+    and not EMAIL_HOST_PASSWORD
+):
+    raise ImproperlyConfigured(
+        "SENDGRID_API_KEY (or EMAIL_HOST_PASSWORD) is not set for SendGrid provider."
+    )
 
 LOGIN_URL = '/auth/login/'
 LOGIN_REDIRECT_URL = '/lessons/'
 LOGOUT_REDIRECT_URL = '/auth/login/'
 
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+# Render/proxy deployments can forward host headers; keep local behavior configurable.
+USE_X_FORWARDED_HOST = _env_bool("DJANGO_USE_X_FORWARDED_HOST", ON_RENDER)
 
 if not DEBUG:
     SECURE_SSL_REDIRECT = _env_bool("DJANGO_SECURE_SSL_REDIRECT", True)
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+        }
+    },
+    "loggers": {
+        "brainiacs.email": {
+            "handlers": ["console"],
+            "level": "INFO",
+            "propagate": False,
+        }
+    },
+}

@@ -72,3 +72,29 @@ class ActivationCode(models.Model):
         self.email_verification_code = ""
         self.save(update_fields=["email_verified_at", "email_verification_code"])
         return True
+
+
+class LoginDevice(models.Model):
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="login_devices",
+    )
+    device_hash = models.CharField(max_length=64, db_index=True)
+    first_seen_at = models.DateTimeField(default=timezone.now)
+    last_seen_at = models.DateTimeField(default=timezone.now)
+    last_ip = models.GenericIPAddressField(null=True, blank=True)
+    last_user_agent = models.TextField(blank=True)
+    last_alert_sent_at = models.DateTimeField(null=True, blank=True)
+    known_ips = models.JSONField(default=list, blank=True)
+
+    class Meta:
+        ordering = ["-last_seen_at"]
+        unique_together = ("user", "device_hash")
+        indexes = [
+            models.Index(fields=["user", "device_hash"]),
+            models.Index(fields=["last_seen_at"]),
+        ]
+
+    def __str__(self) -> str:
+        return f"{self.user_id}:{self.device_hash[:12]}"

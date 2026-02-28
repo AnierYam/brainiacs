@@ -130,6 +130,15 @@
         {% if resent %}
             <p class="success">A new verification code has been sent.</p>
         {% endif %}
+        {% if messages %}
+            {% for message in messages %}
+                {% if "warning" in message.tags %}
+                    <p class="warning">{{ message }}</p>
+                {% else %}
+                    <p class="success">{{ message }}</p>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
         {% if delivery_warning %}
             <p class="warning">
                 Verification email was not delivered. Please use <strong>Resend Code</strong> and check spam/promotions.

@@ -1,0 +1,9 @@
+{% extends "emails/base.html" %}
+
+{% block content %}
+<p>Hi {{ username }},</p>
+<p>Use this verification code to confirm your email and activate sign-in:</p>
+<p><span class="code-box">{{ verification_code }}</span></p>
+<p class="meta">You can also confirm directly with the button below.</p>
+{% endblock %}
+

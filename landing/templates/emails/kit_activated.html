@@ -1,0 +1,10 @@
+{% extends "emails/base.html" %}
+
+{% block content %}
+<p>Hi {{ username }},</p>
+<p>Your kit <strong>{{ kit_code }}</strong> is now activated.</p>
+<p>Next steps:</p>
+<p class="meta">1. Confirm your email with the verification code we sent.</p>
+<p class="meta">2. Sign in and continue your lessons.</p>
+{% endblock %}
+

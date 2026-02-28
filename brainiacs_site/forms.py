@@ -9,6 +9,11 @@ from landing.models import ActivationCode, normalize_activation_code
 
 
 class ActivationRequiredAuthenticationForm(AuthenticationForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.requires_verification = False
+        self.user_for_verification = None
+
     def confirm_login_allowed(self, user):
         super().confirm_login_allowed(user)
         if settings.DEBUG:
@@ -32,6 +37,8 @@ class ActivationRequiredAuthenticationForm(AuthenticationForm):
                 activation.email_verified_at = timezone.now()
                 activation.save(update_fields=["email_verified_at"])
                 return
+            self.requires_verification = True
+            self.user_for_verification = user
             raise ValidationError(
                 "You must confirm your email before signing in. "
                 "Check your inbox for the verification code.",
