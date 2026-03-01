@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -22,10 +23,14 @@
       position: relative;
     }
 
-    .top-actions {
+    .top-bar {
       position: absolute;
       top: 0.5rem;
+      left: 1rem;
       right: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
     }
 
     .signout-btn {
@@ -42,6 +47,38 @@
 
     .signout-btn:hover {
       background: #1e40af;
+    }
+
+    .lang-switch {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 999px;
+      padding: 0.2rem;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.12);
+    }
+
+    .lang-btn {
+      border: none;
+      border-radius: 999px;
+      background: transparent;
+      color: #334155;
+      padding: 0.35rem 0.7rem;
+      font-size: 0.76rem;
+      font-weight: 700;
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    .lang-btn:hover {
+      background: #e2e8f0;
+    }
+
+    .lang-btn.is-active {
+      background: #1d4ed8;
+      color: #fff;
     }
 
     .page-header {
@@ -113,24 +150,28 @@
 
 <body>
   <div class="page">
-    <div class="top-actions">
+    <div class="top-bar">
       <form method="post" action="{% url 'logout' %}">
         {% csrf_token %}
-        <button class="signout-btn" type="submit">Sign Out</button>
+        <button class="signout-btn" type="submit" data-i18n="signOut">Sign Out</button>
       </form>
+      <div class="lang-switch" role="group" aria-label="Language switch">
+        <button class="lang-btn is-active" type="button" data-lang="en" aria-pressed="true">EN</button>
+        <button class="lang-btn" type="button" data-lang="fr" aria-pressed="false">FR</button>
+      </div>
     </div>
 
     <!-- Header -->
     <header class="page-header">
-      <h1>Brainiacs Level 1: Building Pedro</h1>
-      <p>Select a mission to start learning.</p>
+      <h1 data-i18n="pageTitle">Brainiacs Level 1: Building Pedro</h1>
+      <p data-i18n="pageSubtitle">Select a mission to start learning.</p>
     </header>
 
     <!-- Mission 1 -->
     <a class="mission-link" href="{% url 'lessons:mission_1' %}">
       <div class="mission-card">
-        <div class="mission-title">Mission 1: Know your Toolbox</div>
-        <div class="mission-description">
+        <div class="mission-title" data-i18n="mission1Title">Mission 1: Know your Toolbox</div>
+        <div class="mission-description" data-i18n="mission1Desc">
           Learn all the tools and fasteners you’ll use to build Pedro.
         </div>
       </div>
@@ -139,8 +180,8 @@
     <!-- Mission 2 -->
     <a class="mission-link" href="{% url 'lessons:mission_2_intro' %}">
       <div class="mission-card">
-        <div class="mission-title">Mission 2: Pedro's Brain</div>
-        <div class="mission-description">
+        <div class="mission-title" data-i18n="mission2Title">Mission 2: Pedro's Brain</div>
+        <div class="mission-description" data-i18n="mission2Desc">
           Discover what Arduino is, how the IDE works, and upload your first sketches.
         </div>
       </div>
@@ -149,8 +190,8 @@
     <!-- Mission 3 -->
     <a class="mission-link" href="{% url 'lessons:mission_3_build_pedro' %}">
       <div class="mission-card">
-        <div class="mission-title">Mission 3: Building Pedro</div>
-        <div class="mission-description">
+        <div class="mission-title" data-i18n="mission3Title">Mission 3: Building Pedro</div>
+        <div class="mission-description" data-i18n="mission3Desc">
           Build Pedro system by system: structure, electronics, and code for each part.
         </div>
       </div>
@@ -159,8 +200,8 @@
     <!-- Mission 4 -->
     <a class="mission-link" href="{% url 'lessons:mission_4_assemble_pedro' %}">
       <div class="mission-card">
-        <div class="mission-title">Mission 4: Assembling Pedro</div>
-        <div class="mission-description">
+        <div class="mission-title" data-i18n="mission4Title">Mission 4: Assembling Pedro</div>
+        <div class="mission-description" data-i18n="mission4Desc">
           Assemble all systems and combine the code into one full working robot.
         </div>
       </div>
@@ -168,6 +209,7 @@
 
   </div>
 
+  <script src="{% static 'lessons/js/language_switcher.js' %}?v=20260301g"></script>
   <script>
     (function() {
       const selectors = ["a.circle-link", "a.quiz-link", "a.mission-link"];
@@ -209,3 +251,7 @@
   </script>
 </body>
 </html>
+
+
+
+
