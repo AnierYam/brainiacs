@@ -30,13 +30,28 @@
     }
 
     .back-link {
+      position: fixed;
+      top: 0.5rem;
+      left: 1rem;
       display: inline-flex;
       align-items: center;
       gap: 0.35rem;
       text-decoration: none;
       color: #1d4ed8;
+      padding: 0.4rem 0.9rem;
+      font-size: 0.85rem;
+      border-radius: 999px;
+      border: 1px solid #cbd5f5;
+      background: #eef2ff;
+      box-shadow: 0 4px 10px rgba(15, 23, 42, 0.12);
       font-weight: 600;
-      margin-bottom: 1rem;
+      margin: 0;
+      z-index: 80;
+    }
+
+    .back-link:hover {
+      background: #e0e7ff;
+      text-decoration: none;
     }
 
     .video-wrapper {
@@ -290,7 +305,7 @@
     {% endif %}
   </div>
 
-  <script src="{% static 'lessons/js/language_switcher.js' %}?v=20260301g"></script>
+  <script src="{% static 'lessons/js/language_switcher.js' %}?v=20260302d"></script>
   <script>
     const continueUrl = "{{ continue_url|escapejs }}";
     const pageContainer = document.querySelector(".container");
@@ -586,6 +601,8 @@
   </script>
 </body>
 </html>
+
+
 
 
 

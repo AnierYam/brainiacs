@@ -31,13 +31,30 @@
     }
 
     .breadcrumb {
-      font-size: 0.85rem;
-      color: #6b7280;
-      margin-bottom: 1rem;
+      margin: 0;
     }
 
     .breadcrumb a {
-      color: #2563eb;
+      position: fixed;
+      top: 0.5rem;
+      left: 1rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0.4rem 0.9rem;
+      font-size: 0.85rem;
+      border-radius: 999px;
+      border: 1px solid #cbd5f5;
+      background: #eef2ff;
+      color: #1d4ed8;
+      text-decoration: none;
+      box-shadow: 0 4px 10px rgba(15, 23, 42, 0.12);
+      z-index: 80;
+    }
+
+    .breadcrumb a:hover {
+      background: #e0e7ff;
+      text-decoration: none;
     }
 
     .header {
@@ -269,7 +286,7 @@
     </div>
   </div>
 
-  <script src="{% static 'lessons/js/language_switcher.js' %}?v=20260301g"></script>
+  <script src="{% static 'lessons/js/language_switcher.js' %}?v=20260302d"></script>
   <script>
     (function() {
       const xpFill = document.querySelector(".xp-progress__fill");
@@ -316,6 +333,8 @@
   </script>
 </body>
 </html>
+
+
 
 
 

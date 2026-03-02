@@ -75,10 +75,16 @@
     var style = document.createElement("style");
     style.id = "global-language-switch-style";
     style.textContent =
-      ".lang-switch--floating{position:fixed;top:1rem;right:1rem;display:inline-flex;align-items:center;gap:.25rem;background:#fff;border:1px solid #cbd5e1;border-radius:999px;padding:.2rem;box-shadow:0 4px 12px rgba(15,23,42,.12);z-index:70}" +
+      ":root{--ui-top-controls-y:0.5rem;--ui-top-controls-x:max(1rem,calc((100vw - 900px) / 2 + 1rem));--ui-top-controls-z:80}" +
+      ".lang-switch--floating{position:fixed;top:var(--ui-top-controls-y);right:var(--ui-top-controls-x);display:inline-flex;align-items:center;gap:.25rem;background:#fff;border:1px solid #cbd5e1;border-radius:999px;padding:.2rem;box-shadow:0 4px 12px rgba(15,23,42,.12);z-index:var(--ui-top-controls-z)}" +
       ".lang-btn{border:none;border-radius:999px;background:transparent;color:#334155;padding:.35rem .7rem;font-size:.76rem;font-weight:700;cursor:pointer;line-height:1}" +
       ".lang-btn:hover{background:#e2e8f0}" +
       ".lang-btn.is-active{background:#1d4ed8;color:#fff}" +
+      ".top-bar{position:fixed!important;top:var(--ui-top-controls-y)!important;left:var(--ui-top-controls-x)!important;right:var(--ui-top-controls-x)!important;z-index:var(--ui-top-controls-z)!important}" +
+      ".top-bar form{margin:0!important}" +
+      ".top-bar .lang-switch{position:static!important;margin-left:auto!important}" +
+      ".back-button,.back-link,.global-top-left-control{position:fixed!important;top:var(--ui-top-controls-y)!important;left:var(--ui-top-controls-x)!important;z-index:var(--ui-top-controls-z)!important;margin:0!important}" +
+      ".breadcrumb{margin:0!important}" +
       "html.translated-ltr,html.translated-rtl,html,body{top:0!important;margin-top:0!important;padding-top:0!important}" +
       "body{position:static!important}" +
       ".goog-te-banner-frame.skiptranslate{display:none!important}" +
@@ -89,6 +95,16 @@
       "#goog-gt-tt,.goog-te-balloon-frame,.goog-te-spinner-pos{display:none!important}" +
       "body{top:0!important}";
     document.head.appendChild(style);
+  }
+
+  function alignPageControls() {
+    var breadcrumb = document.querySelector(".breadcrumb");
+    if (breadcrumb) {
+      var firstLink = breadcrumb.querySelector("a");
+      if (firstLink) {
+        firstLink.classList.add("global-top-left-control");
+      }
+    }
   }
 
   function createFloatingSwitch() {
@@ -263,6 +279,7 @@
 
   function init() {
     initSwitch();
+    alignPageControls();
     installHideObserver();
 
     var initial =
