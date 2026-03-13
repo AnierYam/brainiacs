@@ -1219,7 +1219,12 @@
       color: #1d4ed8;
       font-weight: 600;
       cursor: pointer;
-      transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+      transition:
+        transform 0.15s ease,
+        border-color 0.15s ease,
+        box-shadow 0.15s ease,
+        background 0.15s ease,
+        color 0.15s ease;
       text-align: left;
     }
 
@@ -1235,8 +1240,10 @@
     }
 
     .match-item.matched {
-      background: #f8fafc;
-      color: #64748b;
+      border-color: var(--match-pair-border, #cbd5e1);
+      background: var(--match-pair-bg, #f8fafc);
+      color: var(--match-pair-text, #64748b);
+      box-shadow: 0 0 0 2px var(--match-pair-ring, rgba(148, 163, 184, 0.16));
     }
 
     .match-item.correct {
@@ -1249,6 +1256,29 @@
       border-color: #ef4444;
       background: #fee2e2;
       color: #991b1b;
+    }
+
+    .match-item.shake {
+      animation: match-shake 0.4s ease-in-out;
+    }
+
+    @keyframes match-shake {
+      0%,
+      100% {
+        transform: translateX(0);
+      }
+      20% {
+        transform: translateX(-5px);
+      }
+      40% {
+        transform: translateX(5px);
+      }
+      60% {
+        transform: translateX(-4px);
+      }
+      80% {
+        transform: translateX(4px);
+      }
     }
 
     .action-btn {
@@ -1599,6 +1629,8 @@
           let CARDS = JSON.parse('{{ cards_json|escapejs }}');
           const lessonTitle = "{{ lesson.title|escapejs }}";
           const lessonSlug = "{{ lesson.slug|escapejs }}";
+          const lessonPart = Number("{{ lesson.part|default:0 }}");
+          const delayRedoUntilWrongAnswer = lessonPart === 1;
           const isDigitalAnalogLesson = lessonSlug === "digital-vs-analog";
           if (isDigitalAnalogLesson) {
             CARDS = CARDS.filter((card) => {
@@ -3796,7 +3828,12 @@ Analog changes little by little.
               let selectedKey = "";
               let quizLocked = false;
               let quizPosted = false;
+              let redoBtn = null;
               const choiceButtons = new Map();
+              const setRedoVisibility = (visible) => {
+                if (!redoBtn) return;
+                redoBtn.hidden = delayRedoUntilWrongAnswer ? !visible : false;
+              };
 
               const setChoiceDisabled = (disabled, exceptKey = "") => {
                 choiceButtons.forEach((btn, key) => {
@@ -3821,6 +3858,7 @@ Analog changes little by little.
                   btn.disabled = false;
                 });
                 resetSingleFeedback();
+                setRedoVisibility(false);
               };
 
               const applySingleValidation = () => {
@@ -3846,6 +3884,7 @@ Analog changes little by little.
                   if (lockOnSelect) {
                     setChoiceDisabled(true);
                   }
+                  setRedoVisibility(false);
                 } else {
                   cardFeedbackEl.textContent = redoFeedback;
                   cardFeedbackEl.className = "card-feedback";
@@ -3854,6 +3893,7 @@ Analog changes little by little.
                     btn.classList.toggle("wrong", key === selectedKey && key !== correct);
                   });
                   setChoiceDisabled(false);
+                  setRedoVisibility(true);
                 }
               };
 
@@ -3900,10 +3940,11 @@ Analog changes little by little.
                 applySingleValidation();
               });
               actions.appendChild(okBtn);
-              const redoBtn = document.createElement("button");
+              redoBtn = document.createElement("button");
               redoBtn.type = "button";
               redoBtn.className = "action-btn secondary";
               redoBtn.textContent = "Redo";
+              setRedoVisibility(false);
               redoBtn.addEventListener("click", () => {
                 if (quizLocked) return;
                 resetSingleSelection();
@@ -3919,12 +3960,14 @@ Analog changes little by little.
               validated: false,
               correct: false,
               quizPosted: false,
+              showRedo: false,
             };
             const selectedKeys = state.selectedKeys;
             const correctKeys = new Set(
               choices.filter((choice) => choice.isCorrect).map((choice) => choice.key)
             );
             const choiceButtons = new Map();
+            let redoBtn = null;
             const correctFeedback = formatFeedback(
               payload.correct_feedback || "Correct! You selected all the right answers."
             );
@@ -3934,6 +3977,11 @@ Analog changes little by little.
             const partialFeedback = formatFeedback(
               payload.partial_feedback || incorrectFeedback
             );
+            const setRedoVisibility = (visible) => {
+              state.showRedo = delayRedoUntilWrongAnswer ? Boolean(visible) : true;
+              if (!redoBtn) return;
+              redoBtn.hidden = delayRedoUntilWrongAnswer ? !state.showRedo : false;
+            };
 
             const clearValidationStyles = () => {
               choices.forEach((choice) => {
@@ -4044,6 +4092,7 @@ Analog changes little by little.
               if (state.correct) return;
               const result = state.validate();
               if (result.status !== "correct") {
+                setRedoVisibility(true);
                 return;
               }
               if (!completed[currentIndex]) {
@@ -4057,13 +4106,15 @@ Analog changes little by little.
                   }
                 });
               }
+              setRedoVisibility(false);
               nextBtn.disabled = false;
             });
             actions.appendChild(okBtn);
-            const redoBtn = document.createElement("button");
+            redoBtn = document.createElement("button");
             redoBtn.type = "button";
             redoBtn.className = "action-btn secondary";
             redoBtn.textContent = "Redo";
+            setRedoVisibility(state.showRedo);
             redoBtn.addEventListener("click", () => {
               if (state.correct) return;
               selectedKeys.clear();
@@ -4073,6 +4124,7 @@ Analog changes little by little.
               choiceButtons.forEach((btn) => btn.classList.remove("selected"));
               cardFeedbackEl.textContent = "";
               cardFeedbackEl.className = "card-feedback";
+              setRedoVisibility(false);
             });
             actions.appendChild(redoBtn);
             cardQuizEl.appendChild(actions);
@@ -4106,7 +4158,13 @@ Analog changes little by little.
               return;
             }
             const payload = card.action_payload || {};
-            const shouldShuffleOnWrong = Boolean(payload.shuffle_on_wrong);
+            const isCheckpointMatchCard =
+              lessonSlug === "checkpoint-quiz" &&
+              (Number(card.order) === 2 || (card.title || "").trim() === "Checkpoint Match");
+            const shouldShuffleOnWrong = isCheckpointMatchCard || Boolean(payload.shuffle_on_wrong);
+            const shouldShakeOnWrong = isCheckpointMatchCard || Boolean(payload.shake_on_wrong);
+            const shouldColorMatchedPairs =
+              isCheckpointMatchCard || Boolean(payload.color_pairs_on_select);
             const pairsRaw = Array.isArray(payload.pairs) ? payload.pairs : [];
             const pairs = pairsRaw
               .map((pair, index) => ({
@@ -4126,6 +4184,36 @@ Analog changes little by little.
             let selectedLeft = "";
             let quizLocked = false;
             let quizPosted = false;
+            let matchResetPending = false;
+            const pairColors = [
+              {
+                bg: "#dbeafe",
+                border: "#60a5fa",
+                text: "#1d4ed8",
+                ring: "rgba(96, 165, 250, 0.24)",
+              },
+              {
+                bg: "#dcfce7",
+                border: "#4ade80",
+                text: "#166534",
+                ring: "rgba(74, 222, 128, 0.24)",
+              },
+              {
+                bg: "#fae8ff",
+                border: "#d946ef",
+                text: "#a21caf",
+                ring: "rgba(217, 70, 239, 0.2)",
+              },
+              {
+                bg: "#fef3c7",
+                border: "#f59e0b",
+                text: "#92400e",
+                ring: "rgba(245, 158, 11, 0.22)",
+              },
+            ];
+            const pairColorById = new Map(
+              pairs.map((pair, index) => [pair.id, pairColors[index % pairColors.length]])
+            );
 
             const matchWrap = document.createElement("div");
             matchWrap.className = "match-quiz";
@@ -4160,14 +4248,46 @@ Analog changes little by little.
               selectedLeft = "";
             };
 
+            const clearMatchButtonState = (btn) => {
+              if (!btn) return;
+              btn.classList.remove("matched", "correct", "wrong", "shake");
+              btn.style.removeProperty("--match-pair-bg");
+              btn.style.removeProperty("--match-pair-border");
+              btn.style.removeProperty("--match-pair-text");
+              btn.style.removeProperty("--match-pair-ring");
+            };
+
+            const applyMatchedPairStyle = (btn, pairId) => {
+              if (!btn) return;
+              btn.classList.add("matched");
+              if (!shouldColorMatchedPairs) {
+                return;
+              }
+              const palette = pairColorById.get(pairId);
+              if (!palette) return;
+              btn.style.setProperty("--match-pair-bg", palette.bg);
+              btn.style.setProperty("--match-pair-border", palette.border);
+              btn.style.setProperty("--match-pair-text", palette.text);
+              btn.style.setProperty("--match-pair-ring", palette.ring);
+            };
+
+            const restoreMatchedPairStyles = () => {
+              leftButtons.forEach((btn) => btn.classList.remove("correct", "wrong", "shake"));
+              rightButtons.forEach((btn) => btn.classList.remove("correct", "wrong", "shake"));
+              matches.forEach((rightId, leftId) => {
+                applyMatchedPairStyle(leftButtons.get(leftId), leftId);
+                applyMatchedPairStyle(rightButtons.get(rightId), leftId);
+              });
+            };
+
             const unpairLeft = (leftId) => {
               if (!matches.has(leftId)) return;
               const rightId = matches.get(leftId);
               matches.delete(leftId);
               const leftBtn = leftButtons.get(leftId);
               const rightBtn = rightButtons.get(rightId);
-              if (leftBtn) leftBtn.classList.remove("matched", "correct", "wrong");
-              if (rightBtn) rightBtn.classList.remove("matched", "correct", "wrong");
+              clearMatchButtonState(leftBtn);
+              clearMatchButtonState(rightBtn);
             };
 
             const unpairRight = (rightId) => {
@@ -4188,11 +4308,42 @@ Analog changes little by little.
               matches.set(leftId, rightId);
               const leftBtn = leftButtons.get(leftId);
               const rightBtn = rightButtons.get(rightId);
-              if (leftBtn) leftBtn.classList.add("matched");
-              if (rightBtn) rightBtn.classList.add("matched");
+              applyMatchedPairStyle(leftBtn, leftId);
+              applyMatchedPairStyle(rightBtn, leftId);
             };
 
-            const buildLists = () => {
+            let currentFeatureOrder = [];
+            let currentFunctionOrder = [];
+
+            const hasSameOrder = (items, previousOrder) =>
+              previousOrder.length === items.length &&
+              items.every((item, index) => item.id === previousOrder[index]);
+
+            const shuffleWithChangedOrder = (items, previousOrder) => {
+              if (items.length < 2) {
+                return items.slice();
+              }
+              let shuffled = shuffleArray(items.slice());
+              if (!previousOrder.length || !hasSameOrder(shuffled, previousOrder)) {
+                return shuffled;
+              }
+              for (let attempt = 0; attempt < 6; attempt += 1) {
+                shuffled = shuffleArray(items.slice());
+                if (!hasSameOrder(shuffled, previousOrder)) {
+                  return shuffled;
+                }
+              }
+              const previousItems = previousOrder
+                .map((id) => items.find((item) => item.id === id))
+                .filter(Boolean);
+              if (previousItems.length === items.length) {
+                return previousItems.slice(1).concat(previousItems.slice(0, 1));
+              }
+              return items.slice(1).concat(items.slice(0, 1));
+            };
+
+            const buildLists = ({ forceDifferentOrder = false } = {}) => {
+              matchResetPending = false;
               leftList.innerHTML = "";
               rightList.innerHTML = "";
               leftButtons.clear();
@@ -4200,8 +4351,16 @@ Analog changes little by little.
               matches.clear();
               selectedLeft = "";
 
-              const features = shuffleArray(pairs.map((pair) => ({ id: pair.id, text: pair.feature })));
-              const functions = shuffleArray(pairs.map((pair) => ({ id: pair.id, text: pair.functionText })));
+              const featureItems = pairs.map((pair) => ({ id: pair.id, text: pair.feature }));
+              const functionItems = pairs.map((pair) => ({ id: pair.id, text: pair.functionText }));
+              const features = forceDifferentOrder
+                ? shuffleWithChangedOrder(featureItems, currentFeatureOrder)
+                : shuffleArray(featureItems);
+              const functions = forceDifferentOrder
+                ? shuffleWithChangedOrder(functionItems, currentFunctionOrder)
+                : shuffleArray(functionItems);
+              currentFeatureOrder = features.map((item) => item.id);
+              currentFunctionOrder = functions.map((item) => item.id);
 
               features.forEach((item) => {
                 const btn = document.createElement("button");
@@ -4210,7 +4369,7 @@ Analog changes little by little.
                 btn.textContent = item.text;
                 leftButtons.set(item.id, btn);
                 btn.addEventListener("click", () => {
-                  if (quizLocked) return;
+                  if (quizLocked || matchResetPending) return;
                   if (selectedLeft === item.id) {
                     resetSelections();
                     return;
@@ -4234,19 +4393,54 @@ Analog changes little by little.
                 btn.textContent = item.text;
                 rightButtons.set(item.id, btn);
                 btn.addEventListener("click", () => {
-                  if (quizLocked) return;
+                  if (quizLocked || matchResetPending) return;
                   if (!selectedLeft) {
                     cardFeedbackEl.textContent = "Pick a feature first.";
                     cardFeedbackEl.className = "card-feedback error";
                     return;
                   }
-                  applyPair(selectedLeft, item.id);
+                  const leftId = selectedLeft;
+                  applyPair(leftId, item.id);
                   resetSelections();
+                  if (isCheckpointMatchCard && leftId !== item.id) {
+                    runWrongMatchSequence(leftId, item.id);
+                    return;
+                  }
                   cardFeedbackEl.textContent = "";
                   cardFeedbackEl.className = "card-feedback";
                 });
                 rightList.appendChild(btn);
               });
+            };
+
+            const runWrongMatchSequence = (leftId, rightId) => {
+              const leftBtn = leftButtons.get(leftId);
+              const rightBtn = rightButtons.get(rightId);
+              if (!leftBtn || !rightBtn) {
+                buildLists({ forceDifferentOrder: true });
+                return;
+              }
+              const highlightDelayMs = 180;
+              const shakeDurationMs = 420;
+              const restoreDelayMs = 180;
+              matchResetPending = true;
+              cardFeedbackEl.textContent =
+                payload.incorrect_feedback || "Not quite. Check the matches and try again.";
+              cardFeedbackEl.className = "card-feedback error";
+              leftBtn.classList.add("wrong");
+              rightBtn.classList.add("wrong");
+              window.setTimeout(() => {
+                leftBtn.classList.add("shake");
+                rightBtn.classList.add("shake");
+                window.setTimeout(() => {
+                  leftBtn.classList.remove("shake");
+                  rightBtn.classList.remove("shake");
+                  restoreMatchedPairStyles();
+                  window.setTimeout(() => {
+                    buildLists({ forceDifferentOrder: true });
+                  }, restoreDelayMs);
+                }, shakeDurationMs);
+              }, highlightDelayMs);
             };
 
             buildLists();
@@ -4258,15 +4452,16 @@ Analog changes little by little.
             okBtn.className = "action-btn";
             okBtn.textContent = "OK";
             okBtn.addEventListener("click", () => {
-              if (quizLocked) return;
+              if (quizLocked || matchResetPending) return;
               if (matches.size !== pairs.length) {
                 cardFeedbackEl.textContent = "Match every feature before checking.";
                 cardFeedbackEl.className = "card-feedback error";
                 return;
               }
               let allCorrect = true;
-              leftButtons.forEach((btn) => btn.classList.remove("correct", "wrong"));
-              rightButtons.forEach((btn) => btn.classList.remove("correct", "wrong"));
+              const wrongButtons = [];
+              leftButtons.forEach((btn) => btn.classList.remove("correct", "wrong", "shake"));
+              rightButtons.forEach((btn) => btn.classList.remove("correct", "wrong", "shake"));
               matches.forEach((rightId, leftId) => {
                 const isCorrect = leftId === rightId;
                 if (!isCorrect) {
@@ -4278,6 +4473,10 @@ Analog changes little by little.
                 if (rightBtn) rightBtn.classList.toggle("correct", isCorrect);
                 if (leftBtn) leftBtn.classList.toggle("wrong", !isCorrect);
                 if (rightBtn) rightBtn.classList.toggle("wrong", !isCorrect);
+                if (!isCorrect) {
+                  if (leftBtn) wrongButtons.push(leftBtn);
+                  if (rightBtn) wrongButtons.push(rightBtn);
+                }
               });
               if (allCorrect) {
                 quizLocked = true;
@@ -4298,8 +4497,40 @@ Analog changes little by little.
                 cardFeedbackEl.textContent =
                   payload.incorrect_feedback || "Not quite. Check the matches and try again.";
                 cardFeedbackEl.className = "card-feedback error";
-                if (shouldShuffleOnWrong) {
-                  buildLists();
+                if (isCheckpointMatchCard) {
+                  const highlightDelayMs = 180;
+                  const shakeDurationMs = shouldShakeOnWrong ? 420 : 0;
+                  const restoreDelayMs = 180;
+                  matchResetPending = true;
+                  window.setTimeout(() => {
+                    if (shouldShakeOnWrong) {
+                      wrongButtons.forEach((btn) => btn.classList.add("shake"));
+                    }
+                    window.setTimeout(() => {
+                      wrongButtons.forEach((btn) => btn.classList.remove("shake"));
+                      restoreMatchedPairStyles();
+                      window.setTimeout(() => {
+                        if (shouldShuffleOnWrong) {
+                          buildLists({ forceDifferentOrder: true });
+                          return;
+                        }
+                        matchResetPending = false;
+                      }, restoreDelayMs);
+                    }, shakeDurationMs);
+                  }, highlightDelayMs);
+                } else if (shouldShakeOnWrong || shouldShuffleOnWrong) {
+                  if (shouldShakeOnWrong) {
+                    wrongButtons.forEach((btn) => btn.classList.add("shake"));
+                  }
+                  matchResetPending = true;
+                  window.setTimeout(() => {
+                    wrongButtons.forEach((btn) => btn.classList.remove("shake"));
+                    if (shouldShuffleOnWrong) {
+                      buildLists({ forceDifferentOrder: true });
+                      return;
+                    }
+                    matchResetPending = false;
+                  }, shouldShakeOnWrong ? 420 : 0);
                 }
               }
             });
