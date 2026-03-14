@@ -63,7 +63,7 @@ class ActivationSignupForm(UserCreationForm):
         activation_code = ActivationCode.objects.filter(code=code).first()
         if not activation_code:
             raise forms.ValidationError("Invalid activation code.")
-        if activation_code.user_id:
+        if activation_code.user_id and not activation_code.is_reusable:
             raise forms.ValidationError(
                 "This activation code is already linked to an account."
             )
@@ -80,6 +80,7 @@ class ActivationSignupForm(UserCreationForm):
         if (
             activation_code
             and email
+            and not activation_code.is_reusable
             and activation_code.activated_email
             and activation_code.activated_email != email
         ):
@@ -103,7 +104,7 @@ class ActivationSignupForm(UserCreationForm):
             activation_code = ActivationCode.objects.select_for_update().get(
                 id=activation_code_id
             )
-            if activation_code.user_id:
+            if activation_code.user_id and not activation_code.is_reusable:
                 raise ValidationError(
                     "This activation code has already been used. Try another code."
                 )
@@ -112,25 +113,28 @@ class ActivationSignupForm(UserCreationForm):
                 user.email = email
             user.save()
 
-            activation_code.user = user
-            activation_code.activated_email = email
-            activation_code.linked_at = timezone.now()
-            if activation_code.activated_at is None:
-                activation_code.activated_at = timezone.now()
-            activation_code.email_verification_code = ""
-            activation_code.email_verification_sent_at = None
-            activation_code.email_verified_at = None
-            activation_code.save(
-                update_fields=[
-                    "user",
-                    "activated_email",
-                    "linked_at",
-                    "activated_at",
-                    "email_verification_code",
-                    "email_verification_sent_at",
-                    "email_verified_at",
-                ]
-            )
+            if activation_code.is_reusable:
+                activation_code.create_user_link(user=user, email=email)
+            else:
+                activation_code.user = user
+                activation_code.activated_email = email
+                activation_code.linked_at = timezone.now()
+                if activation_code.activated_at is None:
+                    activation_code.activated_at = timezone.now()
+                activation_code.email_verification_code = ""
+                activation_code.email_verification_sent_at = None
+                activation_code.email_verified_at = None
+                activation_code.save(
+                    update_fields=[
+                        "user",
+                        "activated_email",
+                        "linked_at",
+                        "activated_at",
+                        "email_verification_code",
+                        "email_verification_sent_at",
+                        "email_verified_at",
+                    ]
+                )
         return user
 
 

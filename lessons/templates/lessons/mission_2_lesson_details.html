@@ -1195,6 +1195,92 @@
       margin-top: 1rem;
     }
 
+    .analog-output-card {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .analog-output-card p {
+      margin: 0;
+    }
+
+    .analog-output-card__table-wrap {
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      overflow: hidden;
+      background: #ffffff;
+      box-shadow: 0 8px 18px rgba(15, 23, 42, 0.04);
+    }
+
+    .analog-output-card__table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+    }
+
+    .analog-output-card__table th,
+    .analog-output-card__table td {
+      padding: 0.9rem 1rem;
+      border-bottom: 1px solid #e2e8f0;
+      text-align: left;
+      vertical-align: middle;
+    }
+
+    .analog-output-card__table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .analog-output-card__table th {
+      font-weight: 800;
+      color: #1e293b;
+      background: #f8fafc;
+    }
+
+    .analog-output-card__label {
+      color: #1e293b;
+      font-weight: 600;
+    }
+
+    .analog-output-card__tag {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 1.75rem;
+      padding: 0.15rem 0.45rem;
+      border-radius: 8px;
+      background: #f1f5f9;
+      color: #0f172a;
+      font-weight: 800;
+    }
+
+    .analog-output-card__status {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-weight: 700;
+      color: #1e293b;
+    }
+
+    .analog-output-card__status-icon {
+      display: inline-block;
+      font-size: 1.05rem;
+      line-height: 1;
+      font-weight: 900;
+      flex: 0 0 auto;
+    }
+
+    .analog-output-card__status--yes .analog-output-card__status-icon {
+      color: #22c55e;
+    }
+
+    .analog-output-card__status--no .analog-output-card__status-icon {
+      color: #f43f5e;
+    }
+
+    .analog-output-card__note {
+      color: #334155;
+    }
+
     .card-media img {
       width: 100%;
       max-height: 320px;
@@ -1587,10 +1673,77 @@
       background: #fef2f2;
     }
 
+    .quiz-choice.shake {
+      animation: match-shake 0.4s ease-in-out;
+    }
+
     .quiz-actions {
       margin-top: 0.9rem;
       display: flex;
       justify-content: center;
+    }
+
+    .pin-select-quiz {
+      margin-top: 1rem;
+    }
+
+    .pin-select-quiz__scroller {
+      overflow-x: visible;
+      padding: 0 0 0.35rem;
+    }
+
+    .pin-select-quiz__stage {
+      position: relative;
+      width: 100%;
+      min-width: 0;
+      max-width: 100%;
+      margin: 0 auto;
+      padding-top: 2.85rem;
+    }
+
+    .pin-select-quiz__pins {
+      position: absolute;
+      inset: 0 0 auto;
+      height: 2.7rem;
+      pointer-events: none;
+    }
+
+    .pin-select-quiz__pin.quiz-choice {
+      position: absolute;
+      top: 0;
+      left: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 2.55rem;
+      min-width: 2.55rem;
+      height: 2.55rem;
+      padding: 0;
+      margin: 0;
+      transform: translateX(-50%);
+      border-radius: 8px;
+      font-size: 0.92rem;
+      line-height: 1;
+      letter-spacing: -0.02em;
+      pointer-events: auto;
+      z-index: 1;
+      will-change: left;
+      transition:
+        left 0.4s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        background 0.2s ease;
+    }
+
+    .pin-select-quiz__pin.shake {
+      animation: match-shake 0.4s ease-in-out;
+    }
+
+    .pin-select-quiz__board {
+      display: block;
+      width: 100%;
+      height: auto;
+      margin: 0 auto;
     }
 
     .card-code {
@@ -2080,6 +2233,37 @@
             xpTotalEl.textContent = xpTotal;
           }
 
+          function appendInlineText(parent, value) {
+            const parts = String(value).split(/(\*\*\*[^*]+\*\*\*|\*\*[^*]+\*\*|\*[^*]+\*)/g);
+            parts.forEach((part) => {
+              if (!part) return;
+              const strongEmphasisMatch = part.match(/^\*\*\*([^*]+)\*\*\*$/);
+              if (strongEmphasisMatch) {
+                const strong = document.createElement("strong");
+                const em = document.createElement("em");
+                em.textContent = strongEmphasisMatch[1];
+                strong.appendChild(em);
+                parent.appendChild(strong);
+                return;
+              }
+              const strongMatch = part.match(/^\*\*([^*]+)\*\*$/);
+              if (strongMatch) {
+                const strong = document.createElement("strong");
+                strong.textContent = strongMatch[1];
+                parent.appendChild(strong);
+                return;
+              }
+              const emphasisMatch = part.match(/^\*([^*]+)\*$/);
+              if (emphasisMatch) {
+                const em = document.createElement("em");
+                em.textContent = emphasisMatch[1];
+                parent.appendChild(em);
+                return;
+              }
+              parent.appendChild(document.createTextNode(part));
+            });
+          }
+
           function renderBody(text) {
             clearElement(cardBodyEl);
             if (!text) {
@@ -2147,7 +2331,8 @@
                   strong.className = "card-body-hint";
                   cardBodyEl.appendChild(strong);
                   if (hintMatch[1]) {
-                    cardBodyEl.appendChild(document.createTextNode(" " + hintMatch[1]));
+                    cardBodyEl.appendChild(document.createTextNode(" "));
+                    appendInlineText(cardBodyEl, hintMatch[1]);
                   }
                 } else if (block.text.trim().startsWith("GND")) {
                   const span = document.createElement("span");
@@ -2160,7 +2345,7 @@
                   span.textContent = block.text;
                   cardBodyEl.appendChild(span);
                 } else {
-                  cardBodyEl.appendChild(document.createTextNode(block.text));
+                  appendInlineText(cardBodyEl, block.text);
                 }
                 needsBreak = true;
                 return;
@@ -2183,7 +2368,7 @@
                     span.textContent = item;
                     li.appendChild(span);
                   } else {
-                    li.textContent = item;
+                    appendInlineText(li, item);
                   }
                   list.appendChild(li);
                 });
@@ -2191,6 +2376,98 @@
                 needsBreak = true;
               }
             });
+          }
+
+          function isAnalogOutputIntroCard(card) {
+            return lessonSlug === "power-output" && Number(card.order) === 3 && card.card_type === "intro";
+          }
+
+          function renderAnalogOutputIntroCard(card) {
+            clearElement(cardBodyEl);
+            cardBodyEl.style.display = "block";
+
+            const paragraphs = String(card.body || "")
+              .split(/\n\s*\n/)
+              .map((part) => part.trim())
+              .filter(Boolean);
+
+            const wrapper = document.createElement("div");
+            wrapper.className = "analog-output-card";
+
+            function appendAnalogOutputTable() {
+              const tableWrap = document.createElement("div");
+              tableWrap.className = "analog-output-card__table-wrap";
+              tableWrap.innerHTML = `
+                <table class="analog-output-card__table">
+                  <thead>
+                    <tr>
+                      <th>Pin type</th>
+                      <th>DIGITAL Output</th>
+                      <th>ANALOG Output</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><span class="analog-output-card__label">Regular digital pins</span></td>
+                      <td>
+                        <span class="analog-output-card__status analog-output-card__status--yes">
+                          <span class="analog-output-card__status-icon">&#10003;</span>
+                          <span>Yes</span>
+                        </span>
+                      </td>
+                      <td>
+                        <span class="analog-output-card__status analog-output-card__status--no">
+                          <span class="analog-output-card__status-icon">&times;</span>
+                          <span>No</span>
+                        </span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <span class="analog-output-card__label">
+                          <span class="analog-output-card__tag">~</span>
+                          PWM pins
+                        </span>
+                      </td>
+                      <td>
+                        <span class="analog-output-card__status analog-output-card__status--yes">
+                          <span class="analog-output-card__status-icon">&#10003;</span>
+                          <span>Yes</span>
+                        </span>
+                      </td>
+                      <td>
+                        <span class="analog-output-card__status analog-output-card__status--yes">
+                          <span class="analog-output-card__status-icon">&#10003;</span>
+                          <span>Yes</span>
+                        </span>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              `;
+              wrapper.appendChild(tableWrap);
+            }
+
+            paragraphs.forEach((paragraph, index) => {
+              if (index === 2) {
+                const note = document.createElement("p");
+                note.className = "analog-output-card__note";
+                appendInlineText(note, paragraph);
+                wrapper.appendChild(note);
+                appendAnalogOutputTable();
+                return;
+              }
+
+              const p = document.createElement("p");
+              appendInlineText(p, paragraph);
+              wrapper.appendChild(p);
+            });
+
+            if (paragraphs.length < 3) {
+              appendAnalogOutputTable();
+            }
+
+            cardBodyEl.appendChild(wrapper);
           }
 
           function clearElement(el) {
@@ -2237,9 +2514,9 @@
             return lessonSlug === "digital-vs-analog" && card && card.id === "digital-analog-receive";
           }
 
-          function isDigitalAnalogQuizCard(card) {
-            return lessonSlug === "digital-vs-analog" && Number(card.order) === 3;
-          }
+            function isDigitalAnalogQuizCard(card) {
+              return lessonSlug === "digital-vs-analog" && Number(card.order) === 3;
+            }
 
           function renderDigitalAnalogCard(mode) {
             clearElement(cardBodyEl);
@@ -3842,8 +4119,13 @@ Analog creates smooth changes.
             return Boolean(getHotspotItems(card).length && card.image_url);
           }
 
+          function isPinSelectQuizCard(card) {
+            const payload = card && typeof card === "object" ? card.action_payload : null;
+            return Boolean(card && card.card_type === "quiz" && payload && payload.quiz_type === "pin-select");
+          }
+
           function renderMedia(card) {
-            if (hasHotspotAction(card)) {
+            if (hasHotspotAction(card) || isPinSelectQuizCard(card)) {
               return;
             }
             if (card.image_url) {
@@ -4244,11 +4526,19 @@ Analog creates smooth changes.
                 "There is an error. Please redo your answer."
               );
               const lockOnSelect = Boolean(payload.lock_on_select);
+              const shouldUseSelectionErrorProcess = Boolean(payload.selection_error_process);
               let selectedKey = "";
               let quizLocked = false;
               let quizPosted = false;
+              let errorSequenceRunning = false;
+              let okBtn = null;
               let redoBtn = null;
               const choiceButtons = new Map();
+              const selectionErrorTiming = {
+                highlightMs: 180,
+                shakeMs: 260,
+                restoreMs: 180,
+              };
               const setRedoVisibility = (visible) => {
                 if (!redoBtn) return;
                 redoBtn.hidden = delayRedoUntilWrongAnswer ? !visible : false;
@@ -4267,17 +4557,49 @@ Analog creates smooth changes.
               const resetSingleFeedback = () => {
                 cardFeedbackEl.textContent = "";
                 cardFeedbackEl.className = "card-feedback";
-                choiceButtons.forEach((btn) => btn.classList.remove("correct", "wrong"));
+                choiceButtons.forEach((btn) => btn.classList.remove("correct", "wrong", "shake"));
               };
 
-              const resetSingleSelection = () => {
+              const resetSingleSelection = (preserveFeedback = false) => {
                 selectedKey = "";
                 choiceButtons.forEach((btn) => {
-                  btn.classList.remove("selected", "correct", "wrong");
+                  btn.classList.remove("selected", "correct", "wrong", "shake");
                   btn.disabled = false;
                 });
-                resetSingleFeedback();
+                if (!preserveFeedback) {
+                  resetSingleFeedback();
+                }
                 setRedoVisibility(false);
+              };
+
+              const runSingleSelectionErrorSequence = () => {
+                const wrongBtn = choiceButtons.get(selectedKey);
+                if (!wrongBtn) return;
+                errorSequenceRunning = true;
+                if (okBtn) {
+                  okBtn.disabled = true;
+                }
+                setChoiceDisabled(true);
+                cardFeedbackEl.textContent = redoFeedback;
+                cardFeedbackEl.className = "card-feedback error";
+                choiceButtons.forEach((btn, key) => {
+                  btn.classList.toggle("selected", key === selectedKey);
+                  btn.classList.remove("correct", "wrong", "shake");
+                });
+                wrongBtn.classList.add("wrong");
+                setRedoVisibility(false);
+                window.setTimeout(() => {
+                  wrongBtn.classList.add("shake");
+                  window.setTimeout(() => {
+                    resetSingleSelection(true);
+                    window.setTimeout(() => {
+                      errorSequenceRunning = false;
+                      if (okBtn && !completed[currentIndex]) {
+                        okBtn.disabled = false;
+                      }
+                    }, selectionErrorTiming.restoreMs);
+                  }, selectionErrorTiming.shakeMs);
+                }, selectionErrorTiming.highlightMs);
               };
 
               const applySingleValidation = () => {
@@ -4305,6 +4627,10 @@ Analog creates smooth changes.
                   }
                   setRedoVisibility(false);
                 } else {
+                  if (shouldUseSelectionErrorProcess) {
+                    runSingleSelectionErrorSequence();
+                    return;
+                  }
                   cardFeedbackEl.textContent = redoFeedback;
                   cardFeedbackEl.className = "card-feedback";
                   choiceButtons.forEach((btn, key) => {
@@ -4323,18 +4649,18 @@ Analog creates smooth changes.
                 btn.textContent = choice.key + ": " + choice.label;
                 choiceButtons.set(choice.key, btn);
                 btn.addEventListener("click", () => {
-                  if (quizLocked) return;
+                  if (quizLocked || errorSequenceRunning) return;
                   if (selectedKey === choice.key) {
                     selectedKey = "";
                     choiceButtons.forEach((otherBtn) => {
-                      otherBtn.classList.remove("selected", "correct", "wrong");
+                      otherBtn.classList.remove("selected", "correct", "wrong", "shake");
                       otherBtn.disabled = false;
                     });
                   } else {
                     selectedKey = choice.key;
                     choiceButtons.forEach((otherBtn, key) => {
                       otherBtn.classList.toggle("selected", key === selectedKey);
-                      otherBtn.classList.remove("correct", "wrong");
+                      otherBtn.classList.remove("correct", "wrong", "shake");
                       otherBtn.disabled = false;
                     });
                   }
@@ -4345,12 +4671,12 @@ Analog creates smooth changes.
 
               const actions = document.createElement("div");
               actions.className = "quiz-actions";
-              const okBtn = document.createElement("button");
+              okBtn = document.createElement("button");
               okBtn.type = "button";
               okBtn.className = "action-btn";
               okBtn.textContent = "OK";
               okBtn.addEventListener("click", () => {
-                if (quizLocked) return;
+                if (quizLocked || errorSequenceRunning) return;
                 if (!selectedKey) {
                   cardFeedbackEl.textContent = formatFeedback("Select an answer.");
                   cardFeedbackEl.className = "card-feedback";
@@ -4365,7 +4691,7 @@ Analog creates smooth changes.
               redoBtn.textContent = "Redo";
               setRedoVisibility(false);
               redoBtn.addEventListener("click", () => {
-                if (quizLocked) return;
+                if (quizLocked || errorSequenceRunning) return;
                 resetSingleSelection();
               });
               actions.appendChild(redoBtn);
@@ -4584,6 +4910,365 @@ Analog creates smooth changes.
               state.validated = true;
               state.correct = result.status === "correct";
               applyValidation(result);
+              return result;
+            };
+            multiQuizState[quizKey] = state;
+
+            if (completed[currentIndex]) {
+              selectedKeys.clear();
+              correctKeys.forEach((key) => selectedKeys.add(key));
+              state.validated = true;
+              state.correct = true;
+              choiceButtons.forEach((btn, key) => {
+                btn.classList.toggle("selected", correctKeys.has(key));
+              });
+              applyValidation({ status: "correct" });
+              setChoiceDisabled(true);
+              setRedoVisibility(false);
+              okBtn.disabled = true;
+            } else if (state.validated) {
+              const result = state.correct ? { status: "correct" } : validateSelection();
+              applyValidation(result);
+            }
+          }
+
+          function renderPinSelectQuiz(card) {
+            cardQuizEl.innerHTML = "";
+
+            const payload = card.action_payload || {};
+            const payloadOptions = Array.isArray(payload.options) ? payload.options : [];
+            const shouldShuffleOnWrong = Boolean(payload.shuffle_on_wrong);
+            const formatFeedback = (text) =>
+              String(text || "").replace(/([.!?])\s+(?=[A-Z0-9])/g, "$1\n");
+            const questionText = String(card.question || "").trim();
+
+            if (questionText) {
+              const question = document.createElement("div");
+              question.className = "quiz-question";
+              question.textContent = questionText;
+              cardQuizEl.appendChild(question);
+            }
+
+            const choices = payloadOptions
+              .map((choice, index) => {
+                const key = String(choice.key || choice.label || index);
+                const label = String(choice.label || choice.key || "");
+                const left = Number(choice.left);
+                return {
+                  key: key,
+                  label: label,
+                  left: left,
+                  isCorrect: Boolean(choice.is_correct),
+                };
+              })
+              .filter((choice) => choice.label && Number.isFinite(choice.left));
+
+            if (!choices.length || !card.image_url) {
+              return;
+            }
+
+            const quizKey = getQuizKey(card, currentIndex);
+            const state = multiQuizState[quizKey] || {
+              selectedKeys: new Set(),
+              validated: false,
+              correct: false,
+              quizPosted: false,
+              showRedo: false,
+            };
+            const selectedKeys = state.selectedKeys;
+            const correctKeys = new Set(
+              choices.filter((choice) => choice.isCorrect).map((choice) => choice.key)
+            );
+            const basePositions = choices.map((choice) => choice.left);
+            const choiceButtons = new Map();
+            let redoBtn = null;
+            let okBtn = null;
+            let errorSequenceRunning = false;
+            const selectionErrorTiming = {
+              highlightMs: 180,
+              shakeMs: 260,
+              restoreMs: 180,
+            };
+            const correctFeedback = formatFeedback(
+              payload.correct_feedback || "Correct! You selected all the right pins."
+            );
+            const incorrectFeedback = formatFeedback(
+              payload.incorrect_feedback || "There is an error. Please redo your answers."
+            );
+            const partialFeedback = formatFeedback(
+              payload.partial_feedback || incorrectFeedback
+            );
+            const setRedoVisibility = (visible) => {
+              state.showRedo = delayRedoUntilWrongAnswer ? Boolean(visible) : true;
+              if (!redoBtn) return;
+              redoBtn.hidden = delayRedoUntilWrongAnswer ? !state.showRedo : false;
+            };
+            const setChoiceDisabled = (disabled) => {
+              choiceButtons.forEach((btn) => {
+                btn.disabled = disabled;
+              });
+            };
+            if (!Array.isArray(state.positionOrder) || state.positionOrder.length !== choices.length) {
+              state.positionOrder = basePositions.slice();
+            }
+            const applyChoicePositions = () => {
+              choices.forEach((choice, index) => {
+                const btn = choiceButtons.get(choice.key);
+                if (!btn) return;
+                const left = Number(state.positionOrder[index]);
+                btn.style.left = (Number.isFinite(left) ? left : choice.left) + "%";
+              });
+            };
+            const clearValidationStyles = () => {
+              choiceButtons.forEach((btn) => {
+                btn.classList.remove("correct", "wrong", "shake");
+              });
+            };
+            const collectSelectionErrorButtons = () => {
+              const animatedButtons = [];
+              choices.forEach((choice) => {
+                const btn = choiceButtons.get(choice.key);
+                if (!btn) return;
+                const isSelectedWrong =
+                  selectedKeys.has(choice.key) && !correctKeys.has(choice.key);
+                const isMissedCorrect =
+                  !selectedKeys.has(choice.key) && correctKeys.has(choice.key);
+                if (isSelectedWrong || isMissedCorrect) {
+                  animatedButtons.push(btn);
+                }
+              });
+              if (animatedButtons.length) {
+                return animatedButtons;
+              }
+              choices.forEach((choice) => {
+                const btn = choiceButtons.get(choice.key);
+                if (btn && selectedKeys.has(choice.key)) {
+                  animatedButtons.push(btn);
+                }
+              });
+              return animatedButtons;
+            };
+            const applyValidation = (result) => {
+              clearValidationStyles();
+              if (result.status === "correct") {
+                cardFeedbackEl.textContent = correctFeedback;
+                cardFeedbackEl.className = "card-feedback success";
+                choices.forEach((choice) => {
+                  const btn = choiceButtons.get(choice.key);
+                  if (!btn) return;
+                  btn.classList.toggle("correct", selectedKeys.has(choice.key));
+                  btn.classList.remove("wrong");
+                });
+              } else if (result.status === "partial") {
+                cardFeedbackEl.textContent = partialFeedback;
+                cardFeedbackEl.className = "card-feedback error";
+                choices.forEach((choice) => {
+                  const btn = choiceButtons.get(choice.key);
+                  if (!btn) return;
+                  const isCorrectSelected =
+                    selectedKeys.has(choice.key) && correctKeys.has(choice.key);
+                  const isSelectedWrong =
+                    selectedKeys.has(choice.key) && !correctKeys.has(choice.key);
+                  btn.classList.toggle("correct", isCorrectSelected);
+                  btn.classList.toggle("wrong", isSelectedWrong);
+                });
+              } else {
+                cardFeedbackEl.textContent = incorrectFeedback;
+                cardFeedbackEl.className = "card-feedback error";
+                choices.forEach((choice) => {
+                  const btn = choiceButtons.get(choice.key);
+                  if (!btn) return;
+                  const isCorrectSelected =
+                    selectedKeys.has(choice.key) && correctKeys.has(choice.key);
+                  const isSelectedWrong =
+                    selectedKeys.has(choice.key) && !correctKeys.has(choice.key);
+                  btn.classList.toggle("correct", isCorrectSelected);
+                  btn.classList.toggle("wrong", isSelectedWrong);
+                });
+              }
+            };
+            const validateSelection = () => {
+              let hasWrong = false;
+              let correctSelected = 0;
+              selectedKeys.forEach((key) => {
+                if (!correctKeys.has(key)) {
+                  hasWrong = true;
+                } else {
+                  correctSelected += 1;
+                }
+              });
+              const allCorrectSelected =
+                !hasWrong && correctSelected === correctKeys.size && selectedKeys.size === correctKeys.size;
+              if (allCorrectSelected) {
+                return { status: "correct" };
+              }
+              if (!hasWrong && correctSelected > 0) {
+                return { status: "partial" };
+              }
+              return { status: "incorrect" };
+            };
+            const resetPinSelectionState = () => {
+              selectedKeys.clear();
+              state.validated = false;
+              state.correct = false;
+              clearValidationStyles();
+              choiceButtons.forEach((btn) => {
+                btn.classList.remove("selected");
+                btn.disabled = false;
+              });
+              setRedoVisibility(false);
+            };
+            const runSelectionErrorSequence = (result) => {
+              const animatedButtons = collectSelectionErrorButtons();
+              errorSequenceRunning = true;
+              if (okBtn) {
+                okBtn.disabled = true;
+              }
+              setChoiceDisabled(true);
+              state.validated = true;
+              state.correct = false;
+              applyValidation(result);
+              animatedButtons.forEach((btn) => btn.classList.add("wrong"));
+              setRedoVisibility(false);
+              window.setTimeout(() => {
+                animatedButtons.forEach((btn) => btn.classList.add("shake"));
+                window.setTimeout(() => {
+                  resetPinSelectionState();
+                  if (shouldShuffleOnWrong) {
+                    state.positionOrder = shuffleArray(basePositions.slice());
+                    window.requestAnimationFrame(() => {
+                      applyChoicePositions();
+                    });
+                  }
+                  window.setTimeout(() => {
+                    errorSequenceRunning = false;
+                    if (okBtn && !completed[currentIndex]) {
+                      okBtn.disabled = false;
+                    }
+                  }, selectionErrorTiming.restoreMs);
+                }, selectionErrorTiming.shakeMs);
+              }, selectionErrorTiming.highlightMs);
+            };
+
+            const quizWrap = document.createElement("div");
+            quizWrap.className = "pin-select-quiz";
+            const scroller = document.createElement("div");
+            scroller.className = "pin-select-quiz__scroller";
+            const stage = document.createElement("div");
+            stage.className = "pin-select-quiz__stage";
+            if (Number.isFinite(Number(payload.board_max_width))) {
+              stage.style.maxWidth = Number(payload.board_max_width) + "px";
+            }
+            const pins = document.createElement("div");
+            pins.className = "pin-select-quiz__pins";
+
+            choices.forEach((choice) => {
+              const btn = document.createElement("button");
+              btn.type = "button";
+              btn.className = "quiz-choice pin-select-quiz__pin";
+              btn.textContent = choice.label;
+              btn.setAttribute("aria-label", "Pin " + choice.label);
+              choiceButtons.set(choice.key, btn);
+              if (selectedKeys.has(choice.key)) {
+                btn.classList.add("selected");
+              }
+              btn.addEventListener("click", () => {
+                if (state.correct || errorSequenceRunning) return;
+                if (selectedKeys.has(choice.key)) {
+                  selectedKeys.delete(choice.key);
+                  btn.classList.remove("selected");
+                } else {
+                  selectedKeys.add(choice.key);
+                  btn.classList.add("selected");
+                }
+                if (state.validated) {
+                  state.validated = false;
+                  state.correct = false;
+                  clearValidationStyles();
+                  cardFeedbackEl.textContent = "";
+                  cardFeedbackEl.className = "card-feedback";
+                  setRedoVisibility(false);
+                }
+              });
+              pins.appendChild(btn);
+            });
+            applyChoicePositions();
+
+            const board = document.createElement("img");
+            board.src = card.image_url;
+            board.alt = payload.alt || card.title || "Arduino Uno board";
+            board.className = "pin-select-quiz__board";
+
+            stage.appendChild(pins);
+            stage.appendChild(board);
+            scroller.appendChild(stage);
+            quizWrap.appendChild(scroller);
+
+            const actions = document.createElement("div");
+            actions.className = "quiz-actions";
+            okBtn = document.createElement("button");
+            okBtn.type = "button";
+            okBtn.className = "action-btn";
+            okBtn.textContent = "OK";
+            okBtn.addEventListener("click", () => {
+              if (state.correct || errorSequenceRunning) return;
+              const result = state.validate();
+              if (result.status !== "correct") {
+                if (selectedKeys.size > 0) {
+                  runSelectionErrorSequence(result);
+                }
+                return;
+              }
+              if (!completed[currentIndex]) {
+                completeCard();
+              }
+              if (!state.quizPosted) {
+                state.quizPosted = true;
+                const submittedKeys = Array.from(state.selectedKeys).sort(
+                  (left, right) => Number(left) - Number(right)
+                );
+                postQuizAnswer(submittedKeys.join(",")).then((quizResult) => {
+                  if (quizResult && quizResult.correct) {
+                    nextBtn.disabled = false;
+                  }
+                });
+              }
+              setRedoVisibility(false);
+              nextBtn.disabled = false;
+            });
+            actions.appendChild(okBtn);
+
+            redoBtn = document.createElement("button");
+            redoBtn.type = "button";
+            redoBtn.className = "action-btn secondary";
+            redoBtn.textContent = "Redo";
+            setRedoVisibility(state.showRedo);
+            redoBtn.addEventListener("click", () => {
+              if (state.correct || errorSequenceRunning) return;
+              resetPinSelectionState();
+              cardFeedbackEl.textContent = "";
+              cardFeedbackEl.className = "card-feedback";
+            });
+            actions.appendChild(redoBtn);
+
+            quizWrap.appendChild(actions);
+            cardQuizEl.appendChild(quizWrap);
+
+            state.choiceButtons = choiceButtons;
+            state.choices = choices;
+            state.correctKeys = correctKeys;
+            state.validate = () => {
+              if (selectedKeys.size === 0) {
+                cardFeedbackEl.textContent = formatFeedback("Select at least one pin.");
+                cardFeedbackEl.className = "card-feedback error";
+                return { status: "incorrect" };
+              }
+              const result = validateSelection();
+              state.validated = true;
+              state.correct = result.status === "correct";
+              if (result.status === "correct") {
+                applyValidation(result);
+              }
               return result;
             };
             multiQuizState[quizKey] = state;
@@ -5102,25 +5787,31 @@ Analog creates smooth changes.
               navContainer.style.display = "flex";
             }
 
-            cardMediaEl.style.display = (isDigitalAnalogDigital || isDigitalAnalogAnalog || isDigitalAnalogGive || isDigitalAnalogReceive || isDigitalAnalogQuiz) ? "none" : "block";
+            const isPinSelectQuiz = isPinSelectQuizCard(card);
 
-            if (isDigitalAnalogDigital) {
-              renderDigitalAnalogCard("digital");
-            } else if (isDigitalAnalogAnalog) {
-              renderDigitalAnalogCard("analog");
-            } else if (isDigitalAnalogGive) {
-              renderDigitalAnalogRoleCard("digital");
-            } else if (isDigitalAnalogReceive) {
-              renderDigitalAnalogRoleCard("analog");
-            } else if (isDigitalAnalogQuiz) {
-              renderDigitalAnalogQuizCard();
-            } else {
-              renderBody(card.body || "");
-            }
+            cardMediaEl.style.display = (isDigitalAnalogDigital || isDigitalAnalogAnalog || isDigitalAnalogGive || isDigitalAnalogReceive || isDigitalAnalogQuiz || isPinSelectQuiz) ? "none" : "block";
 
-            if (!isDigitalAnalogDigital && !isDigitalAnalogAnalog && !isDigitalAnalogGive && !isDigitalAnalogReceive && !isDigitalAnalogQuiz) {
-              renderMedia(card);
-            }
+              const isAnalogOutputIntro = isAnalogOutputIntroCard(card);
+
+              if (isDigitalAnalogDigital) {
+                renderDigitalAnalogCard("digital");
+              } else if (isDigitalAnalogAnalog) {
+                renderDigitalAnalogCard("analog");
+              } else if (isDigitalAnalogGive) {
+                renderDigitalAnalogRoleCard("digital");
+              } else if (isDigitalAnalogReceive) {
+                renderDigitalAnalogRoleCard("analog");
+              } else if (isDigitalAnalogQuiz) {
+                renderDigitalAnalogQuizCard();
+              } else if (isAnalogOutputIntro) {
+                renderAnalogOutputIntroCard(card);
+              } else {
+                renderBody(card.body || "");
+              }
+
+              if (!isDigitalAnalogDigital && !isDigitalAnalogAnalog && !isDigitalAnalogGive && !isDigitalAnalogReceive && !isDigitalAnalogQuiz) {
+                renderMedia(card);
+              }
 
             if (!isDigitalAnalogDigital && !isDigitalAnalogAnalog && !isDigitalAnalogGive && !isDigitalAnalogReceive && !isDigitalAnalogQuiz) {
               if (card.card_type === "action") {
@@ -5134,6 +5825,8 @@ Analog creates smooth changes.
                 const payload = card.action_payload || {};
                 if (payload.quiz_type === "match") {
                   renderMatchQuiz(card);
+                } else if (payload.quiz_type === "pin-select") {
+                  renderPinSelectQuiz(card);
                 } else {
                   renderQuiz(card);
                 }

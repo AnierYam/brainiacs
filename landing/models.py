@@ -9,7 +9,15 @@ def normalize_activation_code(raw_value: str) -> str:
 
 
 class ActivationCode(models.Model):
+    TYPE_TEMPORARY = "temporary"
+    TYPE_PERMANENT = "permanent"
+    TYPE_CHOICES = (
+        (TYPE_TEMPORARY, "Temporary"),
+        (TYPE_PERMANENT, "Permanent"),
+    )
+
     code = models.CharField(max_length=64, unique=True, db_index=True)
+    is_reusable = models.BooleanField(default=False)
     activated_email = models.EmailField(blank=True)
     activated_at = models.DateTimeField(null=True, blank=True)
     email_verification_code = models.CharField(max_length=12, blank=True)
@@ -31,6 +39,16 @@ class ActivationCode(models.Model):
     def __str__(self) -> str:
         return self.code
 
+    @property
+    def code_type(self) -> str:
+        return self.TYPE_PERMANENT if self.is_reusable else self.TYPE_TEMPORARY
+
+    def get_code_type_label(self) -> str:
+        return dict(self.TYPE_CHOICES)[self.code_type]
+
+    def set_code_type(self, code_type: str) -> None:
+        self.is_reusable = code_type == self.TYPE_PERMANENT
+
     def save(self, *args, **kwargs):
         self.code = normalize_activation_code(self.code)
         if self.activated_email:
@@ -48,6 +66,30 @@ class ActivationCode(models.Model):
             updated_fields.append("activated_at")
         if updated_fields:
             self.save(update_fields=updated_fields)
+
+    @classmethod
+    def generate_linked_code(cls, base_code: str) -> str:
+        normalized_base = normalize_activation_code(base_code)
+        suffix_length = 16
+        reserved_length = suffix_length + 1
+        prefix = normalized_base[: max(0, 64 - reserved_length)]
+        while True:
+            suffix = secrets.token_hex(suffix_length // 2).upper()
+            candidate = f"{prefix}-{suffix}" if prefix else suffix
+            if not cls.objects.filter(code=candidate).exists():
+                return candidate
+
+    def create_user_link(self, user, email: str = ""):
+        timestamp = timezone.now()
+        linked_activation = self.__class__(
+            code=self.generate_linked_code(self.code),
+            activated_email=(email or "").strip().lower(),
+            activated_at=timestamp,
+            user=user,
+            linked_at=timestamp,
+        )
+        linked_activation.save()
+        return linked_activation
 
     def issue_email_verification_code(self) -> str:
         verification_code = f"{secrets.randbelow(1_000_000):06d}"

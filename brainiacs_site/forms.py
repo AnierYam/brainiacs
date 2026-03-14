@@ -75,7 +75,7 @@ class ActivationCodeSignupForm(UserCreationForm):
         activation_code = ActivationCode.objects.filter(code=code_value).first()
         if not activation_code:
             raise forms.ValidationError("Invalid activation code.")
-        if activation_code.user_id:
+        if activation_code.user_id and not activation_code.is_reusable:
             raise forms.ValidationError(
                 "This activation code is already linked to another account."
             )
@@ -96,7 +96,7 @@ class ActivationCodeSignupForm(UserCreationForm):
             activation_code = ActivationCode.objects.select_for_update().get(
                 id=activation_code_id
             )
-            if activation_code.user_id:
+            if activation_code.user_id and not activation_code.is_reusable:
                 raise ValidationError(
                     "This activation code has already been used. Try another code."
                 )
@@ -105,10 +105,16 @@ class ActivationCodeSignupForm(UserCreationForm):
                 user.email = activation_code.activated_email
             user.save()
 
-            activation_code.user = user
-            activation_code.linked_at = timezone.now()
-            if activation_code.activated_at is None:
-                activation_code.activated_at = timezone.now()
-            activation_code.save(update_fields=["user", "linked_at", "activated_at"])
+            if activation_code.is_reusable:
+                activation_code.create_user_link(
+                    user=user,
+                    email=getattr(user, "email", "") or "",
+                )
+            else:
+                activation_code.user = user
+                activation_code.linked_at = timezone.now()
+                if activation_code.activated_at is None:
+                    activation_code.activated_at = timezone.now()
+                activation_code.save(update_fields=["user", "linked_at", "activated_at"])
 
         return user
