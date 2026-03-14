@@ -2278,7 +2278,7 @@
                 <span class="digital-analog-hint__sub">
                   <strong>Hint:</strong>
                   <span class="digital-analog-hint__line">• Observe how the light behaves in each example</span>
-                  <span class="digital-analog-hint__line">• The switches are digital or analog not the light bulb</span>
+                  <span class="digital-analog-hint__line">• The controls are digital or analog not the light bulb</span>
                 </span>
               </p>
               <div class="digital-analog-grid">
@@ -3524,12 +3524,17 @@ Analog creates smooth changes.
               }
             };
 
-            const canHoverItem = (key) => !activeAutoKey || activeAutoKey === key;
-
             const registerAutoHover = (item, key) => {
               if (!item || !canHover) return;
               item.addEventListener("mouseenter", () => {
-                if (!canHoverItem(key)) return;
+                stopAllAuto(key);
+                if (activeAutoKey && activeAutoKey !== key) {
+                  activeAutoKey = "";
+                }
+                if (autoState[key].source === "click") {
+                  stopAuto(key);
+                  activeAutoKey = "";
+                }
                 startAuto(key, undefined, "hover");
               });
               item.addEventListener("mouseleave", () => {
@@ -3711,7 +3716,8 @@ Analog creates smooth changes.
                 });
               };
               buttons.forEach((btn) => {
-                btn.addEventListener("click", () => {
+                btn.addEventListener("click", (event) => {
+                  event.stopPropagation();
                   if (item.dataset.answered === "true" || errorSequenceRunning) return;
                   const choice = btn.dataset.choice || "";
                   const isCorrect = choice === item.dataset.correct;
