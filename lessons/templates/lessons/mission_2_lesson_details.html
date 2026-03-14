@@ -717,6 +717,13 @@
       box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.15);
     }
 
+    .drag-item__choice.is-correct {
+      border-color: #22c55e;
+      background: #dcfce7;
+      color: #166534;
+      box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.2);
+    }
+
     .drag-item__choice.is-shake {
       animation: drag-shake 0.25s ease;
     }
@@ -737,6 +744,14 @@
       cursor: not-allowed;
       box-shadow: none;
       transform: none;
+    }
+
+    .drag-item__choice.is-correct:disabled {
+      opacity: 1;
+      border-color: #22c55e;
+      background: #dcfce7;
+      color: #166534;
+      box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.2);
     }
 
     .drag-item__xp {
@@ -2287,6 +2302,33 @@
               }, selectionErrorTiming.highlightMs);
             };
 
+            const applyCompletedSelectionState = () => {
+              resetChoiceClasses();
+              wrapper.dataset.selected = mode;
+              wrapper.classList.add("choice-locked");
+              const correctCol = mode === "digital" ? digitalCol : analogCol;
+              if (correctCol) {
+                correctCol.classList.add("choice-correct");
+              }
+              stopDigitalAuto();
+              stopAnalogAuto();
+              if (mode === "digital") {
+                setDigitalState(true);
+                setAnalogLevel(0);
+              } else {
+                setDigitalState(false);
+                setAnalogLevel(100);
+              }
+              if (cardFeedbackEl) {
+                cardFeedbackEl.textContent = mode === "digital"
+                  ? "Nice! This is the Digital connection\nPress next to continue"
+                  : "Nice! This is the Analog connection\nPress next to continue";
+                cardFeedbackEl.className = "card-feedback success";
+              }
+              okBtn.disabled = true;
+              nextBtn.disabled = false;
+            };
+
             const setChoice = (choice) => {
               if (isSelectionInteractionDisabled()) {
                 return;
@@ -2412,6 +2454,9 @@
 
             setDigitalState(false);
             setAnalogLevel(0);
+            if (completed[currentIndex]) {
+              applyCompletedSelectionState();
+            }
           }
 
           function renderDigitalAnalogRoleCard(role) {
@@ -2721,6 +2766,33 @@
               }, selectionErrorTiming.highlightMs);
             };
 
+            const applyCompletedRoleState = () => {
+              resetChoiceClasses();
+              resetPartClasses();
+              const correctPart = partItems.find((part) => (part.dataset.partRole || "") === "give");
+              selectedPart = correctPart || null;
+              wrapper.dataset.selectedPart = correctPart ? (correctPart.dataset.partRole || "") : "";
+              wrapper.classList.add("choice-locked");
+              if (correctPart) {
+                correctPart.classList.add("part-correct");
+              }
+              stopDigitalAuto();
+              stopAnalogAuto();
+              if (controlType === "digital") {
+                setDigitalState(true);
+                setAnalogLevel(0);
+              } else {
+                setDigitalState(false);
+                setAnalogLevel(100);
+              }
+              if (cardFeedbackEl) {
+                cardFeedbackEl.textContent = roleConfig.successText;
+                cardFeedbackEl.className = "card-feedback success";
+              }
+              okBtn.disabled = true;
+              nextBtn.disabled = false;
+            };
+
             const setChoice = (choice) => {
               if (isSelectionInteractionDisabled()) {
                 return;
@@ -2892,6 +2964,9 @@
 
             setDigitalState(false);
             setAnalogLevel(0);
+            if (completed[currentIndex]) {
+              applyCompletedRoleState();
+            }
           }
 
           function renderDigitalAnalogQuizCard() {
@@ -3313,13 +3388,33 @@ Analog changes little by little.
               nextBtn.disabled = false;
             };
 
+            const applyCompletedItemState = (item) => {
+              if (!item) return;
+              const buttons = Array.from(item.querySelectorAll(".drag-item__choice"));
+              const feedback = item.querySelector(".drag-item__feedback");
+              const correctChoice = item.dataset.correct || "";
+              item.dataset.answered = "true";
+              item.classList.remove("drag-item--wrong", "drag-item__shake");
+              item.classList.add("drag-item--correct");
+              buttons.forEach((choiceBtn) => {
+                const isCorrectChoice = (choiceBtn.dataset.choice || "") === correctChoice;
+                choiceBtn.classList.toggle("is-correct", isCorrectChoice);
+                choiceBtn.classList.remove("is-wrong", "is-shake");
+                choiceBtn.disabled = true;
+              });
+              if (feedback) {
+                feedback.textContent = "\u2713 Correct";
+                feedback.classList.remove("error", "hint");
+              }
+            };
+
             items.forEach((item) => {
               const buttons = Array.from(item.querySelectorAll(".drag-item__choice"));
               const feedback = item.querySelector(".drag-item__feedback");
               let errorSequenceRunning = false;
               const resetItemErrorState = () => {
                 item.classList.remove("drag-item--wrong", "drag-item__shake");
-                buttons.forEach((choiceBtn) => choiceBtn.classList.remove("is-wrong", "is-shake"));
+                buttons.forEach((choiceBtn) => choiceBtn.classList.remove("is-correct", "is-wrong", "is-shake"));
                 buttons.forEach((choiceBtn) => {
                   choiceBtn.disabled = false;
                 });
@@ -3333,6 +3428,10 @@ Analog changes little by little.
                     item.dataset.answered = "true";
                     item.classList.remove("drag-item--wrong");
                     item.classList.add("drag-item--correct");
+                    buttons.forEach((choiceBtn) => {
+                      const isCorrectChoice = (choiceBtn.dataset.choice || "") === choice;
+                      choiceBtn.classList.toggle("is-correct", isCorrectChoice);
+                    });
                     if (feedback) {
                       feedback.textContent = "\u2713 Correct";
                       feedback.classList.remove("error", "hint");
@@ -3372,6 +3471,12 @@ Analog changes little by little.
               });
             });
 
+            if (completed[currentIndex]) {
+              correctCount = totalItems;
+              items.forEach((item) => {
+                applyCompletedItemState(item);
+              });
+            }
             markComplete();
           }
 
@@ -3830,7 +3935,11 @@ Analog changes little by little.
             }
 
             if (!isMultiSelect) {
-              const correct = (card.correct_choice || "").toUpperCase();
+              const correct = String(
+                card.correct_choice ||
+                (choices.find((choice) => choice.isCorrect) || {}).key ||
+                ""
+              ).toUpperCase();
               const correctFeedback = formatFeedback(
                 payload.correct_feedback || card.explanation || "Correct!"
               );
@@ -3964,6 +4073,20 @@ Analog changes little by little.
               });
               actions.appendChild(redoBtn);
               cardQuizEl.appendChild(actions);
+              if (completed[currentIndex] && correct) {
+                selectedKey = correct;
+                quizLocked = true;
+                choiceButtons.forEach((btn, key) => {
+                  btn.classList.toggle("selected", key === correct);
+                  btn.classList.toggle("correct", key === correct);
+                  btn.classList.remove("wrong");
+                  btn.disabled = true;
+                });
+                cardFeedbackEl.textContent = correctFeedback;
+                cardFeedbackEl.className = "card-feedback success";
+                setRedoVisibility(false);
+                okBtn.disabled = true;
+              }
               return;
             }
 
@@ -3994,6 +4117,12 @@ Analog changes little by little.
               state.showRedo = delayRedoUntilWrongAnswer ? Boolean(visible) : true;
               if (!redoBtn) return;
               redoBtn.hidden = delayRedoUntilWrongAnswer ? !state.showRedo : false;
+            };
+
+            const setChoiceDisabled = (disabled) => {
+              choiceButtons.forEach((btn) => {
+                btn.disabled = disabled;
+              });
             };
 
             const clearValidationStyles = () => {
@@ -4134,7 +4263,10 @@ Analog changes little by little.
               state.validated = false;
               state.correct = false;
               clearValidationStyles();
-              choiceButtons.forEach((btn) => btn.classList.remove("selected"));
+              choiceButtons.forEach((btn) => {
+                btn.classList.remove("selected");
+                btn.disabled = false;
+              });
               cardFeedbackEl.textContent = "";
               cardFeedbackEl.className = "card-feedback";
               setRedoVisibility(false);
@@ -4159,7 +4291,19 @@ Analog changes little by little.
             };
             multiQuizState[quizKey] = state;
 
-            if (state.validated) {
+            if (completed[currentIndex]) {
+              selectedKeys.clear();
+              correctKeys.forEach((key) => selectedKeys.add(key));
+              state.validated = true;
+              state.correct = true;
+              choiceButtons.forEach((btn, key) => {
+                btn.classList.toggle("selected", correctKeys.has(key));
+              });
+              applyValidation({ status: "correct" });
+              setChoiceDisabled(true);
+              setRedoVisibility(false);
+              okBtn.disabled = true;
+            } else if (state.validated) {
               const result = state.correct ? { status: "correct" } : validateSelection();
               applyValidation(result);
             }
@@ -4550,6 +4694,25 @@ Analog changes little by little.
             actions.appendChild(okBtn);
             matchWrap.appendChild(actions);
             cardQuizEl.appendChild(matchWrap);
+
+            if (completed[currentIndex]) {
+              quizLocked = true;
+              pairs.forEach((pair) => {
+                applyPair(pair.id, pair.id);
+              });
+              leftButtons.forEach((btn) => btn.classList.remove("selected", "wrong", "shake"));
+              rightButtons.forEach((btn) => btn.classList.remove("selected", "wrong", "shake"));
+              matches.forEach((rightId, leftId) => {
+                const leftBtn = leftButtons.get(leftId);
+                const rightBtn = rightButtons.get(rightId);
+                if (leftBtn) leftBtn.classList.add("correct");
+                if (rightBtn) rightBtn.classList.add("correct");
+              });
+              cardFeedbackEl.textContent =
+                payload.correct_feedback || "Correct! You matched every feature.";
+              cardFeedbackEl.className = "card-feedback success";
+              okBtn.disabled = true;
+            }
           }
 
           function renderCode(card) {
