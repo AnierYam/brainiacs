@@ -303,6 +303,14 @@
       cursor: pointer;
     }
 
+    .digital-analog-card[data-role="digital"] .digital-analog-part-stack,
+    .digital-analog-card[data-role="analog"] .digital-analog-part-stack {
+      display: grid;
+      gap: 0.3rem;
+      width: 100%;
+      align-content: start;
+    }
+
     .digital-analog-card[data-role="digital"] .digital-analog-part-label,
     .digital-analog-card[data-role="analog"] .digital-analog-part-label {
       font-size: 0.7rem;
@@ -311,6 +319,17 @@
       font-weight: 700;
       color: #64748b;
       line-height: 1;
+    }
+
+    .digital-analog-card[data-role="digital"] .digital-analog-part-role,
+    .digital-analog-card[data-role="analog"] .digital-analog-part-role {
+      font-weight: 800;
+      color: #0f172a;
+      font-size: 0.76rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      line-height: 1;
+      justify-self: center;
     }
 
     .digital-analog-card[data-role="digital"] .digital-analog-part.part-selected,
@@ -322,7 +341,7 @@
     .digital-analog-card[data-role="digital"] .digital-analog-part.part-wrong,
     .digital-analog-card[data-role="analog"] .digital-analog-part.part-wrong {
       border-color: #ef4444;
-      animation: digital-shake 0.25s ease;
+      box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.15);
     }
 
     .digital-analog-card[data-role="digital"] .digital-analog-part.part-correct,
@@ -491,8 +510,14 @@
     }
 
     .digital-analog-col.choice-wrong {
-      animation: digital-shake 0.25s ease;
       border-color: #ef4444;
+      box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.15);
+    }
+
+    .digital-analog-card[data-role="digital"] .digital-analog-part.part-shake,
+    .digital-analog-card[data-role="analog"] .digital-analog-part.part-shake,
+    .digital-analog-col.choice-shake {
+      animation: digital-shake 0.25s ease;
     }
 
     .digital-analog-card[data-role="digital"] .digital-analog-col,
@@ -683,6 +708,17 @@
       cursor: pointer;
       min-height: 44px;
       transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .drag-item__choice.is-wrong {
+      border-color: #ef4444;
+      background: #fee2e2;
+      color: #991b1b;
+      box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.15);
+    }
+
+    .drag-item__choice.is-shake {
+      animation: drag-shake 0.25s ease;
     }
 
     .drag-item__choice:hover {
@@ -2165,7 +2201,7 @@
                       ? `
                     <li>Only ON or OFF</li>
                     <li>Like a light switch</li>
-                    <li>Uses Digital pins</li>
+                    <li>Uses DIGITAL pins</li>
                     `
                       : `
                     <li>Changing value</li>
@@ -2176,7 +2212,11 @@
                 </ul>
               </div>
               <p class="digital-analog-hint">
-                ${isDigitalMode ? "Choose the DIGITAL connection for the light bulb" : "Choose the ANALOG connection for the light bulb"}
+                ${
+                  isDigitalMode
+                    ? "<strong>Choose the DIGITAL connection for the light bulb</strong>"
+                    : "<strong>Choose the ANALOG connection for the light bulb</strong>"
+                }
                 <span class="digital-analog-hint__sub">
                   <strong>Hint:</strong>
                   <span class="digital-analog-hint__line">• Observe how the light behaves in each example</span>
@@ -2333,15 +2373,67 @@
 
             const resetChoiceClasses = () => {
               if (digitalCol) {
-                digitalCol.classList.remove("choice-correct", "choice-wrong", "choice-selected");
+                digitalCol.classList.remove(
+                  "choice-correct",
+                  "choice-wrong",
+                  "choice-selected",
+                  "choice-shake"
+                );
               }
               if (analogCol) {
-                analogCol.classList.remove("choice-correct", "choice-wrong", "choice-selected");
+                analogCol.classList.remove(
+                  "choice-correct",
+                  "choice-wrong",
+                  "choice-selected",
+                  "choice-shake"
+                );
               }
             };
 
+            let errorSequenceRunning = false;
+            const selectionErrorTiming = {
+              highlightMs: 180,
+              shakeMs: 260,
+              restoreMs: 180,
+            };
+            const isSelectionInteractionDisabled = () =>
+              wrapper.classList.contains("choice-locked") || errorSequenceRunning;
+            const resetSelectionState = () => {
+              wrapper.dataset.selected = "";
+              resetChoiceClasses();
+              stopDigitalAuto();
+              stopAnalogAuto();
+              setDigitalState(false);
+              setAnalogLevel(0);
+            };
+            const runSelectionErrorSequence = (wrongCol, message) => {
+              if (!wrongCol) return;
+              errorSequenceRunning = true;
+              okBtn.disabled = true;
+              stopDigitalAuto();
+              stopAnalogAuto();
+              setDigitalState(false);
+              setAnalogLevel(0);
+              resetChoiceClasses();
+              wrongCol.classList.add("choice-wrong");
+              if (cardFeedbackEl) {
+                cardFeedbackEl.textContent = message;
+                cardFeedbackEl.className = "card-feedback error";
+              }
+              window.setTimeout(() => {
+                wrongCol.classList.add("choice-shake");
+                window.setTimeout(() => {
+                  resetSelectionState();
+                  window.setTimeout(() => {
+                    errorSequenceRunning = false;
+                    okBtn.disabled = Boolean(completed[currentIndex]);
+                  }, selectionErrorTiming.restoreMs);
+                }, selectionErrorTiming.shakeMs);
+              }, selectionErrorTiming.highlightMs);
+            };
+
             const setChoice = (choice) => {
-              if (wrapper.classList.contains("choice-locked")) {
+              if (isSelectionInteractionDisabled()) {
                 return;
               }
               resetChoiceClasses();
@@ -2355,10 +2447,6 @@
               const chosenCol = choice === "digital" ? digitalCol : analogCol;
               if (chosenCol) {
                 chosenCol.classList.add("choice-selected");
-              }
-              if (cardFeedbackEl) {
-                cardFeedbackEl.textContent = "";
-                cardFeedbackEl.className = "card-feedback";
               }
             };
 
@@ -2378,17 +2466,13 @@
                 return;
               }
               if (selected !== mode) {
-                resetChoiceClasses();
                 const wrongCol = selected === "digital" ? digitalCol : analogCol;
-                if (wrongCol) {
-                  wrongCol.classList.add("choice-wrong");
-                }
-                if (cardFeedbackEl) {
-                  cardFeedbackEl.textContent = mode === "digital"
+                runSelectionErrorSequence(
+                  wrongCol,
+                  mode === "digital"
                     ? "Not quite. Choose the Digital connection"
-                    : "Not quite. Choose the Analog connection";
-                  cardFeedbackEl.className = "card-feedback error";
-                }
+                    : "Not quite. Choose the Analog connection"
+                );
                 return;
               }
               if (!completed[currentIndex]) {
@@ -2413,7 +2497,7 @@
 
             if (toggleBtn) {
               toggleBtn.addEventListener("click", () => {
-                if (wrapper.classList.contains("choice-locked")) return;
+                if (isSelectionInteractionDisabled()) return;
                 stopDigitalAuto();
                 startDigitalAuto(10000, "click");
                 setChoice("digital");
@@ -2422,7 +2506,7 @@
 
             if (digitalCol) {
               digitalCol.addEventListener("click", () => {
-                if (wrapper.classList.contains("choice-locked")) return;
+                if (isSelectionInteractionDisabled()) return;
                 stopDigitalAuto();
                 startDigitalAuto(10000, "click");
                 setChoice("digital");
@@ -2431,7 +2515,7 @@
 
             if (analogCol) {
               analogCol.addEventListener("click", () => {
-                if (wrapper.classList.contains("choice-locked")) return;
+                if (isSelectionInteractionDisabled()) return;
                 stopAnalogAuto();
                 startAnalogAuto(10000, "click");
                 setChoice("analog");
@@ -2440,7 +2524,7 @@
 
             analogStops.forEach((btn) => {
               btn.addEventListener("click", () => {
-                if (wrapper.classList.contains("choice-locked")) return;
+                if (isSelectionInteractionDisabled()) return;
                 stopAnalogAuto();
                 startAnalogAuto(10000, "click");
                 setChoice("analog");
@@ -2482,7 +2566,7 @@
             const controlType = role === "analog" ? "analog" : "digital";
             const roleConfig = controlType === "digital"
               ? {
-                  heading: "Giving digital instructions",
+                  heading: "DIGITAL Instructions",
                   bullets: [
                     "The control sends Digital instructions to other parts (ON / OFF)",
                     "The control controls other parts with Digital instructions",
@@ -2511,39 +2595,53 @@
                   successText: "Nice! The knob gives analog instructions\nPress next to continue",
                   errorText: "Not quite, remember which example was Analog (changes smoothly)",
                 };
+            const controlRoleLabel = controlType === "digital" ? "Control" : "";
+            const partRoleLabel = controlType === "digital" ? "Part" : "";
 
             const switchRole = controlType === "digital" ? "give" : "receive";
             const knobRole = controlType === "analog" ? "give" : "receive";
             const digitalVisualMarkup = `
                   <div class="digital-analog-visual digital-analog-visual--split">
-                    <div class="digital-analog-part digital-analog-part--controller" data-part-role="${switchRole}" role="button" tabindex="0" aria-label="Select switch">
-                      <span class="digital-analog-part-label">Switch</span>
-                      <button class="digital-toggle" type="button" role="switch" aria-checked="false" aria-label="Toggle digital lamp">
-                        <span class="digital-toggle__knob"></span>
-                      </button>
+                    <div class="digital-analog-part-stack">
+                      ${controlRoleLabel ? `<span class="digital-analog-part-role">${controlRoleLabel}</span>` : ""}
+                      <div class="digital-analog-part digital-analog-part--controller" data-part-role="${switchRole}" role="button" tabindex="0" aria-label="Select switch">
+                        <span class="digital-analog-part-label">Switch</span>
+                        <button class="digital-toggle" type="button" role="switch" aria-checked="false" aria-label="Toggle digital lamp">
+                          <span class="digital-toggle__knob"></span>
+                        </button>
+                      </div>
                     </div>
-                    <div class="digital-analog-part digital-analog-part--receiver" data-part-role="receive" role="button" tabindex="0" aria-label="Select bulb">
-                      <span class="digital-analog-part-label">Bulb</span>
-                      <div class="digital-lamp" aria-hidden="true"></div>
+                    <div class="digital-analog-part-stack">
+                      ${partRoleLabel ? `<span class="digital-analog-part-role">${partRoleLabel}</span>` : ""}
+                      <div class="digital-analog-part digital-analog-part--receiver" data-part-role="receive" role="button" tabindex="0" aria-label="Select bulb">
+                        <span class="digital-analog-part-label">Bulb</span>
+                        <div class="digital-lamp" aria-hidden="true"></div>
+                      </div>
                     </div>
                   </div>
                 `;
             const analogVisualMarkup = `
                   <div class="digital-analog-visual digital-analog-visual--split">
-                    <div class="digital-analog-part digital-analog-part--controller" data-part-role="${knobRole}" role="button" tabindex="0" aria-label="Select knob">
-                      <span class="digital-analog-part-label">Knob</span>
-                      <div class="analog-dimmer" role="group" aria-label="Analog brightness">
-                        <div class="analog-dial" aria-hidden="true"></div>
-                        <button class="analog-stop" type="button" data-level="0" aria-pressed="true" aria-label="Set analog level to 0 percent" style="--stop-angle: -120deg;"></button>
-                        <button class="analog-stop" type="button" data-level="25" aria-pressed="false" aria-label="Set analog level to 25 percent" style="--stop-angle: -60deg;"></button>
-                        <button class="analog-stop" type="button" data-level="50" aria-pressed="false" aria-label="Set analog level to 50 percent" style="--stop-angle: 0deg;"></button>
-                        <button class="analog-stop" type="button" data-level="75" aria-pressed="false" aria-label="Set analog level to 75 percent" style="--stop-angle: 60deg;"></button>
-                        <button class="analog-stop" type="button" data-level="100" aria-pressed="false" aria-label="Set analog level to 100 percent" style="--stop-angle: 120deg;"></button>
+                    <div class="digital-analog-part-stack">
+                      ${controlRoleLabel ? `<span class="digital-analog-part-role">${controlRoleLabel}</span>` : ""}
+                      <div class="digital-analog-part digital-analog-part--controller" data-part-role="${knobRole}" role="button" tabindex="0" aria-label="Select knob">
+                        <span class="digital-analog-part-label">Knob</span>
+                        <div class="analog-dimmer" role="group" aria-label="Analog brightness">
+                          <div class="analog-dial" aria-hidden="true"></div>
+                          <button class="analog-stop" type="button" data-level="0" aria-pressed="true" aria-label="Set analog level to 0 percent" style="--stop-angle: -120deg;"></button>
+                          <button class="analog-stop" type="button" data-level="25" aria-pressed="false" aria-label="Set analog level to 25 percent" style="--stop-angle: -60deg;"></button>
+                          <button class="analog-stop" type="button" data-level="50" aria-pressed="false" aria-label="Set analog level to 50 percent" style="--stop-angle: 0deg;"></button>
+                          <button class="analog-stop" type="button" data-level="75" aria-pressed="false" aria-label="Set analog level to 75 percent" style="--stop-angle: 60deg;"></button>
+                          <button class="analog-stop" type="button" data-level="100" aria-pressed="false" aria-label="Set analog level to 100 percent" style="--stop-angle: 120deg;"></button>
+                        </div>
                       </div>
                     </div>
-                    <div class="digital-analog-part digital-analog-part--receiver" data-part-role="receive" role="button" tabindex="0" aria-label="Select bulb">
-                      <span class="digital-analog-part-label">Bulb</span>
-                      <div class="digital-lamp analog-led" aria-hidden="true"></div>
+                    <div class="digital-analog-part-stack">
+                      ${partRoleLabel ? `<span class="digital-analog-part-role">${partRoleLabel}</span>` : ""}
+                      <div class="digital-analog-part digital-analog-part--receiver" data-part-role="receive" role="button" tabindex="0" aria-label="Select bulb">
+                        <span class="digital-analog-part-label">Bulb</span>
+                        <div class="digital-lamp analog-led" aria-hidden="true"></div>
+                      </div>
                     </div>
                   </div>
                 `;
@@ -2561,7 +2659,7 @@
                 </ul>
               </div>
               <p class="digital-analog-hint">
-                ${roleConfig.prompt}
+                <strong>${roleConfig.prompt}</strong>
                 <span class="digital-analog-hint__sub">
                   <strong>Hint:</strong>
                   ${roleConfig.hintLines.map((line) => `<span class="digital-analog-hint__line">\u2022 ${line}</span>`).join("")}
@@ -2704,21 +2802,76 @@
 
             const resetChoiceClasses = () => {
               if (digitalCol) {
-                digitalCol.classList.remove("choice-correct", "choice-wrong", "choice-selected");
+                digitalCol.classList.remove(
+                  "choice-correct",
+                  "choice-wrong",
+                  "choice-selected",
+                  "choice-shake"
+                );
               }
               if (analogCol) {
-                analogCol.classList.remove("choice-correct", "choice-wrong", "choice-selected");
+                analogCol.classList.remove(
+                  "choice-correct",
+                  "choice-wrong",
+                  "choice-selected",
+                  "choice-shake"
+                );
               }
             };
 
             const resetPartClasses = () => {
               partItems.forEach((part) => {
-                part.classList.remove("part-selected", "part-wrong", "part-correct");
+                part.classList.remove("part-selected", "part-wrong", "part-correct", "part-shake");
               });
             };
 
+            let errorSequenceRunning = false;
+            const selectionErrorTiming = {
+              highlightMs: 180,
+              shakeMs: 260,
+              restoreMs: 180,
+            };
+            const isSelectionInteractionDisabled = () =>
+              wrapper.classList.contains("choice-locked") || errorSequenceRunning;
+            const resetSelectionState = () => {
+              wrapper.dataset.selected = "";
+              wrapper.dataset.selectedPart = "";
+              selectedPart = null;
+              resetChoiceClasses();
+              resetPartClasses();
+              stopDigitalAuto();
+              stopAnalogAuto();
+              setDigitalState(false);
+              setAnalogLevel(0);
+            };
+            const runSelectionErrorSequence = (wrongPart, message) => {
+              if (!wrongPart) return;
+              errorSequenceRunning = true;
+              okBtn.disabled = true;
+              stopDigitalAuto();
+              stopAnalogAuto();
+              setDigitalState(false);
+              setAnalogLevel(0);
+              resetPartClasses();
+              wrongPart.classList.add("part-wrong");
+              if (cardFeedbackEl) {
+                cardFeedbackEl.textContent = message;
+                cardFeedbackEl.className = "card-feedback error";
+              }
+              window.setTimeout(() => {
+                wrongPart.classList.add("part-shake");
+                window.setTimeout(() => {
+                  resetSelectionState();
+                  window.setTimeout(() => {
+                    errorSequenceRunning = false;
+                    okBtn.disabled = Boolean(completed[currentIndex]);
+                  }, selectionErrorTiming.restoreMs);
+                }, selectionErrorTiming.shakeMs);
+              }, selectionErrorTiming.highlightMs);
+            };
+
             const setChoice = (choice) => {
-              if (wrapper.classList.contains("choice-locked")) {
+              if (isSelectionInteractionDisabled()) {
                 return;
               }
               if (isControlRole) {
@@ -2736,14 +2889,10 @@
               if (chosenCol) {
                 chosenCol.classList.add("choice-selected");
               }
-              if (cardFeedbackEl) {
-                cardFeedbackEl.textContent = "";
-                cardFeedbackEl.className = "card-feedback";
-              }
             };
 
             const setPartChoice = (part) => {
-              if (wrapper.classList.contains("choice-locked")) {
+              if (isSelectionInteractionDisabled()) {
                 return;
               }
               if (!part) return;
@@ -2751,10 +2900,6 @@
               part.classList.add("part-selected");
               selectedPart = part;
               wrapper.dataset.selectedPart = part.dataset.partRole || "";
-              if (cardFeedbackEl) {
-                cardFeedbackEl.textContent = "";
-                cardFeedbackEl.className = "card-feedback";
-              }
             };
 
             cardActionEl.classList.add("card-action--center");
@@ -2774,14 +2919,7 @@
                   return;
                 }
                 if (selectedRole !== "give") {
-                  resetPartClasses();
-                  if (selectedPart) {
-                    selectedPart.classList.add("part-wrong");
-                  }
-                  if (cardFeedbackEl) {
-                    cardFeedbackEl.textContent = roleConfig.errorText;
-                    cardFeedbackEl.className = "card-feedback error";
-                  }
+                  runSelectionErrorSequence(selectedPart, roleConfig.errorText);
                   return;
                 }
                 if (!completed[currentIndex]) {
@@ -2828,7 +2966,7 @@
 
             if (toggleBtn) {
               toggleBtn.addEventListener("click", () => {
-                if (wrapper.classList.contains("choice-locked")) return;
+                if (isSelectionInteractionDisabled()) return;
                 stopDigitalAuto();
                 startDigitalAuto(10000, "click");
                 setChoice("digital");
@@ -2837,7 +2975,7 @@
 
             if (digitalCol) {
               digitalCol.addEventListener("click", () => {
-                if (wrapper.classList.contains("choice-locked")) return;
+                if (isSelectionInteractionDisabled()) return;
                 stopDigitalAuto();
                 startDigitalAuto(10000, "click");
                 setChoice("digital");
@@ -2846,7 +2984,7 @@
 
             if (analogCol) {
               analogCol.addEventListener("click", () => {
-                if (wrapper.classList.contains("choice-locked")) return;
+                if (isSelectionInteractionDisabled()) return;
                 stopAnalogAuto();
                 startAnalogAuto(10000, "click");
                 setChoice("analog");
@@ -2855,7 +2993,7 @@
 
             analogStops.forEach((btn) => {
               btn.addEventListener("click", () => {
-                if (wrapper.classList.contains("choice-locked")) return;
+                if (isSelectionInteractionDisabled()) return;
                 stopAnalogAuto();
                 startAnalogAuto(10000, "click");
                 setChoice("analog");
@@ -3014,6 +3152,11 @@ Analog changes little by little.
             const canHover = window.matchMedia ? window.matchMedia("(hover: hover)").matches : true;
             let activeAutoKey = "";
             const hintText = "Digital = ON/OFF \u2022 Analog = changes smoothly";
+            const selectionErrorTiming = {
+              highlightMs: 180,
+              shakeMs: 260,
+              restoreMs: 180,
+            };
 
             const shuffleItemOrder = () => {
               if (!itemsWrap) return;
@@ -3322,9 +3465,17 @@ Analog changes little by little.
             items.forEach((item) => {
               const buttons = Array.from(item.querySelectorAll(".drag-item__choice"));
               const feedback = item.querySelector(".drag-item__feedback");
+              let errorSequenceRunning = false;
+              const resetItemErrorState = () => {
+                item.classList.remove("drag-item--wrong", "drag-item__shake");
+                buttons.forEach((choiceBtn) => choiceBtn.classList.remove("is-wrong", "is-shake"));
+                buttons.forEach((choiceBtn) => {
+                  choiceBtn.disabled = false;
+                });
+              };
               buttons.forEach((btn) => {
                 btn.addEventListener("click", () => {
-                  if (item.dataset.answered === "true") return;
+                  if (item.dataset.answered === "true" || errorSequenceRunning) return;
                   const choice = btn.dataset.choice || "";
                   const isCorrect = choice === item.dataset.correct;
                   if (isCorrect) {
@@ -3343,18 +3494,29 @@ Analog changes little by little.
                     markComplete();
                     return;
                   }
+                  errorSequenceRunning = true;
                   item.classList.add("drag-item--wrong");
+                  btn.classList.add("is-wrong");
+                  buttons.forEach((choiceBtn) => {
+                    choiceBtn.disabled = true;
+                  });
                   if (feedback) {
                     feedback.textContent = hintText;
                     feedback.classList.remove("error");
                     feedback.classList.add("hint");
                   }
-                  item.classList.remove("drag-item__shake");
-                  void item.offsetWidth;
-                  item.classList.add("drag-item__shake");
                   window.setTimeout(() => {
-                    shuffleItemOrder();
-                  }, 280);
+                    btn.classList.add("is-shake");
+                    item.classList.remove("drag-item__shake");
+                    void item.offsetWidth;
+                    item.classList.add("drag-item__shake");
+                    window.setTimeout(() => {
+                      resetItemErrorState();
+                      window.setTimeout(() => {
+                        errorSequenceRunning = false;
+                      }, selectionErrorTiming.restoreMs);
+                    }, selectionErrorTiming.shakeMs);
+                  }, selectionErrorTiming.highlightMs);
                 });
               });
             });
