@@ -910,50 +910,238 @@
       transform: translateY(12px);
     }
 
-    .servo-row {
+    .joystick-row {
       justify-content: center;
       align-items: center;
       width: 100%;
+      overflow: hidden;
     }
 
-    .servo-btn {
+    .joystick-scene {
+      --joystick-base-size: 92px;
+      --joystick-arrow-size: calc(var(--joystick-base-size) * 23.5 / 65);
+      --joystick-arrow-span: calc(var(--joystick-arrow-size) * 3);
+      width: min(100%, 255px);
+      min-height: 112px;
+      display: grid;
+      grid-template-columns: minmax(94px, 108px) minmax(112px, 130px);
+      align-items: center;
+      justify-content: center;
+      gap: clamp(0.55rem, 2vw, 0.95rem);
+      padding: 0.2rem 0.15rem 0.35rem;
+      overflow: hidden;
+    }
+
+    .joystick-control {
+      position: relative;
+      width: 102px;
+      height: 102px;
       border: none;
       background: transparent;
       padding: 0;
-      cursor: pointer;
       display: inline-flex;
       align-items: center;
       justify-content: center;
+      cursor: grab;
+      touch-action: none;
     }
 
-    .servo-btn:focus-visible {
+    .joystick-control.is-dragging {
+      cursor: grabbing;
+    }
+
+    .joystick-control:focus-visible {
       outline: 2px solid #f59e0b;
-      outline-offset: 3px;
-      border-radius: 12px;
+      outline-offset: 4px;
+      border-radius: 24px;
     }
 
-    .servo-stack {
+    .joystick-base {
       position: relative;
-      width: 190px;
-      max-width: 100%;
-      aspect-ratio: 1416 / 633;
-      display: block;
+      width: var(--joystick-base-size);
+      height: var(--joystick-base-size);
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 28%, #f8fafc 0%, #d7dee8 48%, #94a3b8 100%);
+      box-shadow:
+        inset 0 4px 10px rgba(255, 255, 255, 0.5),
+        inset 0 -8px 18px rgba(71, 85, 105, 0.28),
+        0 10px 18px rgba(15, 23, 42, 0.14);
     }
 
-    .servo-base,
-    .servo-arm {
+    .joystick-base::before,
+    .joystick-base::after {
+      content: "";
       position: absolute;
-      inset: 0;
+      border-radius: 50%;
+      inset: 11%;
+    }
+
+    .joystick-base::before {
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.82) 0%, rgba(226, 232, 240, 0.92) 100%);
+      box-shadow: inset 0 0 0 1px rgba(148, 163, 184, 0.24);
+    }
+
+    .joystick-base::after {
+      inset: 22%;
+      background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.42) 0%, rgba(148, 163, 184, 0.06) 70%, rgba(15, 23, 42, 0.1) 100%);
+    }
+
+    .joystick-stick {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 24px;
+      height: 48px;
+      transform: translate(-50%, -50%);
+      transform-origin: 50% 70%;
+      transition: transform 0.18s ease;
+      z-index: 2;
+    }
+
+    .joystick-stick::before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: 8px;
+      width: 12px;
+      height: 30px;
+      transform: translateX(-50%);
+      border-radius: 999px;
+      background: linear-gradient(180deg, #e2e8f0 0%, #94a3b8 100%);
+      box-shadow:
+        inset 0 0 0 1px rgba(71, 85, 105, 0.18),
+        0 4px 10px rgba(15, 23, 42, 0.14);
+    }
+
+    .joystick-cap {
+      position: absolute;
+      left: 50%;
+      top: 0;
+      width: 42px;
+      height: 42px;
+      transform: translateX(-50%);
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 28%, #334155 0%, #0f172a 62%, #020617 100%);
+      box-shadow:
+        inset 0 3px 6px rgba(255, 255, 255, 0.16),
+        inset 0 -4px 8px rgba(2, 6, 23, 0.65),
+        0 7px 14px rgba(15, 23, 42, 0.28);
+    }
+
+    .joystick-cap::after {
+      content: "";
+      position: absolute;
+      left: 23%;
+      top: 18%;
+      width: 38%;
+      height: 22%;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.18);
+      filter: blur(1px);
+    }
+
+    .joystick-control[data-direction="up"] .joystick-stick {
+      transform: translate(-50%, calc(-50% - 15px)) rotate(-4deg);
+    }
+
+    .joystick-control[data-direction="right"] .joystick-stick {
+      transform: translate(calc(-50% + 15px), -50%) rotate(10deg);
+    }
+
+    .joystick-control[data-direction="down"] .joystick-stick {
+      transform: translate(-50%, calc(-50% + 15px)) rotate(4deg);
+    }
+
+    .joystick-control[data-direction="left"] .joystick-stick {
+      transform: translate(calc(-50% - 15px), -50%) rotate(-10deg);
+    }
+
+    .joystick-arrows {
+      display: grid;
+      grid-template-columns: repeat(3, var(--joystick-arrow-size));
+      grid-template-areas:
+        ". up ."
+        "left . right"
+        ". down .";
+      gap: 0;
+      justify-items: center;
+      align-items: center;
+      width: var(--joystick-arrow-span);
+    }
+
+    .joystick-arrow {
+      width: var(--joystick-arrow-size);
+      height: var(--joystick-arrow-size);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #2563eb;
+      opacity: 0.34;
+      transition:
+        transform 0.18s ease,
+        color 0.18s ease,
+        opacity 0.18s ease,
+        filter 0.18s ease;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .joystick-arrow svg {
       width: 100%;
       height: 100%;
-      object-fit: contain;
-      pointer-events: none;
+      display: block;
+      overflow: visible;
+      transform-origin: 50% 50%;
     }
 
-    .servo-arm {
-      transform-origin: 50% 50%;
-      transition: transform 0.25s ease;
-      filter: drop-shadow(0 0 6px rgba(234, 179, 8, 0.9));
+    .joystick-arrow path {
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 10;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .joystick-arrow--up {
+      grid-area: up;
+    }
+
+    .joystick-arrow--left {
+      grid-area: left;
+    }
+
+    .joystick-arrow--left svg {
+      transform: rotate(-90deg);
+    }
+
+    .joystick-arrow--right {
+      grid-area: right;
+    }
+
+    .joystick-arrow--right svg {
+      transform: rotate(90deg);
+    }
+
+    .joystick-arrow--down {
+      grid-area: down;
+    }
+
+    .joystick-arrow--down svg {
+      transform: rotate(180deg);
+    }
+
+    .joystick-arrow.active {
+      color: #1d4ed8;
+      opacity: 1;
+      transform: scale(1.14);
+      filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.35));
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .joystick-stick,
+      .joystick-arrow {
+        transition: none;
+      }
     }
 
     .digital-analog-quiz__complete {
@@ -3044,19 +3232,48 @@
                   </div>
                   <div class="drag-item__feedback" aria-live="polite"></div>
                 </div>
-                <div class="drag-item" data-item-id="servo" data-correct="digital" data-angle="0">
-                  <div class="drag-item__title">Servo Motor</div>
-                  <div class="drag-item__test drag-item__test--center servo-row">
-                    <button class="servo-btn" type="button" aria-label="Rotate servo arm">
-                      <span class="servo-stack" aria-hidden="true">
-                        <img class="servo-base" src="{% static 'lessons/mission2/servo_base.png' %}" alt="">
-                        <img class="servo-arm" src="{% static 'lessons/mission2/servo_arm.png' %}" alt="">
-                      </span>
-                    </button>
+                <div class="drag-item" data-item-id="joystick" data-correct="analog" data-direction="center">
+                  <div class="drag-item__title">Joystick</div>
+                  <div class="drag-item__test drag-item__test--center joystick-row">
+                    <div class="joystick-scene">
+                      <button class="joystick-control" type="button" data-direction="center" aria-label="Move joystick to highlight a direction">
+                        <span class="joystick-base" aria-hidden="true">
+                          <span class="joystick-stick">
+                            <span class="joystick-cap"></span>
+                          </span>
+                        </span>
+                      </button>
+                      <div class="joystick-arrows" aria-hidden="true">
+                        <span class="joystick-arrow joystick-arrow--up" data-arrow="up">
+                          <svg viewBox="0 0 48 48" aria-hidden="true" focusable="false">
+                            <path d="M24 7v30"></path>
+                            <path d="M13 18l11-11 11 11"></path>
+                          </svg>
+                        </span>
+                        <span class="joystick-arrow joystick-arrow--left" data-arrow="left">
+                          <svg viewBox="0 0 48 48" aria-hidden="true" focusable="false">
+                            <path d="M24 7v30"></path>
+                            <path d="M13 18l11-11 11 11"></path>
+                          </svg>
+                        </span>
+                        <span class="joystick-arrow joystick-arrow--right" data-arrow="right">
+                          <svg viewBox="0 0 48 48" aria-hidden="true" focusable="false">
+                            <path d="M24 7v30"></path>
+                            <path d="M13 18l11-11 11 11"></path>
+                          </svg>
+                        </span>
+                        <span class="joystick-arrow joystick-arrow--down" data-arrow="down">
+                          <svg viewBox="0 0 48 48" aria-hidden="true" focusable="false">
+                            <path d="M24 7v30"></path>
+                            <path d="M13 18l11-11 11 11"></path>
+                          </svg>
+                        </span>
+                      </div>
+                    </div>
                   </div>
-                  <div class="drag-item__choices" role="group" aria-label="Choose type for Servo Motor">
-                    <button class="drag-item__choice" type="button" data-choice="digital" aria-label="Servo Motor: DIGITAL">DIGITAL</button>
-                    <button class="drag-item__choice" type="button" data-choice="analog" aria-label="Servo Motor: ANALOG">ANALOG</button>
+                  <div class="drag-item__choices" role="group" aria-label="Choose type for Joystick">
+                    <button class="drag-item__choice" type="button" data-choice="digital" aria-label="Joystick: DIGITAL">DIGITAL</button>
+                    <button class="drag-item__choice" type="button" data-choice="analog" aria-label="Joystick: ANALOG">ANALOG</button>
                   </div>
                   <div class="drag-item__feedback" aria-live="polite"></div>
                 </div>
@@ -3064,8 +3281,8 @@
               <div class="digital-analog-quiz__complete">
 Great job!
 Digital is ON or OFF.
-Analog changes little by little.
-              </div>
+Analog creates smooth changes.
+               </div>
             `;
             cardBodyEl.appendChild(wrapper);
 
@@ -3189,40 +3406,47 @@ Analog changes little by little.
               setPotLevel(0);
             }
 
-            const servoItem = wrapper.querySelector('[data-item-id="servo"]');
-            let setServoAngle = null;
-            const servoAngles = [0, 25, 50, 75, 100, 125, 150, 175, 200, 225, 250, 260];
-            let servoAngleIndex = 0;
-            let servoAngleDirection = 1;
-            if (servoItem) {
-              const servoArm = servoItem.querySelector(".servo-arm");
-              const servoBtn = servoItem.querySelector(".servo-btn");
-              setServoAngle = (angle) => {
-                const nextAngle = Number(angle) || 0;
-                servoItem.dataset.angle = String(nextAngle);
-                if (servoArm) {
-                  servoArm.style.transform = `rotate(${nextAngle}deg)`;
-                }
+            const joystickItem = wrapper.querySelector('[data-item-id="joystick"]');
+            let joystickControl = null;
+            let setJoystickDirection = null;
+            const joystickDirections = ["up", "right", "down", "left"];
+            let joystickDirectionIndex = -1;
+            if (joystickItem) {
+              joystickControl = joystickItem.querySelector(".joystick-control");
+              const joystickArrows = Array.from(joystickItem.querySelectorAll(".joystick-arrow"));
+              const joystickDirectionLabels = {
+                center: "centered",
+                up: "up",
+                right: "right",
+                down: "down",
+                left: "left",
               };
-              if (servoBtn) {
-                servoBtn.addEventListener("click", () => {
-                  if (servoAngleIndex === servoAngles.length - 1) {
-                    servoAngleDirection = -1;
-                  } else if (servoAngleIndex === 0) {
-                    servoAngleDirection = 1;
-                  }
-                  servoAngleIndex = Math.max(0, Math.min(servoAngles.length - 1, servoAngleIndex + servoAngleDirection));
-                  setServoAngle(servoAngles[servoAngleIndex]);
+              setJoystickDirection = (direction) => {
+                const nextDirection = Object.prototype.hasOwnProperty.call(joystickDirectionLabels, direction)
+                  ? direction
+                  : "center";
+                joystickItem.dataset.direction = nextDirection;
+                if (joystickControl) {
+                  joystickControl.dataset.direction = nextDirection;
+                  joystickControl.setAttribute(
+                    "aria-label",
+                    nextDirection === "center"
+                      ? "Joystick centered"
+                      : `Joystick pointed ${joystickDirectionLabels[nextDirection]}`
+                  );
+                }
+                joystickArrows.forEach((arrow) => {
+                  arrow.classList.toggle("active", arrow.dataset.arrow === nextDirection);
                 });
-              }
-              setServoAngle(servoAngles[servoAngleIndex]);
+              };
+              setJoystickDirection("center");
             }
 
             const autoState = {
               push: { interval: null, timeout: null, source: "" },
               led: { interval: null, timeout: null, source: "" },
               pot: { interval: null, timeout: null, source: "" },
-              servo: { interval: null, timeout: null, source: "" },
+              joystick: { interval: null, timeout: null, source: "" },
             };
 
             const stopAuto = (key) => {
@@ -3246,15 +3470,14 @@ Analog changes little by little.
               if (key === "pot" && potItem && typeof setPotLevel === "function") {
                 setPotLevel(0);
               }
-              if (key === "servo" && servoItem && typeof setServoAngle === "function") {
-                servoAngleIndex = 0;
-                servoAngleDirection = 1;
-                setServoAngle(servoAngles[0]);
+              if (key === "joystick" && joystickItem && typeof setJoystickDirection === "function") {
+                joystickDirectionIndex = -1;
+                setJoystickDirection("center");
               }
             };
 
             const stopAllAuto = (exceptKey = "") => {
-              ["push", "led", "pot", "servo"].forEach((key) => {
+              ["push", "led", "pot", "joystick"].forEach((key) => {
                 if (key !== exceptKey) {
                   stopAuto(key);
                 }
@@ -3285,18 +3508,10 @@ Analog changes little by little.
                   setPotLevel(nextLevel);
                 }, hoverStepMs);
               }
-              if (key === "servo" && servoItem && typeof setServoAngle === "function") {
+              if (key === "joystick" && joystickItem && typeof setJoystickDirection === "function") {
                 state.interval = window.setInterval(() => {
-                  if (servoAngleIndex === servoAngles.length - 1) {
-                    servoAngleDirection = -1;
-                  } else if (servoAngleIndex === 0) {
-                    servoAngleDirection = 1;
-                  }
-                  servoAngleIndex = Math.max(
-                    0,
-                    Math.min(servoAngles.length - 1, servoAngleIndex + servoAngleDirection)
-                  );
-                  setServoAngle(servoAngles[servoAngleIndex]);
+                  joystickDirectionIndex = (joystickDirectionIndex + 1) % joystickDirections.length;
+                  setJoystickDirection(joystickDirections[joystickDirectionIndex]);
                 }, hoverStepMs);
               }
               if (durationMs) {
@@ -3341,24 +3556,100 @@ Analog changes little by little.
             registerAutoHover(pushItem, "push");
             registerAutoHover(ledItem, "led");
             registerAutoHover(potItem, "pot");
-            registerAutoHover(servoItem, "servo");
+            registerAutoHover(joystickItem, "joystick");
 
             const pushBtn = pushItem ? pushItem.querySelector(".push-button-press") : null;
             const ledToggle = ledItem ? ledItem.querySelector(".digital-toggle") : null;
             const potStops = potItem ? potItem.querySelectorAll(".pot-stop") : [];
-            const servoBtn = servoItem ? servoItem.querySelector(".servo-btn") : null;
 
             registerAutoClick(pushItem, "push");
             registerAutoClick(ledItem, "led");
             registerAutoClick(potItem, "pot");
-            registerAutoClick(servoItem, "servo");
+            registerAutoClick(joystickItem, "joystick");
 
             registerAutoClick(pushItem, "push", pushBtn, true);
             registerAutoClick(ledItem, "led", ledToggle, true);
             if (potStops.length) {
               potStops.forEach((btn) => registerAutoClick(potItem, "pot", btn, true));
             }
-            registerAutoClick(servoItem, "servo", servoBtn, true);
+            if (joystickControl && typeof setJoystickDirection === "function") {
+              const joystickKeyMap = {
+                ArrowUp: "up",
+                ArrowRight: "right",
+                ArrowDown: "down",
+                ArrowLeft: "left",
+                w: "up",
+                W: "up",
+                d: "right",
+                D: "right",
+                s: "down",
+                S: "down",
+                a: "left",
+                A: "left",
+              };
+              const getJoystickDirectionFromPointer = (event) => {
+                const rect = joystickControl.getBoundingClientRect();
+                const dx = event.clientX - (rect.left + rect.width / 2);
+                const dy = event.clientY - (rect.top + rect.height / 2);
+                const deadZone = Math.min(rect.width, rect.height) * 0.14;
+                if (Math.hypot(dx, dy) < deadZone) {
+                  return "center";
+                }
+                if (Math.abs(dx) > Math.abs(dy)) {
+                  return dx > 0 ? "right" : "left";
+                }
+                return dy > 0 ? "down" : "up";
+              };
+              let joystickPointerActive = false;
+              const releaseJoystick = () => {
+                joystickPointerActive = false;
+                joystickControl.classList.remove("is-dragging");
+                setJoystickDirection("center");
+              };
+              joystickControl.addEventListener("click", (event) => {
+                event.stopPropagation();
+              });
+              joystickControl.addEventListener("pointerdown", (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                stopAllAuto();
+                activeAutoKey = "";
+                joystickPointerActive = true;
+                joystickControl.classList.add("is-dragging");
+                if (typeof joystickControl.setPointerCapture === "function") {
+                  joystickControl.setPointerCapture(event.pointerId);
+                }
+                const direction = getJoystickDirectionFromPointer(event);
+                setJoystickDirection(direction === "center" ? "up" : direction);
+              });
+              joystickControl.addEventListener("pointermove", (event) => {
+                if (!joystickPointerActive) return;
+                setJoystickDirection(getJoystickDirectionFromPointer(event));
+              });
+              joystickControl.addEventListener("pointerup", releaseJoystick);
+              joystickControl.addEventListener("pointercancel", releaseJoystick);
+              joystickControl.addEventListener("lostpointercapture", releaseJoystick);
+              joystickControl.addEventListener("keydown", (event) => {
+                const direction = joystickKeyMap[event.key];
+                if (!direction) return;
+                event.preventDefault();
+                event.stopPropagation();
+                stopAllAuto();
+                activeAutoKey = "";
+                setJoystickDirection(direction);
+              });
+              joystickControl.addEventListener("keyup", (event) => {
+                if (!joystickKeyMap[event.key]) return;
+                event.preventDefault();
+                event.stopPropagation();
+                setJoystickDirection("center");
+              });
+              joystickControl.addEventListener("blur", () => {
+                if (!joystickPointerActive) {
+                  setJoystickDirection("center");
+                }
+              });
+            }
 
             shuffleItemOrder();
 
