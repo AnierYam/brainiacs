@@ -1175,7 +1175,7 @@
 
     .card-body-gap {
       display: block;
-      height: 0.0005rem;
+      height: 0.5rem;
     }
 
     .line-highlight {
@@ -5839,6 +5839,7 @@ Analog creates smooth changes.
               }
             }
 
+            prevBtn.hidden = currentIndex === 0;
             prevBtn.disabled = currentIndex === 0;
             nextBtn.textContent = currentIndex === CARDS.length - 1 ? "Finish" : "Next";
 
