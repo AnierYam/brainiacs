@@ -1,4 +1,7 @@
+from datetime import timedelta
+
 from django.core.management.base import BaseCommand, CommandError
+from django.utils import timezone
 
 from landing.models import ActivationCode, normalize_activation_code
 
@@ -13,6 +16,12 @@ class Command(BaseCommand):
             choices=[ActivationCode.TYPE_TEMPORARY, ActivationCode.TYPE_PERMANENT],
             dest="code_type",
             help="Activation code type. If omitted, you will be prompted.",
+        )
+        parser.add_argument(
+            "--expires-in-hours",
+            type=int,
+            dest="expires_in_hours",
+            help="Expire the activation code this many hours from now.",
         )
 
     def _prompt_for_code_type(self) -> str:
@@ -38,13 +47,28 @@ class Command(BaseCommand):
                 )
             code_type = self._prompt_for_code_type()
 
+        expires_in_hours = options.get("expires_in_hours")
+        if expires_in_hours is not None and expires_in_hours <= 0:
+            raise CommandError("--expires-in-hours must be greater than 0.")
+
         activation_code, created = ActivationCode.objects.get_or_create(code=code)
         activation_code.set_code_type(code_type)
-        activation_code.save(update_fields=["is_reusable"])
+        update_fields = ["is_reusable"]
+        if expires_in_hours is not None:
+            activation_code.expires_at = timezone.now() + timedelta(
+                hours=expires_in_hours
+            )
+            update_fields.append("expires_at")
+        activation_code.save(update_fields=update_fields)
 
         action = "Created" if created else "Updated"
+        expiration_message = (
+            f" Expires at {activation_code.expires_at.isoformat()}."
+            if activation_code.expires_at
+            else ""
+        )
         self.stdout.write(
             self.style.SUCCESS(
-                f"{action} activation code {activation_code.code} as {activation_code.get_code_type_label().lower()}."
+                f"{action} activation code {activation_code.code} as {activation_code.get_code_type_label().lower()}.{expiration_message}"
             )
         )

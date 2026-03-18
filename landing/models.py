@@ -18,6 +18,7 @@ class ActivationCode(models.Model):
 
     code = models.CharField(max_length=64, unique=True, db_index=True)
     is_reusable = models.BooleanField(default=False)
+    expires_at = models.DateTimeField(null=True, blank=True)
     activated_email = models.EmailField(blank=True)
     activated_at = models.DateTimeField(null=True, blank=True)
     email_verification_code = models.CharField(max_length=12, blank=True)
@@ -48,6 +49,12 @@ class ActivationCode(models.Model):
 
     def set_code_type(self, code_type: str) -> None:
         self.is_reusable = code_type == self.TYPE_PERMANENT
+
+    def is_expired(self, at=None) -> bool:
+        if self.expires_at is None:
+            return False
+        reference_time = at or timezone.now()
+        return self.expires_at <= reference_time
 
     def save(self, *args, **kwargs):
         self.code = normalize_activation_code(self.code)

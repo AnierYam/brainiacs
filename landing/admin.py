@@ -35,6 +35,7 @@ class ActivationCodeAdmin(admin.ModelAdmin):
     list_display = (
         "code",
         "code_type_display",
+        "expires_at",
         "activated_email",
         "user",
         "activated_at",
@@ -46,6 +47,7 @@ class ActivationCodeAdmin(admin.ModelAdmin):
     search_fields = ("code", "activated_email", "user__username")
     list_filter = (
         "is_reusable",
+        "expires_at",
         "activated_at",
         "email_verification_sent_at",
         "email_verified_at",
@@ -55,6 +57,7 @@ class ActivationCodeAdmin(admin.ModelAdmin):
     fields = (
         "code",
         "code_type",
+        "expires_at",
         "activated_email",
         "user",
         "activated_at",

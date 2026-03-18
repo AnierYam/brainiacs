@@ -75,6 +75,8 @@ class ActivationCodeSignupForm(UserCreationForm):
         activation_code = ActivationCode.objects.filter(code=code_value).first()
         if not activation_code:
             raise forms.ValidationError("Invalid activation code.")
+        if activation_code.is_expired():
+            raise forms.ValidationError("This activation code has expired.")
         if activation_code.user_id and not activation_code.is_reusable:
             raise forms.ValidationError(
                 "This activation code is already linked to another account."
@@ -96,6 +98,10 @@ class ActivationCodeSignupForm(UserCreationForm):
             activation_code = ActivationCode.objects.select_for_update().get(
                 id=activation_code_id
             )
+            if activation_code.is_expired():
+                raise ValidationError(
+                    "This activation code has expired. Try another code."
+                )
             if activation_code.user_id and not activation_code.is_reusable:
                 raise ValidationError(
                     "This activation code has already been used. Try another code."
