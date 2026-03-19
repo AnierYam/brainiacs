@@ -1752,6 +1752,8 @@
     }
 
     @media (prefers-reduced-motion: reduce) {
+      .bucket-sort__rows--shuffle-out .bucket-sort__row,
+      .bucket-sort__rows--shuffle-in .bucket-sort__row,
       .match-list--shuffle-out .match-item,
       .match-list--shuffle-in .match-item {
         animation: none;
@@ -1979,6 +1981,17 @@
       transition: box-shadow 0.2s ease, border-color 0.2s ease;
     }
 
+    .bucket-sort__rows--shuffle-out .bucket-sort__row {
+      animation: bucket-sort-reshuffle-out 0.22s ease forwards;
+      animation-delay: calc(var(--bucket-row-stagger, 0) * 35ms);
+    }
+
+    .bucket-sort__rows--shuffle-in .bucket-sort__row {
+      animation: bucket-sort-reshuffle-in 0.28s ease forwards;
+      animation-delay: calc(var(--bucket-row-stagger, 0) * 40ms);
+      opacity: 0;
+    }
+
     .bucket-sort__row.correct {
       border-color: #22c55e;
       box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.16);
@@ -2036,6 +2049,28 @@
       border-color: #ef4444;
       background: #fee2e2;
       color: #991b1b;
+    }
+
+    @keyframes bucket-sort-reshuffle-out {
+      0% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(10px) scale(0.98);
+      }
+    }
+
+    @keyframes bucket-sort-reshuffle-in {
+      0% {
+        opacity: 0;
+        transform: translateY(-12px) scale(0.98);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
     }
 
     .matrix-quiz {
@@ -2472,7 +2507,6 @@
           const lessonTitle = "{{ lesson.title|escapejs }}";
           const lessonSlug = "{{ lesson.slug|escapejs }}";
           const lessonPart = Number("{{ lesson.part|default:0 }}");
-          const delayRedoUntilWrongAnswer = lessonPart === 1;
           const isDigitalAnalogLesson = lessonSlug === "digital-vs-analog";
           if (isDigitalAnalogLesson) {
             CARDS = CARDS.filter((card) => {
@@ -5334,18 +5368,7 @@ Analog creates smooth changes.
             choicesWrap.className = "tap-sequence__choices";
             wrapper.appendChild(choicesWrap);
 
-            const actions = document.createElement("div");
-            actions.className = "quiz-actions";
-            const redoBtn = document.createElement("button");
-            redoBtn.type = "button";
-            redoBtn.className = "action-btn secondary";
-            redoBtn.textContent = "Redo";
-            actions.appendChild(redoBtn);
-            wrapper.appendChild(actions);
-
-            function updateRedoVisibility() {
-              redoBtn.hidden = state.completed || state.selectedOrder.length === 0;
-            }
+            function updateRedoVisibility() {}
 
             function renderSlots() {
               slots.innerHTML = "";
@@ -5443,17 +5466,6 @@ Analog creates smooth changes.
               });
             }
 
-            redoBtn.addEventListener("click", () => {
-              if (state.completed || errorSequenceRunning) return;
-              state.selectedOrder = [];
-              state.optionOrder = shuffleArray(correctOrder.slice());
-              renderSlots();
-              buildChoiceButtons();
-              updateRedoVisibility();
-              cardFeedbackEl.textContent = "";
-              cardFeedbackEl.className = "card-feedback";
-            });
-
             renderSlots();
             buildChoiceButtons();
             updateRedoVisibility();
@@ -5523,6 +5535,12 @@ Analog creates smooth changes.
             let okBtn = null;
             const rowEls = new Map();
             const choiceButtons = new Map();
+            const bucketShuffleTiming = {
+              outMs: 220,
+              outStaggerMs: 35,
+              inMs: 280,
+              inStaggerMs: 40,
+            };
 
             const wrapper = document.createElement("div");
             wrapper.className = "bucket-sort";
@@ -5543,20 +5561,13 @@ Analog creates smooth changes.
             okBtn.className = "action-btn";
             okBtn.textContent = "OK";
             actions.appendChild(okBtn);
-            const redoBtn = document.createElement("button");
-            redoBtn.type = "button";
-            redoBtn.className = "action-btn secondary";
-            redoBtn.textContent = "Redo";
-            actions.appendChild(redoBtn);
             wrapper.appendChild(actions);
 
             function orderedItems() {
               return state.itemOrder.map((id) => itemById.get(id)).filter(Boolean);
             }
 
-            function updateRedoVisibility() {
-              redoBtn.hidden = state.completed || !Object.keys(state.answers).length;
-            }
+            function updateRedoVisibility() {}
 
             function setChoiceDisabled(disabled) {
               choiceButtons.forEach((btn) => {
@@ -5569,9 +5580,10 @@ Analog creates smooth changes.
               rowEls.clear();
               choiceButtons.clear();
 
-              orderedItems().forEach((item) => {
+              orderedItems().forEach((item, index) => {
                 const row = document.createElement("div");
                 row.className = "bucket-sort__row";
+                row.style.setProperty("--bucket-row-stagger", String(index));
                 rowEls.set(item.id, row);
 
                 const label = document.createElement("div");
@@ -5616,6 +5628,44 @@ Analog creates smooth changes.
                 row.appendChild(choices);
                 rowsWrap.appendChild(row);
               });
+            }
+
+            function animateBucketSortReshuffle() {
+              const currentRows = Array.from(rowsWrap.children);
+              const prefersReducedMotion =
+                window.matchMedia &&
+                window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+              if (!shouldShuffleOnWrong || !currentRows.length || prefersReducedMotion) {
+                buildRows();
+                return;
+              }
+
+              const shuffleOutDuration =
+                bucketShuffleTiming.outMs +
+                Math.max(0, currentRows.length - 1) * bucketShuffleTiming.outStaggerMs;
+
+              rowsWrap.classList.remove("bucket-sort__rows--shuffle-in");
+              rowsWrap.classList.add("bucket-sort__rows--shuffle-out");
+
+              window.setTimeout(() => {
+                rowsWrap.classList.remove("bucket-sort__rows--shuffle-out");
+                buildRows();
+                setChoiceDisabled(true);
+                rowsWrap.classList.add("bucket-sort__rows--shuffle-in");
+
+                const nextRows = Array.from(rowsWrap.children);
+                const shuffleInDuration =
+                  bucketShuffleTiming.inMs +
+                  Math.max(0, nextRows.length - 1) * bucketShuffleTiming.inStaggerMs;
+
+                window.setTimeout(() => {
+                  rowsWrap.classList.remove("bucket-sort__rows--shuffle-in");
+                  if (!state.completed && !errorSequenceRunning) {
+                    setChoiceDisabled(false);
+                  }
+                }, shuffleInDuration);
+              }, shuffleOutDuration);
             }
 
             okBtn.addEventListener("click", () => {
@@ -5685,19 +5735,12 @@ Analog creates smooth changes.
                   if (shouldShuffleOnWrong) {
                     state.itemOrder = shuffleArray(itemIds.slice());
                   }
-                  buildRows();
+                },
+                afterReset: () => {
+                  animateBucketSortReshuffle();
                   updateRedoVisibility();
                 },
               });
-            });
-
-            redoBtn.addEventListener("click", () => {
-              if (state.completed || errorSequenceRunning) return;
-              state.answers = {};
-              buildRows();
-              updateRedoVisibility();
-              cardFeedbackEl.textContent = "";
-              cardFeedbackEl.className = "card-feedback";
             });
 
             buildRows();
@@ -5782,16 +5825,9 @@ Analog creates smooth changes.
             okBtn.className = "action-btn";
             okBtn.textContent = "OK";
             actions.appendChild(okBtn);
-            const redoBtn = document.createElement("button");
-            redoBtn.type = "button";
-            redoBtn.className = "action-btn secondary";
-            redoBtn.textContent = "Redo";
-            actions.appendChild(redoBtn);
             wrapper.appendChild(actions);
 
-            function updateRedoVisibility() {
-              redoBtn.hidden = state.completed || !Object.keys(state.answers).length;
-            }
+            function updateRedoVisibility() {}
 
             function setChoiceDisabled(disabled) {
               choiceButtons.forEach((btn) => {
@@ -5928,15 +5964,6 @@ Analog creates smooth changes.
               });
             });
 
-            redoBtn.addEventListener("click", () => {
-              if (state.completed || errorSequenceRunning) return;
-              state.answers = {};
-              buildRows();
-              updateRedoVisibility();
-              cardFeedbackEl.textContent = "";
-              cardFeedbackEl.className = "card-feedback";
-            });
-
             buildRows();
             updateRedoVisibility();
             cardQuizEl.appendChild(wrapper);
@@ -6005,12 +6032,8 @@ Analog creates smooth changes.
               let quizPosted = false;
               let errorSequenceRunning = false;
               let okBtn = null;
-              let redoBtn = null;
               const choiceButtons = new Map();
-              const setRedoVisibility = (visible) => {
-                if (!redoBtn) return;
-                redoBtn.hidden = delayRedoUntilWrongAnswer ? !visible : false;
-              };
+              const setRedoVisibility = () => {};
 
               const setChoiceDisabled = (disabled, exceptKey = "") => {
                 choiceButtons.forEach((btn, key) => {
@@ -6149,16 +6172,6 @@ Analog creates smooth changes.
                 applySingleValidation();
               });
               actions.appendChild(okBtn);
-              redoBtn = document.createElement("button");
-              redoBtn.type = "button";
-              redoBtn.className = "action-btn secondary";
-              redoBtn.textContent = "Redo";
-              setRedoVisibility(false);
-              redoBtn.addEventListener("click", () => {
-                if (quizLocked || errorSequenceRunning) return;
-                resetSingleSelection();
-              });
-              actions.appendChild(redoBtn);
               cardQuizEl.appendChild(actions);
               if (completed[currentIndex] && correct) {
                 selectedKey = correct;
@@ -6190,7 +6203,6 @@ Analog creates smooth changes.
               choices.filter((choice) => choice.isCorrect).map((choice) => choice.key)
             );
             const choiceButtons = new Map();
-            let redoBtn = null;
             let okBtn = null;
             let errorSequenceRunning = false;
             const shouldUseSelectionErrorProcess = Boolean(payload.selection_error_process);
@@ -6203,11 +6215,7 @@ Analog creates smooth changes.
             const partialFeedback = formatFeedback(
               payload.partial_feedback || incorrectFeedback
             );
-            const setRedoVisibility = (visible) => {
-              state.showRedo = delayRedoUntilWrongAnswer ? Boolean(visible) : true;
-              if (!redoBtn) return;
-              redoBtn.hidden = delayRedoUntilWrongAnswer ? !state.showRedo : false;
-            };
+            const setRedoVisibility = () => {};
 
             const setChoiceDisabled = (disabled) => {
               choiceButtons.forEach((btn) => {
@@ -6387,26 +6395,6 @@ Analog creates smooth changes.
               nextBtn.disabled = false;
             });
             actions.appendChild(okBtn);
-            redoBtn = document.createElement("button");
-            redoBtn.type = "button";
-            redoBtn.className = "action-btn secondary";
-            redoBtn.textContent = "Redo";
-            setRedoVisibility(state.showRedo);
-            redoBtn.addEventListener("click", () => {
-              if (state.correct || errorSequenceRunning) return;
-              selectedKeys.clear();
-              state.validated = false;
-              state.correct = false;
-              clearValidationStyles();
-              choiceButtons.forEach((btn) => {
-                btn.classList.remove("selected", "shake");
-                btn.disabled = false;
-              });
-              cardFeedbackEl.textContent = "";
-              cardFeedbackEl.className = "card-feedback";
-              setRedoVisibility(false);
-            });
-            actions.appendChild(redoBtn);
             cardQuizEl.appendChild(actions);
 
             state.choiceButtons = choiceButtons;
@@ -6494,7 +6482,6 @@ Analog creates smooth changes.
             );
             const basePositions = choices.map((choice) => choice.left);
             const choiceButtons = new Map();
-            let redoBtn = null;
             let okBtn = null;
             let errorSequenceRunning = false;
             const correctFeedback = formatFeedback(
@@ -6506,11 +6493,7 @@ Analog creates smooth changes.
             const partialFeedback = formatFeedback(
               payload.partial_feedback || incorrectFeedback
             );
-            const setRedoVisibility = (visible) => {
-              state.showRedo = delayRedoUntilWrongAnswer ? Boolean(visible) : true;
-              if (!redoBtn) return;
-              redoBtn.hidden = delayRedoUntilWrongAnswer ? !state.showRedo : false;
-            };
+            const setRedoVisibility = () => {};
             const setChoiceDisabled = (disabled) => {
               choiceButtons.forEach((btn) => {
                 btn.disabled = disabled;
@@ -6724,19 +6707,6 @@ Analog creates smooth changes.
               nextBtn.disabled = false;
             });
             actions.appendChild(okBtn);
-
-            redoBtn = document.createElement("button");
-            redoBtn.type = "button";
-            redoBtn.className = "action-btn secondary";
-            redoBtn.textContent = "Redo";
-            setRedoVisibility(state.showRedo);
-            redoBtn.addEventListener("click", () => {
-              if (state.correct || errorSequenceRunning) return;
-              resetPinSelectionState();
-              cardFeedbackEl.textContent = "";
-              cardFeedbackEl.className = "card-feedback";
-            });
-            actions.appendChild(redoBtn);
 
             quizWrap.appendChild(actions);
             cardQuizEl.appendChild(quizWrap);
