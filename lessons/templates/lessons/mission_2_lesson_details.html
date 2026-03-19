@@ -1156,6 +1156,51 @@
     }
 
     @media (max-width: 768px) {
+      body {
+        padding: 1rem 0.75rem 1.5rem;
+      }
+
+      .page {
+        max-width: none;
+      }
+
+      .breadcrumb {
+        margin-bottom: 0.9rem;
+      }
+
+      .breadcrumb a {
+        position: static;
+        top: auto;
+        left: auto;
+      }
+
+      .header {
+        margin-bottom: 1.5rem;
+      }
+
+      .header h1 {
+        font-size: 1.55rem;
+      }
+
+      .card-engine {
+        padding: 1rem;
+      }
+
+      .card-engine__top {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .card-engine__card {
+        padding: 1rem;
+      }
+
+      .card-meta {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.35rem;
+      }
+
       .digital-analog-grid {
         grid-template-columns: 1fr;
       }
@@ -1166,6 +1211,69 @@
 
       .digital-analog-quiz__items {
         grid-template-columns: 1fr;
+      }
+
+      .match-columns {
+        grid-template-columns: 1fr;
+      }
+
+      .quiz-actions,
+      .card-engine__nav {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .quiz-actions .action-btn,
+      .card-engine__nav .nav-btn {
+        width: 100%;
+      }
+
+      .tap-sequence__slots,
+      .tap-sequence__choices,
+      .bucket-sort__choices,
+      .matrix-quiz__choices {
+        grid-template-columns: 1fr;
+      }
+
+      .pot-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .pot-meter {
+        width: 100%;
+        max-width: none;
+        min-width: 0;
+      }
+
+      .hotspot,
+      .pin-select-quiz__scroller {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .hotspot {
+        padding-bottom: 0.25rem;
+      }
+
+      .hotspot__frame {
+        min-width: 620px;
+      }
+
+      .pin-select-quiz__stage {
+        min-width: 680px;
+        padding-top: 3.1rem;
+      }
+
+      .pin-select-quiz__pins {
+        height: 2.9rem;
+      }
+
+      .pin-select-quiz__pin.quiz-choice {
+        width: 2.8rem;
+        min-width: 2.8rem;
+        height: 2.8rem;
+        font-size: 0.98rem;
       }
     }
 
@@ -1406,6 +1514,7 @@
       border-radius: 12px;
       box-sizing: border-box;
       background: transparent;
+      touch-action: manipulation;
       transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
       cursor: pointer;
     }
@@ -1534,6 +1643,7 @@
       display: flex;
       flex-direction: column;
       gap: 0.6rem;
+      position: relative;
     }
 
     .match-item {
@@ -1544,6 +1654,8 @@
       color: #1d4ed8;
       font-weight: 600;
       cursor: pointer;
+      min-height: 48px;
+      touch-action: manipulation;
       transition:
         transform 0.15s ease,
         border-color 0.15s ease,
@@ -1587,6 +1699,17 @@
       animation: match-shake 0.4s ease-in-out;
     }
 
+    .match-list--shuffle-out .match-item {
+      animation: match-reshuffle-out 0.22s ease forwards;
+      animation-delay: calc(var(--match-stagger, 0) * 35ms);
+    }
+
+    .match-list--shuffle-in .match-item {
+      animation: match-reshuffle-in 0.28s ease forwards;
+      animation-delay: calc(var(--match-stagger, 0) * 40ms);
+      opacity: 0;
+    }
+
     @keyframes match-shake {
       0%,
       100% {
@@ -1606,6 +1729,35 @@
       }
     }
 
+    @keyframes match-reshuffle-out {
+      0% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(10px) scale(0.97);
+      }
+    }
+
+    @keyframes match-reshuffle-in {
+      0% {
+        opacity: 0;
+        transform: translateY(-12px) scale(0.97);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .match-list--shuffle-out .match-item,
+      .match-list--shuffle-in .match-item {
+        animation: none;
+      }
+    }
+
     .action-btn {
       border: none;
       border-radius: 999px;
@@ -1614,6 +1766,8 @@
       color: #ffffff;
       font-weight: 700;
       cursor: pointer;
+      min-height: 48px;
+      touch-action: manipulation;
       box-shadow: 0 8px 18px rgba(37, 99, 235, 0.35);
     }
 
@@ -1645,11 +1799,13 @@
       width: 100%;
       text-align: left;
       padding: 0.75rem 1rem;
+      min-height: 48px;
       border-radius: 12px;
       border: 1px solid #e5e7eb;
       background: #ffffff;
       margin-bottom: 0.6rem;
       cursor: pointer;
+      touch-action: manipulation;
       transition: border-color 0.2s ease, box-shadow 0.2s ease;
     }
 
@@ -1681,6 +1837,297 @@
       margin-top: 0.9rem;
       display: flex;
       justify-content: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .clue-hotspot {
+      margin-top: 1rem;
+    }
+
+    .clue-hotspot__prompt {
+      margin-bottom: 0.85rem;
+    }
+
+    .clue-hotspot__meta {
+      font-size: 0.76rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: #64748b;
+    }
+
+    .clue-hotspot__text {
+      margin-top: 0.35rem;
+      font-size: 1rem;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .tap-sequence {
+      margin-top: 1rem;
+      display: grid;
+      gap: 0.9rem;
+    }
+
+    .tap-sequence__intro {
+      margin: 0;
+      color: #475569;
+      font-weight: 600;
+    }
+
+    .tap-sequence__slots {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.65rem;
+    }
+
+    .tap-sequence__slot {
+      min-height: 3.2rem;
+      border-radius: 14px;
+      border: 1px dashed #cbd5e1;
+      background: #f8fafc;
+      padding: 0.7rem 0.85rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 0.25rem;
+    }
+
+    .tap-sequence__slot.is-filled {
+      border-style: solid;
+      border-color: #22c55e;
+      background: #ecfdf5;
+    }
+
+    .tap-sequence__slot-step {
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: #64748b;
+    }
+
+    .tap-sequence__slot-label {
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .tap-sequence__choices {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.7rem;
+    }
+
+    .tap-sequence__choice {
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      background: #ffffff;
+      color: #0f172a;
+      font-weight: 700;
+      padding: 0.8rem 0.95rem;
+      min-height: 48px;
+      cursor: pointer;
+      touch-action: manipulation;
+      transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .tap-sequence__choice:hover {
+      transform: translateY(-1px);
+      border-color: #93c5fd;
+      box-shadow: 0 8px 16px rgba(15, 23, 42, 0.12);
+    }
+
+    .tap-sequence__choice--used {
+      border-color: #22c55e;
+      background: #dcfce7;
+      color: #166534;
+      box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.2);
+    }
+
+    .tap-sequence__choice--wrong,
+    .tap-sequence__choice.wrong {
+      border-color: #ef4444;
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .bucket-sort {
+      margin-top: 1rem;
+      display: grid;
+      gap: 0.9rem;
+    }
+
+    .bucket-sort__intro {
+      margin: 0;
+      color: #475569;
+      font-weight: 600;
+    }
+
+    .bucket-sort__rows {
+      display: grid;
+      gap: 0.85rem;
+    }
+
+    .bucket-sort__row {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 0.85rem;
+      display: grid;
+      gap: 0.75rem;
+      transition: box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+
+    .bucket-sort__row.correct {
+      border-color: #22c55e;
+      box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.16);
+    }
+
+    .bucket-sort__row.wrong {
+      border-color: #ef4444;
+      box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.14);
+    }
+
+    .bucket-sort__label {
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .bucket-sort__choices {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.55rem;
+    }
+
+    .bucket-sort__choice {
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      background: #f8fafc;
+      color: #334155;
+      font-weight: 700;
+      padding: 0.65rem 0.7rem;
+      min-height: 48px;
+      cursor: pointer;
+      touch-action: manipulation;
+      transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .bucket-sort__choice:hover {
+      transform: translateY(-1px);
+      border-color: #93c5fd;
+      box-shadow: 0 8px 16px rgba(15, 23, 42, 0.1);
+    }
+
+    .bucket-sort__choice.selected {
+      border-color: #2563eb;
+      background: #dbeafe;
+      color: #1d4ed8;
+      box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.18);
+    }
+
+    .bucket-sort__choice.correct {
+      border-color: #22c55e;
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .bucket-sort__choice.wrong {
+      border-color: #ef4444;
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .matrix-quiz {
+      margin-top: 1rem;
+      display: grid;
+      gap: 0.85rem;
+    }
+
+    .matrix-quiz__intro {
+      margin: 0;
+      color: #475569;
+      font-weight: 600;
+    }
+
+    .matrix-quiz__rows {
+      display: grid;
+      gap: 0.8rem;
+    }
+
+    .matrix-quiz__row {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 0.85rem;
+      display: grid;
+      gap: 0.75rem;
+      transition: box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+
+    .matrix-quiz__row.correct {
+      border-color: #22c55e;
+      box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.16);
+    }
+
+    .matrix-quiz__row.wrong {
+      border-color: #ef4444;
+      box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.14);
+    }
+
+    .matrix-quiz__statement {
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .matrix-quiz__choices {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.6rem;
+    }
+
+    .matrix-quiz__choice {
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      background: #f8fafc;
+      color: #334155;
+      font-weight: 700;
+      padding: 0.7rem 0.8rem;
+      min-height: 48px;
+      cursor: pointer;
+      touch-action: manipulation;
+      transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .matrix-quiz__choice:hover {
+      transform: translateY(-1px);
+      border-color: #93c5fd;
+      box-shadow: 0 8px 16px rgba(15, 23, 42, 0.1);
+    }
+
+    .matrix-quiz__choice.selected {
+      border-color: #2563eb;
+      background: #dbeafe;
+      color: #1d4ed8;
+      box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.18);
+    }
+
+    .matrix-quiz__choice.correct {
+      border-color: #22c55e;
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .matrix-quiz__choice.wrong {
+      border-color: #ef4444;
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .tap-sequence__choice.shake,
+    .bucket-sort__choice.shake,
+    .matrix-quiz__choice.shake {
+      animation: match-shake 0.4s ease-in-out;
     }
 
     .pin-select-quiz {
@@ -1726,6 +2173,7 @@
       line-height: 1;
       letter-spacing: -0.02em;
       pointer-events: auto;
+      touch-action: manipulation;
       z-index: 1;
       will-change: left;
       transition:
@@ -1791,6 +2239,8 @@
       color: #1d4ed8;
       font-weight: 700;
       cursor: pointer;
+      min-height: 48px;
+      touch-action: manipulation;
     }
 
     .nav-btn.primary {
@@ -4080,9 +4530,7 @@ Analog creates smooth changes.
             return normalized.length >= 3 ? normalized : null;
           }
 
-          function getHotspotItems(card) {
-            if (!card || card.card_type !== "action") return [];
-            const payload = card.action_payload;
+          function getHotspotItemsFromPayload(payload) {
             if (!payload || typeof payload !== "object") return [];
             const items = Array.isArray(payload.hotspots) ? payload.hotspots : [];
             const normalized = [];
@@ -4115,17 +4563,36 @@ Analog creates smooth changes.
             return normalized;
           }
 
+          function getHotspotItems(card) {
+            if (!card || card.card_type !== "action") return [];
+            return getHotspotItemsFromPayload(card.action_payload);
+          }
+
+          function getQuizType(card) {
+            const payload = card && typeof card === "object" ? card.action_payload : null;
+            if (!payload || typeof payload !== "object") return "";
+            return String(payload.quiz_type || "");
+          }
+
           function hasHotspotAction(card) {
-            return Boolean(getHotspotItems(card).length && card.image_url);
+            return Boolean(card && card.card_type === "action" && getHotspotItems(card).length && card.image_url);
           }
 
           function isPinSelectQuizCard(card) {
-            const payload = card && typeof card === "object" ? card.action_payload : null;
-            return Boolean(card && card.card_type === "quiz" && payload && payload.quiz_type === "pin-select");
+            return Boolean(card && card.card_type === "quiz" && getQuizType(card) === "pin-select");
+          }
+
+          function isClueHotspotQuizCard(card) {
+            return Boolean(card && card.card_type === "quiz" && getQuizType(card) === "clue-hotspot");
+          }
+
+          function quizUsesOwnMedia(card) {
+            const quizType = getQuizType(card);
+            return quizType === "pin-select" || quizType === "clue-hotspot";
           }
 
           function renderMedia(card) {
-            if (hasHotspotAction(card) || isPinSelectQuizCard(card)) {
+            if (hasHotspotAction(card) || quizUsesOwnMedia(card)) {
               return;
             }
             if (card.image_url) {
@@ -4483,13 +4950,1017 @@ Analog creates smooth changes.
             cardActionEl.appendChild(button);
           }
 
-          function renderQuiz(card) {
-            const question = document.createElement("div");
-            question.className = "quiz-question";
-            question.textContent = card.question || "Choose the correct answer.";
-            cardQuizEl.appendChild(question);
+          const selectionErrorTiming = {
+            highlightMs: 180,
+            shakeMs: 260,
+            restoreMs: 180,
+          };
 
+          function collectSelectionErrorButtons(choices, choiceButtons, selectedKeys, correctKeys) {
+            const animatedButtons = [];
+            choices.forEach((choice) => {
+              const btn = choiceButtons.get(choice.key);
+              if (!btn) return;
+              const isSelectedWrong =
+                selectedKeys.has(choice.key) && !correctKeys.has(choice.key);
+              const isMissedCorrect =
+                !selectedKeys.has(choice.key) && correctKeys.has(choice.key);
+              if (isSelectedWrong || isMissedCorrect) {
+                animatedButtons.push(btn);
+              }
+            });
+            if (animatedButtons.length) {
+              return animatedButtons;
+            }
+            choices.forEach((choice) => {
+              const btn = choiceButtons.get(choice.key);
+              if (btn && selectedKeys.has(choice.key)) {
+                animatedButtons.push(btn);
+              }
+            });
+            return animatedButtons;
+          }
+
+          function runSelectionErrorSequence(options) {
+            const {
+              animatedButtons,
+              okBtn,
+              setSequenceRunning,
+              setChoiceDisabled,
+              prepareErrorState,
+              resetState,
+              afterReset,
+            } = options || {};
+
+            if (!Array.isArray(animatedButtons) || !animatedButtons.length) {
+              return false;
+            }
+
+            if (typeof setSequenceRunning === "function") {
+              setSequenceRunning(true);
+            }
+            if (okBtn) {
+              okBtn.disabled = true;
+            }
+            if (typeof setChoiceDisabled === "function") {
+              setChoiceDisabled(true);
+            }
+            if (typeof prepareErrorState === "function") {
+              prepareErrorState();
+            }
+
+            animatedButtons.forEach((btn) => btn.classList.add("wrong"));
+
+            window.setTimeout(() => {
+              animatedButtons.forEach((btn) => btn.classList.add("shake"));
+              window.setTimeout(() => {
+                if (typeof resetState === "function") {
+                  resetState(true);
+                }
+                if (typeof afterReset === "function") {
+                  afterReset();
+                }
+                window.setTimeout(() => {
+                  if (typeof setSequenceRunning === "function") {
+                    setSequenceRunning(false);
+                  }
+                  if (okBtn && !completed[currentIndex]) {
+                    okBtn.disabled = false;
+                  }
+                }, selectionErrorTiming.restoreMs);
+              }, selectionErrorTiming.shakeMs);
+            }, selectionErrorTiming.highlightMs);
+
+            return true;
+          }
+
+          function formatFeedbackText(text) {
+            return String(text || "").replace(/([.!?])\s+(?=[A-Z0-9])/g, "$1\n");
+          }
+
+          function renderClueHotspotQuiz(card) {
+            cardQuizEl.innerHTML = "";
             const payload = card.action_payload || {};
+            const items = getHotspotItemsFromPayload(payload);
+            const itemIds = new Set(items.map((item) => item.id));
+            const clues = (Array.isArray(payload.clues) ? payload.clues : [])
+              .map((clue, index) => ({
+                id: String(clue.id || "clue-" + index),
+                target: String(clue.target || ""),
+                text: String(clue.text || clue.prompt || ""),
+              }))
+              .filter((clue) => clue.target && clue.text && itemIds.has(clue.target));
+
+            if (!items.length || !clues.length || !card.image_url) {
+              return;
+            }
+
+            const quizKey = getQuizKey(card, currentIndex);
+            const state = multiQuizState[quizKey] || {
+              clueIndex: 0,
+              foundIds: [],
+              completed: false,
+            };
+            if (!Array.isArray(state.foundIds)) {
+              state.foundIds = [];
+            }
+            if (completed[currentIndex]) {
+              state.foundIds = clues.map((clue) => clue.target);
+              state.clueIndex = clues.length;
+              state.completed = true;
+            }
+            multiQuizState[quizKey] = state;
+
+            let sequenceLocked = false;
+            const successMessage = formatFeedbackText(
+              payload.success_message || "Nice work! You solved every clue."
+            );
+            const incorrectMessage = formatFeedbackText(
+              payload.fail_message || "Not quite. Stay on the current clue and try again."
+            );
+
+            const wrapper = document.createElement("div");
+            wrapper.className = "hotspot clue-hotspot";
+
+            const promptPanel = document.createElement("div");
+            promptPanel.className = "hotspot__sequence clue-hotspot__prompt";
+            const promptMeta = document.createElement("div");
+            promptMeta.className = "clue-hotspot__meta";
+            const promptText = document.createElement("div");
+            promptText.className = "clue-hotspot__text";
+            promptPanel.appendChild(promptMeta);
+            promptPanel.appendChild(promptText);
+            wrapper.appendChild(promptPanel);
+
+            const frame = document.createElement("div");
+            frame.className = "hotspot__frame";
+
+            const img = document.createElement("img");
+            img.src = card.image_url;
+            img.alt = payload.alt || card.title || "Arduino board";
+            img.className = "hotspot__image";
+            frame.appendChild(img);
+
+            const overlayImage = payload.overlay_image || card.image_url;
+
+            function updatePrompt() {
+              if (state.completed) {
+                promptMeta.textContent = "Clues Complete";
+                promptText.textContent = payload.completed_prompt || "Lesson 1 Review solved.";
+                return;
+              }
+              promptMeta.textContent = "Clue " + (state.clueIndex + 1) + " of " + clues.length;
+              promptText.textContent = clues[state.clueIndex].text;
+            }
+
+            function updateSpotBackgrounds() {
+              const rect = img.getBoundingClientRect();
+              const frameWidth = rect.width;
+              const frameHeight = rect.height;
+              if (!frameWidth || !frameHeight) return;
+
+              items.forEach((item) => {
+                const leftPx = (frameWidth * item.bounds.left) / 100;
+                const topPx = (frameHeight * item.bounds.top) / 100;
+                const spot = item.el;
+                if (!spot) return;
+                spot.style.backgroundImage = "url('" + overlayImage + "'), url('" + card.image_url + "')";
+                spot.style.backgroundRepeat = "no-repeat, no-repeat";
+                spot.style.backgroundSize =
+                  frameWidth + "px " + frameHeight + "px, " + frameWidth + "px " + frameHeight + "px";
+                spot.style.backgroundPosition =
+                  -leftPx + "px " + -topPx + "px, " + -leftPx + "px " + -topPx + "px";
+              });
+            }
+
+            function markFound(item) {
+              if (item.el) {
+                item.el.classList.add("hotspot__spot--found");
+              }
+              if (item.outline) {
+                item.outline.classList.add("hotspot__outline--found");
+              }
+            }
+
+            function flashWrong(item) {
+              if (item.el) {
+                item.el.classList.add("hotspot__spot--wrong");
+              }
+              if (item.outline) {
+                item.outline.classList.add("hotspot__outline--wrong");
+              }
+              window.setTimeout(() => {
+                if (item.el) {
+                  item.el.classList.remove("hotspot__spot--wrong");
+                }
+                if (item.outline) {
+                  item.outline.classList.remove("hotspot__outline--wrong");
+                }
+              }, 700);
+            }
+
+            items.forEach((item) => {
+              const spot = document.createElement("div");
+              spot.className = "hotspot__spot";
+              spot.style.left = item.bounds.left + "%";
+              spot.style.top = item.bounds.top + "%";
+              spot.style.width = item.bounds.width + "%";
+              spot.style.height = item.bounds.height + "%";
+              if (item.polygon) {
+                const points = item.polygon
+                  .map((point) => point.x + "% " + point.y + "%")
+                  .join(", ");
+                spot.style.clipPath = "polygon(" + points + ")";
+                spot.style.webkitClipPath = "polygon(" + points + ")";
+                spot.classList.add("hotspot__spot--clipped");
+                const outline = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                outline.setAttribute("viewBox", "0 0 100 100");
+                outline.setAttribute("preserveAspectRatio", "none");
+                outline.classList.add("hotspot__outline");
+                outline.style.left = item.bounds.left + "%";
+                outline.style.top = item.bounds.top + "%";
+                outline.style.width = item.bounds.width + "%";
+                outline.style.height = item.bounds.height + "%";
+                const outlinePoly = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+                outlinePoly.setAttribute(
+                  "points",
+                  item.polygon.map((point) => point.x + "," + point.y).join(" ")
+                );
+                outlinePoly.setAttribute("fill", "none");
+                outlinePoly.setAttribute("stroke", "currentColor");
+                outlinePoly.setAttribute("stroke-width", "4");
+                outlinePoly.setAttribute("vector-effect", "non-scaling-stroke");
+                outlinePoly.setAttribute("stroke-linejoin", "round");
+                outlinePoly.setAttribute("stroke-linecap", "round");
+                outline.appendChild(outlinePoly);
+                item.outline = outline;
+              }
+              item.el = spot;
+              if (item.label) {
+                spot.setAttribute("title", item.label);
+              }
+              if (state.foundIds.includes(item.id)) {
+                markFound(item);
+              }
+              spot.addEventListener("click", (event) => {
+                event.stopPropagation();
+                if (state.completed || sequenceLocked) return;
+                const currentClue = clues[state.clueIndex];
+                if (!currentClue) return;
+                if (item.id === currentClue.target) {
+                  if (!state.foundIds.includes(item.id)) {
+                    state.foundIds.push(item.id);
+                  }
+                  markFound(item);
+                  state.clueIndex += 1;
+                  if (state.clueIndex >= clues.length) {
+                    state.completed = true;
+                    if (!completed[currentIndex]) {
+                      completeCard();
+                    }
+                    nextBtn.disabled = false;
+                    cardFeedbackEl.textContent = successMessage;
+                    cardFeedbackEl.className = "card-feedback success";
+                  } else {
+                    cardFeedbackEl.textContent = formatFeedbackText(
+                      payload.progress_feedback || "Correct. Read the next clue."
+                    );
+                    cardFeedbackEl.className = "card-feedback success";
+                  }
+                  updatePrompt();
+                  return;
+                }
+                sequenceLocked = true;
+                flashWrong(item);
+                cardFeedbackEl.textContent = incorrectMessage;
+                cardFeedbackEl.className = "card-feedback error";
+                window.setTimeout(() => {
+                  sequenceLocked = false;
+                }, 700);
+              });
+              frame.appendChild(spot);
+              if (item.outline) {
+                frame.appendChild(item.outline);
+              }
+            });
+
+            wrapper.appendChild(frame);
+            cardQuizEl.appendChild(wrapper);
+
+            img.addEventListener("load", updateSpotBackgrounds);
+            if (img.complete) {
+              updateSpotBackgrounds();
+            }
+
+            const resizeHandler = () => {
+              if (!document.body.contains(frame)) {
+                window.removeEventListener("resize", resizeHandler);
+                return;
+              }
+              updateSpotBackgrounds();
+            };
+            window.addEventListener("resize", resizeHandler);
+
+            updatePrompt();
+            if (state.completed) {
+              cardFeedbackEl.textContent = successMessage;
+              cardFeedbackEl.className = "card-feedback success";
+              nextBtn.disabled = false;
+            }
+          }
+
+          function renderTapSequenceQuiz(card) {
+            cardQuizEl.innerHTML = "";
+            const payload = card.action_payload || {};
+            const items = (Array.isArray(payload.items) ? payload.items : [])
+              .map((item, index) => ({
+                id: String(item.id || "item-" + index),
+                label: String(item.label || item.text || item.id || ""),
+              }))
+              .filter((item) => item.id && item.label);
+            const itemById = new Map(items.map((item) => [item.id, item]));
+            const correctOrder = (
+              Array.isArray(payload.correct_order) ? payload.correct_order : items.map((item) => item.id)
+            )
+              .map((id) => String(id))
+              .filter((id, index, array) => itemById.has(id) && array.indexOf(id) === index);
+
+            if (!correctOrder.length) {
+              return;
+            }
+
+            const quizKey = getQuizKey(card, currentIndex);
+            const state = multiQuizState[quizKey] || {
+              selectedOrder: [],
+              optionOrder: [],
+              completed: false,
+            };
+            if (!Array.isArray(state.selectedOrder)) {
+              state.selectedOrder = [];
+            }
+            if (!Array.isArray(state.optionOrder) || state.optionOrder.length !== correctOrder.length) {
+              state.optionOrder = shuffleArray(correctOrder.slice());
+            }
+            if (completed[currentIndex]) {
+              state.selectedOrder = correctOrder.slice();
+              state.completed = true;
+            }
+            multiQuizState[quizKey] = state;
+
+            const successFeedback = formatFeedbackText(
+              payload.correct_feedback || "Correct! You built the right order."
+            );
+            const incorrectFeedback = formatFeedbackText(
+              payload.incorrect_feedback || "Not quite. Start the sequence again from the beginning."
+            );
+            const progressFeedback = formatFeedbackText(
+              payload.progress_feedback || "Good. Keep going."
+            );
+            let errorSequenceRunning = false;
+
+            const wrapper = document.createElement("div");
+            wrapper.className = "tap-sequence";
+
+            const intro = document.createElement("p");
+            intro.className = "tap-sequence__intro";
+            intro.textContent = payload.prompt || "Tap the items in the correct order.";
+            wrapper.appendChild(intro);
+
+            const slots = document.createElement("div");
+            slots.className = "tap-sequence__slots";
+            wrapper.appendChild(slots);
+
+            const choicesWrap = document.createElement("div");
+            choicesWrap.className = "tap-sequence__choices";
+            wrapper.appendChild(choicesWrap);
+
+            const actions = document.createElement("div");
+            actions.className = "quiz-actions";
+            const redoBtn = document.createElement("button");
+            redoBtn.type = "button";
+            redoBtn.className = "action-btn secondary";
+            redoBtn.textContent = "Redo";
+            actions.appendChild(redoBtn);
+            wrapper.appendChild(actions);
+
+            function updateRedoVisibility() {
+              redoBtn.hidden = state.completed || state.selectedOrder.length === 0;
+            }
+
+            function renderSlots() {
+              slots.innerHTML = "";
+              correctOrder.forEach((id, index) => {
+                const slot = document.createElement("div");
+                slot.className = "tap-sequence__slot";
+                const step = document.createElement("div");
+                step.className = "tap-sequence__slot-step";
+                step.textContent = "Step " + (index + 1);
+                const label = document.createElement("div");
+                label.className = "tap-sequence__slot-label";
+                const selectedId = state.selectedOrder[index] || "";
+                if (selectedId) {
+                  slot.classList.add("is-filled");
+                  label.textContent = itemById.get(selectedId).label;
+                } else {
+                  label.textContent = payload.empty_label || "Waiting...";
+                }
+                slot.appendChild(step);
+                slot.appendChild(label);
+                slots.appendChild(slot);
+              });
+            }
+
+            function setChoiceDisabled(disabled) {
+              const usedSet = new Set(state.selectedOrder);
+              choicesWrap.querySelectorAll(".tap-sequence__choice").forEach((btn) => {
+                const itemId = btn.dataset.itemId || "";
+                btn.disabled = disabled || usedSet.has(itemId) || state.completed;
+              });
+            }
+
+            function buildChoiceButtons() {
+              choicesWrap.innerHTML = "";
+              const usedSet = new Set(state.selectedOrder);
+              state.optionOrder.forEach((id) => {
+                const item = itemById.get(id);
+                if (!item) return;
+                const btn = document.createElement("button");
+                btn.type = "button";
+                btn.className = "tap-sequence__choice";
+                btn.dataset.itemId = item.id;
+                btn.textContent = item.label;
+                if (usedSet.has(item.id) || state.completed) {
+                  btn.classList.add("tap-sequence__choice--used");
+                  btn.disabled = true;
+                }
+                btn.addEventListener("click", () => {
+                  if (state.completed || errorSequenceRunning) return;
+                  const expectedId = correctOrder[state.selectedOrder.length];
+                  if (item.id === expectedId) {
+                    state.selectedOrder.push(item.id);
+                    renderSlots();
+                    buildChoiceButtons();
+                    updateRedoVisibility();
+                    if (state.selectedOrder.length >= correctOrder.length) {
+                      state.completed = true;
+                      if (!completed[currentIndex]) {
+                        completeCard();
+                      }
+                      nextBtn.disabled = false;
+                      cardFeedbackEl.textContent = successFeedback;
+                      cardFeedbackEl.className = "card-feedback success";
+                      buildChoiceButtons();
+                      updateRedoVisibility();
+                      return;
+                    }
+                    cardFeedbackEl.textContent = progressFeedback;
+                    cardFeedbackEl.className = "card-feedback success";
+                    return;
+                  }
+                  runSelectionErrorSequence({
+                    animatedButtons: [btn],
+                    setSequenceRunning: (value) => {
+                      errorSequenceRunning = value;
+                    },
+                    setChoiceDisabled: (disabled) => {
+                      setChoiceDisabled(disabled);
+                    },
+                    prepareErrorState: () => {
+                      btn.classList.add("tap-sequence__choice--wrong");
+                      cardFeedbackEl.textContent = incorrectFeedback;
+                      cardFeedbackEl.className = "card-feedback error";
+                    },
+                    resetState: () => {
+                      state.selectedOrder = [];
+                      state.optionOrder = shuffleArray(correctOrder.slice());
+                      renderSlots();
+                      buildChoiceButtons();
+                      updateRedoVisibility();
+                    },
+                  });
+                });
+                choicesWrap.appendChild(btn);
+              });
+            }
+
+            redoBtn.addEventListener("click", () => {
+              if (state.completed || errorSequenceRunning) return;
+              state.selectedOrder = [];
+              state.optionOrder = shuffleArray(correctOrder.slice());
+              renderSlots();
+              buildChoiceButtons();
+              updateRedoVisibility();
+              cardFeedbackEl.textContent = "";
+              cardFeedbackEl.className = "card-feedback";
+            });
+
+            renderSlots();
+            buildChoiceButtons();
+            updateRedoVisibility();
+            cardQuizEl.appendChild(wrapper);
+
+            if (state.completed) {
+              cardFeedbackEl.textContent = successFeedback;
+              cardFeedbackEl.className = "card-feedback success";
+              nextBtn.disabled = false;
+            }
+          }
+
+          function renderBucketSortQuiz(card) {
+            cardQuizEl.innerHTML = "";
+            const payload = card.action_payload || {};
+            const buckets = (Array.isArray(payload.buckets) ? payload.buckets : [])
+              .map((bucket, index) => ({
+                id: String(bucket.id || "bucket-" + index),
+                label: String(bucket.label || bucket.title || bucket.id || ""),
+              }))
+              .filter((bucket) => bucket.id && bucket.label);
+            const items = (Array.isArray(payload.items) ? payload.items : [])
+              .map((item, index) => ({
+                id: String(item.id || "item-" + index),
+                label: String(item.label || item.text || item.id || ""),
+                bucket: String(item.bucket || item.correct_bucket || ""),
+              }))
+              .filter((item) => item.id && item.label && item.bucket);
+            const bucketIds = new Set(buckets.map((bucket) => bucket.id));
+            const validItems = items.filter((item) => bucketIds.has(item.bucket));
+
+            if (!buckets.length || !validItems.length) {
+              return;
+            }
+
+            const itemById = new Map(validItems.map((item) => [item.id, item]));
+            const itemIds = validItems.map((item) => item.id);
+            const quizKey = getQuizKey(card, currentIndex);
+            const state = multiQuizState[quizKey] || {
+              answers: {},
+              itemOrder: itemIds.slice(),
+              completed: false,
+            };
+            if (!state.answers || typeof state.answers !== "object") {
+              state.answers = {};
+            }
+            if (!Array.isArray(state.itemOrder) || state.itemOrder.length !== itemIds.length) {
+              state.itemOrder = itemIds.slice();
+            }
+            if (completed[currentIndex]) {
+              validItems.forEach((item) => {
+                state.answers[item.id] = item.bucket;
+              });
+              state.completed = true;
+            }
+            multiQuizState[quizKey] = state;
+
+            const successFeedback = formatFeedbackText(
+              payload.correct_feedback || "Correct! You sorted every item."
+            );
+            const incorrectFeedback = formatFeedbackText(
+              payload.incorrect_feedback || "Not quite. Try sorting the items again."
+            );
+            const shouldShuffleOnWrong = Boolean(payload.shuffle_on_wrong);
+            const shouldUseSelectionErrorProcess = payload.selection_error_process !== false;
+            let errorSequenceRunning = false;
+            let okBtn = null;
+            const rowEls = new Map();
+            const choiceButtons = new Map();
+
+            const wrapper = document.createElement("div");
+            wrapper.className = "bucket-sort";
+
+            const intro = document.createElement("p");
+            intro.className = "bucket-sort__intro";
+            intro.textContent = payload.prompt || "Sort each item into the correct group.";
+            wrapper.appendChild(intro);
+
+            const rowsWrap = document.createElement("div");
+            rowsWrap.className = "bucket-sort__rows";
+            wrapper.appendChild(rowsWrap);
+
+            const actions = document.createElement("div");
+            actions.className = "quiz-actions";
+            okBtn = document.createElement("button");
+            okBtn.type = "button";
+            okBtn.className = "action-btn";
+            okBtn.textContent = "OK";
+            actions.appendChild(okBtn);
+            const redoBtn = document.createElement("button");
+            redoBtn.type = "button";
+            redoBtn.className = "action-btn secondary";
+            redoBtn.textContent = "Redo";
+            actions.appendChild(redoBtn);
+            wrapper.appendChild(actions);
+
+            function orderedItems() {
+              return state.itemOrder.map((id) => itemById.get(id)).filter(Boolean);
+            }
+
+            function updateRedoVisibility() {
+              redoBtn.hidden = state.completed || !Object.keys(state.answers).length;
+            }
+
+            function setChoiceDisabled(disabled) {
+              choiceButtons.forEach((btn) => {
+                btn.disabled = disabled || state.completed;
+              });
+            }
+
+            function buildRows() {
+              rowsWrap.innerHTML = "";
+              rowEls.clear();
+              choiceButtons.clear();
+
+              orderedItems().forEach((item) => {
+                const row = document.createElement("div");
+                row.className = "bucket-sort__row";
+                rowEls.set(item.id, row);
+
+                const label = document.createElement("div");
+                label.className = "bucket-sort__label";
+                label.textContent = item.label;
+                row.appendChild(label);
+
+                const choices = document.createElement("div");
+                choices.className = "bucket-sort__choices";
+
+                buckets.forEach((bucket) => {
+                  const btn = document.createElement("button");
+                  btn.type = "button";
+                  btn.className = "bucket-sort__choice";
+                  btn.textContent = bucket.label;
+                  const key = item.id + "::" + bucket.id;
+                  choiceButtons.set(key, btn);
+                  if (state.completed) {
+                    btn.disabled = true;
+                  }
+                  if (state.answers[item.id] === bucket.id) {
+                    btn.classList.add("selected");
+                  }
+                  if (state.completed && item.bucket === bucket.id) {
+                    row.classList.add("correct");
+                    btn.classList.add("selected", "correct");
+                    btn.disabled = true;
+                  }
+                  btn.addEventListener("click", () => {
+                    if (state.completed || errorSequenceRunning) return;
+                    state.answers[item.id] = bucket.id;
+                    buildRows();
+                    updateRedoVisibility();
+                    if (cardFeedbackEl.classList.contains("error")) {
+                      cardFeedbackEl.textContent = "";
+                      cardFeedbackEl.className = "card-feedback";
+                    }
+                  });
+                  choices.appendChild(btn);
+                });
+
+                row.appendChild(choices);
+                rowsWrap.appendChild(row);
+              });
+            }
+
+            okBtn.addEventListener("click", () => {
+              if (state.completed || errorSequenceRunning) return;
+              if (Object.keys(state.answers).length !== validItems.length) {
+                cardFeedbackEl.textContent = formatFeedbackText("Sort every item before checking.");
+                cardFeedbackEl.className = "card-feedback error";
+                return;
+              }
+              const wrongItems = validItems.filter((item) => state.answers[item.id] !== item.bucket);
+              if (!wrongItems.length) {
+                state.completed = true;
+                if (!completed[currentIndex]) {
+                  completeCard();
+                }
+                buildRows();
+                updateRedoVisibility();
+                nextBtn.disabled = false;
+                cardFeedbackEl.textContent = successFeedback;
+                cardFeedbackEl.className = "card-feedback success";
+                okBtn.disabled = true;
+                return;
+              }
+              if (!shouldUseSelectionErrorProcess) {
+                wrongItems.forEach((item) => {
+                  const row = rowEls.get(item.id);
+                  if (row) {
+                    row.classList.add("wrong");
+                  }
+                  const btn = choiceButtons.get(item.id + "::" + state.answers[item.id]);
+                  if (btn) {
+                    btn.classList.add("wrong");
+                  }
+                });
+                cardFeedbackEl.textContent = incorrectFeedback;
+                cardFeedbackEl.className = "card-feedback error";
+                updateRedoVisibility();
+                return;
+              }
+              runSelectionErrorSequence({
+                animatedButtons: wrongItems
+                  .map((item) => choiceButtons.get(item.id + "::" + state.answers[item.id]))
+                  .filter(Boolean),
+                okBtn: okBtn,
+                setSequenceRunning: (value) => {
+                  errorSequenceRunning = value;
+                },
+                setChoiceDisabled: (disabled) => {
+                  setChoiceDisabled(disabled);
+                },
+                prepareErrorState: () => {
+                  wrongItems.forEach((item) => {
+                    const row = rowEls.get(item.id);
+                    if (row) {
+                      row.classList.add("wrong");
+                    }
+                    const btn = choiceButtons.get(item.id + "::" + state.answers[item.id]);
+                    if (btn) {
+                      btn.classList.add("wrong");
+                    }
+                  });
+                  cardFeedbackEl.textContent = incorrectFeedback;
+                  cardFeedbackEl.className = "card-feedback error";
+                },
+                resetState: () => {
+                  state.answers = {};
+                  if (shouldShuffleOnWrong) {
+                    state.itemOrder = shuffleArray(itemIds.slice());
+                  }
+                  buildRows();
+                  updateRedoVisibility();
+                },
+              });
+            });
+
+            redoBtn.addEventListener("click", () => {
+              if (state.completed || errorSequenceRunning) return;
+              state.answers = {};
+              buildRows();
+              updateRedoVisibility();
+              cardFeedbackEl.textContent = "";
+              cardFeedbackEl.className = "card-feedback";
+            });
+
+            buildRows();
+            updateRedoVisibility();
+            cardQuizEl.appendChild(wrapper);
+
+            if (state.completed) {
+              cardFeedbackEl.textContent = successFeedback;
+              cardFeedbackEl.className = "card-feedback success";
+              nextBtn.disabled = false;
+              okBtn.disabled = true;
+            }
+          }
+
+          function renderMatrixTrueFalseQuiz(card) {
+            cardQuizEl.innerHTML = "";
+            const payload = card.action_payload || {};
+            const statements = (Array.isArray(payload.statements) ? payload.statements : [])
+              .map((statement, index) => {
+                let correctValue = statement.answer;
+                if (typeof correctValue === "string") {
+                  correctValue = correctValue.toLowerCase() === "true";
+                } else if (typeof correctValue !== "boolean") {
+                  correctValue = Boolean(statement.is_true || statement.correct);
+                }
+                return {
+                  id: String(statement.id || "statement-" + index),
+                  text: String(statement.text || statement.label || ""),
+                  correct: Boolean(correctValue),
+                };
+              })
+              .filter((statement) => statement.id && statement.text);
+
+            if (!statements.length) {
+              return;
+            }
+
+            const quizKey = getQuizKey(card, currentIndex);
+            const state = multiQuizState[quizKey] || {
+              answers: {},
+              completed: false,
+            };
+            if (!state.answers || typeof state.answers !== "object") {
+              state.answers = {};
+            }
+            if (completed[currentIndex]) {
+              statements.forEach((statement) => {
+                state.answers[statement.id] = statement.correct ? "true" : "false";
+              });
+              state.completed = true;
+            }
+            multiQuizState[quizKey] = state;
+
+            const successFeedback = formatFeedbackText(
+              payload.correct_feedback || "Correct! Every statement is sorted properly."
+            );
+            const incorrectFeedback = formatFeedbackText(
+              payload.incorrect_feedback || "Not quite. Try the true or false table again."
+            );
+            const shouldUseSelectionErrorProcess = payload.selection_error_process !== false;
+            let errorSequenceRunning = false;
+            let okBtn = null;
+            const rowEls = new Map();
+            const choiceButtons = new Map();
+
+            const wrapper = document.createElement("div");
+            wrapper.className = "matrix-quiz";
+
+            const intro = document.createElement("p");
+            intro.className = "matrix-quiz__intro";
+            intro.textContent = payload.prompt || "Mark each statement as true or false.";
+            wrapper.appendChild(intro);
+
+            const rowsWrap = document.createElement("div");
+            rowsWrap.className = "matrix-quiz__rows";
+            wrapper.appendChild(rowsWrap);
+
+            const actions = document.createElement("div");
+            actions.className = "quiz-actions";
+            okBtn = document.createElement("button");
+            okBtn.type = "button";
+            okBtn.className = "action-btn";
+            okBtn.textContent = "OK";
+            actions.appendChild(okBtn);
+            const redoBtn = document.createElement("button");
+            redoBtn.type = "button";
+            redoBtn.className = "action-btn secondary";
+            redoBtn.textContent = "Redo";
+            actions.appendChild(redoBtn);
+            wrapper.appendChild(actions);
+
+            function updateRedoVisibility() {
+              redoBtn.hidden = state.completed || !Object.keys(state.answers).length;
+            }
+
+            function setChoiceDisabled(disabled) {
+              choiceButtons.forEach((btn) => {
+                btn.disabled = disabled || state.completed;
+              });
+            }
+
+            function buildRows() {
+              rowsWrap.innerHTML = "";
+              rowEls.clear();
+              choiceButtons.clear();
+
+              statements.forEach((statement) => {
+                const row = document.createElement("div");
+                row.className = "matrix-quiz__row";
+                rowEls.set(statement.id, row);
+
+                const label = document.createElement("div");
+                label.className = "matrix-quiz__statement";
+                label.textContent = statement.text;
+                row.appendChild(label);
+
+                const choices = document.createElement("div");
+                choices.className = "matrix-quiz__choices";
+
+                [
+                  { key: "true", label: "True" },
+                  { key: "false", label: "False" },
+                ].forEach((choice) => {
+                  const btn = document.createElement("button");
+                  btn.type = "button";
+                  btn.className = "matrix-quiz__choice";
+                  btn.textContent = choice.label;
+                  const mapKey = statement.id + "::" + choice.key;
+                  choiceButtons.set(mapKey, btn);
+                  if (state.completed) {
+                    btn.disabled = true;
+                  }
+                  if (state.answers[statement.id] === choice.key) {
+                    btn.classList.add("selected");
+                  }
+                  if (state.completed && (statement.correct ? "true" : "false") === choice.key) {
+                    row.classList.add("correct");
+                    btn.classList.add("selected", "correct");
+                    btn.disabled = true;
+                  }
+                  btn.addEventListener("click", () => {
+                    if (state.completed || errorSequenceRunning) return;
+                    state.answers[statement.id] = choice.key;
+                    buildRows();
+                    updateRedoVisibility();
+                    if (cardFeedbackEl.classList.contains("error")) {
+                      cardFeedbackEl.textContent = "";
+                      cardFeedbackEl.className = "card-feedback";
+                    }
+                  });
+                  choices.appendChild(btn);
+                });
+
+                row.appendChild(choices);
+                rowsWrap.appendChild(row);
+              });
+            }
+
+            okBtn.addEventListener("click", () => {
+              if (state.completed || errorSequenceRunning) return;
+              if (Object.keys(state.answers).length !== statements.length) {
+                cardFeedbackEl.textContent = formatFeedbackText("Answer every statement before checking.");
+                cardFeedbackEl.className = "card-feedback error";
+                return;
+              }
+              const wrongStatements = statements.filter(
+                (statement) => state.answers[statement.id] !== (statement.correct ? "true" : "false")
+              );
+              if (!wrongStatements.length) {
+                state.completed = true;
+                if (!completed[currentIndex]) {
+                  completeCard();
+                }
+                buildRows();
+                updateRedoVisibility();
+                nextBtn.disabled = false;
+                cardFeedbackEl.textContent = successFeedback;
+                cardFeedbackEl.className = "card-feedback success";
+                okBtn.disabled = true;
+                return;
+              }
+              if (!shouldUseSelectionErrorProcess) {
+                wrongStatements.forEach((statement) => {
+                  const row = rowEls.get(statement.id);
+                  if (row) {
+                    row.classList.add("wrong");
+                  }
+                  const btn = choiceButtons.get(statement.id + "::" + state.answers[statement.id]);
+                  if (btn) {
+                    btn.classList.add("wrong");
+                  }
+                });
+                cardFeedbackEl.textContent = incorrectFeedback;
+                cardFeedbackEl.className = "card-feedback error";
+                updateRedoVisibility();
+                return;
+              }
+              runSelectionErrorSequence({
+                animatedButtons: wrongStatements
+                  .map((statement) => choiceButtons.get(statement.id + "::" + state.answers[statement.id]))
+                  .filter(Boolean),
+                okBtn: okBtn,
+                setSequenceRunning: (value) => {
+                  errorSequenceRunning = value;
+                },
+                setChoiceDisabled: (disabled) => {
+                  setChoiceDisabled(disabled);
+                },
+                prepareErrorState: () => {
+                  wrongStatements.forEach((statement) => {
+                    const row = rowEls.get(statement.id);
+                    if (row) {
+                      row.classList.add("wrong");
+                    }
+                    const btn = choiceButtons.get(statement.id + "::" + state.answers[statement.id]);
+                    if (btn) {
+                      btn.classList.add("wrong");
+                    }
+                  });
+                  cardFeedbackEl.textContent = incorrectFeedback;
+                  cardFeedbackEl.className = "card-feedback error";
+                },
+                resetState: () => {
+                  state.answers = {};
+                  buildRows();
+                  updateRedoVisibility();
+                },
+              });
+            });
+
+            redoBtn.addEventListener("click", () => {
+              if (state.completed || errorSequenceRunning) return;
+              state.answers = {};
+              buildRows();
+              updateRedoVisibility();
+              cardFeedbackEl.textContent = "";
+              cardFeedbackEl.className = "card-feedback";
+            });
+
+            buildRows();
+            updateRedoVisibility();
+            cardQuizEl.appendChild(wrapper);
+
+            if (state.completed) {
+              cardFeedbackEl.textContent = successFeedback;
+              cardFeedbackEl.className = "card-feedback success";
+              nextBtn.disabled = false;
+              okBtn.disabled = true;
+            }
+          }
+
+          function renderQuiz(card) {
+            const payload = card.action_payload || {};
+            const questionDisplayMode = String(payload.question_display || "").toLowerCase();
+            const questionText = (questionDisplayMode === "title" || questionDisplayMode === "none")
+              ? ""
+              : (card.question || "Choose the correct answer.");
+            if (questionText) {
+              const question = document.createElement("div");
+              question.className = "quiz-question";
+              question.textContent = questionText;
+              cardQuizEl.appendChild(question);
+            }
             const isMultiSelect = Boolean(payload.multi_select);
             const payloadOptions = Array.isArray(payload.options) ? payload.options : [];
             const formatFeedback = (text) =>
@@ -4523,6 +5994,8 @@ Analog creates smooth changes.
                 payload.correct_feedback || card.explanation || "Correct!"
               );
               const redoFeedback = formatFeedback(
+                payload.selection_error_feedback ||
+                payload.incorrect_feedback ||
                 "There is an error. Please redo your answer."
               );
               const lockOnSelect = Boolean(payload.lock_on_select);
@@ -4534,11 +6007,6 @@ Analog creates smooth changes.
               let okBtn = null;
               let redoBtn = null;
               const choiceButtons = new Map();
-              const selectionErrorTiming = {
-                highlightMs: 180,
-                shakeMs: 260,
-                restoreMs: 180,
-              };
               const setRedoVisibility = (visible) => {
                 if (!redoBtn) return;
                 redoBtn.hidden = delayRedoUntilWrongAnswer ? !visible : false;
@@ -4574,32 +6042,28 @@ Analog creates smooth changes.
 
               const runSingleSelectionErrorSequence = () => {
                 const wrongBtn = choiceButtons.get(selectedKey);
-                if (!wrongBtn) return;
-                errorSequenceRunning = true;
-                if (okBtn) {
-                  okBtn.disabled = true;
-                }
-                setChoiceDisabled(true);
-                cardFeedbackEl.textContent = redoFeedback;
-                cardFeedbackEl.className = "card-feedback error";
-                choiceButtons.forEach((btn, key) => {
-                  btn.classList.toggle("selected", key === selectedKey);
-                  btn.classList.remove("correct", "wrong", "shake");
-                });
-                wrongBtn.classList.add("wrong");
-                setRedoVisibility(false);
-                window.setTimeout(() => {
-                  wrongBtn.classList.add("shake");
-                  window.setTimeout(() => {
+                runSelectionErrorSequence({
+                  animatedButtons: wrongBtn ? [wrongBtn] : [],
+                  okBtn: okBtn,
+                  setSequenceRunning: (value) => {
+                    errorSequenceRunning = value;
+                  },
+                  setChoiceDisabled: (disabled) => {
+                    setChoiceDisabled(disabled);
+                  },
+                  prepareErrorState: () => {
+                    cardFeedbackEl.textContent = redoFeedback;
+                    cardFeedbackEl.className = "card-feedback error";
+                    choiceButtons.forEach((btn, key) => {
+                      btn.classList.toggle("selected", key === selectedKey);
+                      btn.classList.remove("correct", "wrong", "shake");
+                    });
+                    setRedoVisibility(false);
+                  },
+                  resetState: () => {
                     resetSingleSelection(true);
-                    window.setTimeout(() => {
-                      errorSequenceRunning = false;
-                      if (okBtn && !completed[currentIndex]) {
-                        okBtn.disabled = false;
-                      }
-                    }, selectionErrorTiming.restoreMs);
-                  }, selectionErrorTiming.shakeMs);
-                }, selectionErrorTiming.highlightMs);
+                  },
+                });
               };
 
               const applySingleValidation = () => {
@@ -4727,6 +6191,9 @@ Analog creates smooth changes.
             );
             const choiceButtons = new Map();
             let redoBtn = null;
+            let okBtn = null;
+            let errorSequenceRunning = false;
+            const shouldUseSelectionErrorProcess = Boolean(payload.selection_error_process);
             const correctFeedback = formatFeedback(
               payload.correct_feedback || "Correct! You selected all the right answers."
             );
@@ -4770,7 +6237,7 @@ Analog creates smooth changes.
                 });
               } else if (result.status === "partial") {
                 cardFeedbackEl.textContent = partialFeedback;
-                cardFeedbackEl.className = "card-feedback";
+                cardFeedbackEl.className = "card-feedback error";
                 choices.forEach((choice) => {
                   const btn = choiceButtons.get(choice.key);
                   if (!btn) return;
@@ -4783,7 +6250,7 @@ Analog creates smooth changes.
                 });
               } else {
                 cardFeedbackEl.textContent = incorrectFeedback;
-                cardFeedbackEl.className = "card-feedback";
+                cardFeedbackEl.className = "card-feedback error";
                 choices.forEach((choice) => {
                   const btn = choiceButtons.get(choice.key);
                   if (!btn) return;
@@ -4817,6 +6284,47 @@ Analog creates smooth changes.
               }
               return { status: "incorrect" };
             };
+            const resetMultiSelectionState = (preserveFeedback = false) => {
+              selectedKeys.clear();
+              state.validated = false;
+              state.correct = false;
+              clearValidationStyles();
+              choiceButtons.forEach((btn) => {
+                btn.classList.remove("selected", "shake");
+                btn.disabled = false;
+              });
+              if (!preserveFeedback) {
+                cardFeedbackEl.textContent = "";
+                cardFeedbackEl.className = "card-feedback";
+              }
+              setRedoVisibility(false);
+            };
+            const runMultiSelectionErrorSequence = (result) => {
+              runSelectionErrorSequence({
+                animatedButtons: collectSelectionErrorButtons(
+                  choices,
+                  choiceButtons,
+                  selectedKeys,
+                  correctKeys
+                ),
+                okBtn: okBtn,
+                setSequenceRunning: (value) => {
+                  errorSequenceRunning = value;
+                },
+                setChoiceDisabled: (disabled) => {
+                  setChoiceDisabled(disabled);
+                },
+                prepareErrorState: () => {
+                  state.validated = true;
+                  state.correct = false;
+                  applyValidation(result);
+                  setRedoVisibility(false);
+                },
+                resetState: () => {
+                  resetMultiSelectionState(true);
+                },
+              });
+            };
 
             choices.forEach((choice) => {
               const btn = document.createElement("button");
@@ -4828,7 +6336,7 @@ Analog creates smooth changes.
                 btn.classList.add("selected");
               }
               btn.addEventListener("click", () => {
-                if (state.correct) return;
+                if (state.correct || errorSequenceRunning) return;
                 if (selectedKeys.has(choice.key)) {
                   selectedKeys.delete(choice.key);
                   btn.classList.remove("selected");
@@ -4849,14 +6357,18 @@ Analog creates smooth changes.
 
             const actions = document.createElement("div");
             actions.className = "quiz-actions";
-            const okBtn = document.createElement("button");
+            okBtn = document.createElement("button");
             okBtn.type = "button";
             okBtn.className = "action-btn";
             okBtn.textContent = "OK";
             okBtn.addEventListener("click", () => {
-              if (state.correct) return;
+              if (state.correct || errorSequenceRunning) return;
               const result = state.validate();
               if (result.status !== "correct") {
+                if (shouldUseSelectionErrorProcess && selectedKeys.size > 0) {
+                  runMultiSelectionErrorSequence(result);
+                  return;
+                }
                 setRedoVisibility(true);
                 return;
               }
@@ -4881,13 +6393,13 @@ Analog creates smooth changes.
             redoBtn.textContent = "Redo";
             setRedoVisibility(state.showRedo);
             redoBtn.addEventListener("click", () => {
-              if (state.correct) return;
+              if (state.correct || errorSequenceRunning) return;
               selectedKeys.clear();
               state.validated = false;
               state.correct = false;
               clearValidationStyles();
               choiceButtons.forEach((btn) => {
-                btn.classList.remove("selected");
+                btn.classList.remove("selected", "shake");
                 btn.disabled = false;
               });
               cardFeedbackEl.textContent = "";
@@ -4921,6 +6433,7 @@ Analog creates smooth changes.
               state.correct = true;
               choiceButtons.forEach((btn, key) => {
                 btn.classList.toggle("selected", correctKeys.has(key));
+                btn.classList.remove("shake");
               });
               applyValidation({ status: "correct" });
               setChoiceDisabled(true);
@@ -4984,11 +6497,6 @@ Analog creates smooth changes.
             let redoBtn = null;
             let okBtn = null;
             let errorSequenceRunning = false;
-            const selectionErrorTiming = {
-              highlightMs: 180,
-              shakeMs: 260,
-              restoreMs: 180,
-            };
             const correctFeedback = formatFeedback(
               payload.correct_feedback || "Correct! You selected all the right pins."
             );
@@ -5023,30 +6531,6 @@ Analog creates smooth changes.
               choiceButtons.forEach((btn) => {
                 btn.classList.remove("correct", "wrong", "shake");
               });
-            };
-            const collectSelectionErrorButtons = () => {
-              const animatedButtons = [];
-              choices.forEach((choice) => {
-                const btn = choiceButtons.get(choice.key);
-                if (!btn) return;
-                const isSelectedWrong =
-                  selectedKeys.has(choice.key) && !correctKeys.has(choice.key);
-                const isMissedCorrect =
-                  !selectedKeys.has(choice.key) && correctKeys.has(choice.key);
-                if (isSelectedWrong || isMissedCorrect) {
-                  animatedButtons.push(btn);
-                }
-              });
-              if (animatedButtons.length) {
-                return animatedButtons;
-              }
-              choices.forEach((choice) => {
-                const btn = choiceButtons.get(choice.key);
-                if (btn && selectedKeys.has(choice.key)) {
-                  animatedButtons.push(btn);
-                }
-              });
-              return animatedButtons;
             };
             const applyValidation = (result) => {
               clearValidationStyles();
@@ -5118,36 +6602,39 @@ Analog creates smooth changes.
               });
               setRedoVisibility(false);
             };
-            const runSelectionErrorSequence = (result) => {
-              const animatedButtons = collectSelectionErrorButtons();
-              errorSequenceRunning = true;
-              if (okBtn) {
-                okBtn.disabled = true;
-              }
-              setChoiceDisabled(true);
-              state.validated = true;
-              state.correct = false;
-              applyValidation(result);
-              animatedButtons.forEach((btn) => btn.classList.add("wrong"));
-              setRedoVisibility(false);
-              window.setTimeout(() => {
-                animatedButtons.forEach((btn) => btn.classList.add("shake"));
-                window.setTimeout(() => {
+            const runPinSelectionErrorSequence = (result) => {
+              runSelectionErrorSequence({
+                animatedButtons: collectSelectionErrorButtons(
+                  choices,
+                  choiceButtons,
+                  selectedKeys,
+                  correctKeys
+                ),
+                okBtn: okBtn,
+                setSequenceRunning: (value) => {
+                  errorSequenceRunning = value;
+                },
+                setChoiceDisabled: (disabled) => {
+                  setChoiceDisabled(disabled);
+                },
+                prepareErrorState: () => {
+                  state.validated = true;
+                  state.correct = false;
+                  applyValidation(result);
+                  setRedoVisibility(false);
+                },
+                resetState: () => {
                   resetPinSelectionState();
+                },
+                afterReset: () => {
                   if (shouldShuffleOnWrong) {
                     state.positionOrder = shuffleArray(basePositions.slice());
                     window.requestAnimationFrame(() => {
                       applyChoicePositions();
                     });
                   }
-                  window.setTimeout(() => {
-                    errorSequenceRunning = false;
-                    if (okBtn && !completed[currentIndex]) {
-                      okBtn.disabled = false;
-                    }
-                  }, selectionErrorTiming.restoreMs);
-                }, selectionErrorTiming.shakeMs);
-              }, selectionErrorTiming.highlightMs);
+                },
+              });
             };
 
             const quizWrap = document.createElement("div");
@@ -5215,7 +6702,7 @@ Analog creates smooth changes.
               const result = state.validate();
               if (result.status !== "correct") {
                 if (selectedKeys.size > 0) {
-                  runSelectionErrorSequence(result);
+                  runPinSelectionErrorSequence(result);
                 }
                 return;
               }
@@ -5481,8 +6968,10 @@ Analog creates smooth changes.
               return items.slice(1).concat(items.slice(0, 1));
             };
 
-            const buildLists = ({ forceDifferentOrder = false } = {}) => {
-              matchResetPending = false;
+            const buildLists = ({ forceDifferentOrder = false, preservePending = false } = {}) => {
+              if (!preservePending) {
+                matchResetPending = false;
+              }
               leftList.innerHTML = "";
               rightList.innerHTML = "";
               leftButtons.clear();
@@ -5501,11 +6990,12 @@ Analog creates smooth changes.
               currentFeatureOrder = features.map((item) => item.id);
               currentFunctionOrder = functions.map((item) => item.id);
 
-              features.forEach((item) => {
+              features.forEach((item, index) => {
                 const btn = document.createElement("button");
                 btn.type = "button";
                 btn.className = "match-item";
                 btn.textContent = item.text;
+                btn.style.setProperty("--match-stagger", String(index));
                 leftButtons.set(item.id, btn);
                 btn.addEventListener("click", () => {
                   if (quizLocked || matchResetPending) return;
@@ -5525,11 +7015,12 @@ Analog creates smooth changes.
                 leftList.appendChild(btn);
               });
 
-              functions.forEach((item) => {
+              functions.forEach((item, index) => {
                 const btn = document.createElement("button");
                 btn.type = "button";
                 btn.className = "match-item";
                 btn.textContent = item.text;
+                btn.style.setProperty("--match-stagger", String(index));
                 rightButtons.set(item.id, btn);
                 btn.addEventListener("click", () => {
                   if (quizLocked || matchResetPending) return;
@@ -5541,7 +7032,7 @@ Analog creates smooth changes.
                   const leftId = selectedLeft;
                   applyPair(leftId, item.id);
                   resetSelections();
-                  if (isCheckpointMatchCard && leftId !== item.id) {
+                  if (shouldShuffleOnWrong && leftId !== item.id) {
                     runWrongMatchSequence(leftId, item.id);
                     return;
                   }
@@ -5552,15 +7043,44 @@ Analog creates smooth changes.
               });
             };
 
+            const animateListReshuffle = () => {
+              const prefersReducedMotion =
+                window.matchMedia &&
+                window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+              if (prefersReducedMotion) {
+                buildLists({ forceDifferentOrder: true });
+                return;
+              }
+              const shuffleOutDurationMs = 240;
+              const shuffleInDurationMs = 360;
+              matchResetPending = true;
+              leftList.classList.remove("match-list--shuffle-in");
+              rightList.classList.remove("match-list--shuffle-in");
+              leftList.classList.add("match-list--shuffle-out");
+              rightList.classList.add("match-list--shuffle-out");
+              window.setTimeout(() => {
+                leftList.classList.remove("match-list--shuffle-out");
+                rightList.classList.remove("match-list--shuffle-out");
+                buildLists({ forceDifferentOrder: true, preservePending: true });
+                leftList.classList.add("match-list--shuffle-in");
+                rightList.classList.add("match-list--shuffle-in");
+                window.setTimeout(() => {
+                  leftList.classList.remove("match-list--shuffle-in");
+                  rightList.classList.remove("match-list--shuffle-in");
+                  matchResetPending = false;
+                }, shuffleInDurationMs);
+              }, shuffleOutDurationMs);
+            };
+
             const runWrongMatchSequence = (leftId, rightId) => {
               const leftBtn = leftButtons.get(leftId);
               const rightBtn = rightButtons.get(rightId);
               if (!leftBtn || !rightBtn) {
-                buildLists({ forceDifferentOrder: true });
+                animateListReshuffle();
                 return;
               }
               const highlightDelayMs = 180;
-              const shakeDurationMs = 420;
+              const shakeDurationMs = shouldShakeOnWrong ? 420 : 0;
               const restoreDelayMs = 180;
               matchResetPending = true;
               cardFeedbackEl.textContent =
@@ -5569,14 +7089,16 @@ Analog creates smooth changes.
               leftBtn.classList.add("wrong");
               rightBtn.classList.add("wrong");
               window.setTimeout(() => {
-                leftBtn.classList.add("shake");
-                rightBtn.classList.add("shake");
+                if (shouldShakeOnWrong) {
+                  leftBtn.classList.add("shake");
+                  rightBtn.classList.add("shake");
+                }
                 window.setTimeout(() => {
                   leftBtn.classList.remove("shake");
                   rightBtn.classList.remove("shake");
                   restoreMatchedPairStyles();
                   window.setTimeout(() => {
-                    buildLists({ forceDifferentOrder: true });
+                    animateListReshuffle();
                   }, restoreDelayMs);
                 }, shakeDurationMs);
               }, highlightDelayMs);
@@ -5650,7 +7172,7 @@ Analog creates smooth changes.
                       restoreMatchedPairStyles();
                       window.setTimeout(() => {
                         if (shouldShuffleOnWrong) {
-                          buildLists({ forceDifferentOrder: true });
+                          animateListReshuffle();
                           return;
                         }
                         matchResetPending = false;
@@ -5665,7 +7187,7 @@ Analog creates smooth changes.
                   window.setTimeout(() => {
                     wrongButtons.forEach((btn) => btn.classList.remove("shake"));
                     if (shouldShuffleOnWrong) {
-                      buildLists({ forceDifferentOrder: true });
+                      animateListReshuffle();
                       return;
                     }
                     matchResetPending = false;
@@ -5787,9 +7309,9 @@ Analog creates smooth changes.
               navContainer.style.display = "flex";
             }
 
-            const isPinSelectQuiz = isPinSelectQuizCard(card);
+            const usesOwnQuizMedia = quizUsesOwnMedia(card);
 
-            cardMediaEl.style.display = (isDigitalAnalogDigital || isDigitalAnalogAnalog || isDigitalAnalogGive || isDigitalAnalogReceive || isDigitalAnalogQuiz || isPinSelectQuiz) ? "none" : "block";
+            cardMediaEl.style.display = (isDigitalAnalogDigital || isDigitalAnalogAnalog || isDigitalAnalogGive || isDigitalAnalogReceive || isDigitalAnalogQuiz || usesOwnQuizMedia) ? "none" : "block";
 
               const isAnalogOutputIntro = isAnalogOutputIntroCard(card);
 
@@ -5827,6 +7349,14 @@ Analog creates smooth changes.
                   renderMatchQuiz(card);
                 } else if (payload.quiz_type === "pin-select") {
                   renderPinSelectQuiz(card);
+                } else if (payload.quiz_type === "clue-hotspot") {
+                  renderClueHotspotQuiz(card);
+                } else if (payload.quiz_type === "tap-sequence") {
+                  renderTapSequenceQuiz(card);
+                } else if (payload.quiz_type === "bucket-sort") {
+                  renderBucketSortQuiz(card);
+                } else if (payload.quiz_type === "matrix-true-false") {
+                  renderMatrixTrueFalseQuiz(card);
                 } else {
                   renderQuiz(card);
                 }

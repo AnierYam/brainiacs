@@ -278,6 +278,21 @@
       box-shadow: 0 14px 28px rgba(15, 23, 42, 0.15);
     }
 
+    .circle-card--lesson1-complete {
+      background: linear-gradient(180deg, #fff8de 0%, #f6e2a2 100%);
+      border: 1px solid rgba(214, 174, 64, 0.42);
+      box-shadow: 0 12px 28px rgba(181, 137, 44, 0.22);
+    }
+
+    .circle-card--lesson1-complete:hover {
+      box-shadow: 0 16px 32px rgba(181, 137, 44, 0.28);
+    }
+
+    .circle-card--lesson1-complete .circle-name {
+      color: #6f5200;
+      font-weight: 600;
+    }
+
     .circle-link {
       text-decoration: none;
       color: inherit;
@@ -460,17 +475,19 @@
         </div>
         <div class="vertical-path">
           {% for lesson in unit.lessons %}
-            <div class="circle-card{% if lesson.is_complete %} is-complete{% endif %}" id="lesson-{{ lesson.slug }}">
+            <div class="circle-card{% if lesson.is_complete %} is-complete{% endif %}{% if lesson.slug == 'arduino-board-quiz' and lesson.is_complete %} circle-card--lesson1-complete{% endif %}" id="lesson-{{ lesson.slug }}">
               <a href="{% url 'lessons:mission_2_lesson_detail' lesson.slug %}" class="circle-link">
                 <div class="circle-image-wrapper lesson1-icon">
+                  {% with lesson_icon=lesson.image|default:'lessons/mission2/arduino_chip_icon.png' %}
                   <img
-                    src="{% static 'lessons/mission2/arduino_chip_icon.png' %}"
-                    alt="{{ lesson.title }}"
+                    src="{% static lesson_icon %}"
+                    alt="{{ lesson.node_title|default:lesson.title }}"
                     class="circle-image"
                   />
+                  {% endwith %}
                 </div>
                 <div class="circle-name">
-                  {{ lesson.title }}
+                  {{ lesson.node_title|default:lesson.title }}
                 </div>
               </a>
             </div>

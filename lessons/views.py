@@ -578,8 +578,6 @@ MISSION2_LESSON1 = [
         "unit": 2,
         "focus": "18% 24%",
         "zoom": "300%",
-        # Use dedicated USB icon instead of board crop
-        "image": "lessons/mission2/usb-logo-black-and-white.png",
     },
     {
         "slug": "on-led",
@@ -656,10 +654,12 @@ MISSION2_LESSON1 = [
     {
         "slug": "arduino-board-quiz",
         "title": "Checkpoint Quiz",
+        "node_title": "Lesson 1 Review",
         "part": 1,
         "unit": 3,
         "focus": "50% 50%",
         "zoom": "160%",
+        "image": "lessons/mission2/chip_trophy_clean.png",
     },
 ]
 
@@ -725,6 +725,7 @@ def mission_2_intro(request):
     lesson3_lessons = [dict(lesson) for lesson in MISSION2_LESSON3]
 
     for lesson in lesson1_lessons:
+        lesson["node_title"] = lesson.get("node_title", lesson["title"])
         step = step_map.get(("mission-2-arduino-board", lesson["slug"]))
         lesson["is_complete"] = False
         if step:
@@ -734,6 +735,7 @@ def mission_2_intro(request):
             lesson["is_complete"] = step.id in completed_ids
 
     for lesson in lesson2_lessons:
+        lesson["node_title"] = lesson.get("node_title", lesson["title"])
         step = step_map.get(("mission-2-breadboard", lesson["slug"]))
         lesson["is_complete"] = False
         if step:
@@ -743,6 +745,7 @@ def mission_2_intro(request):
             lesson["is_complete"] = step.id in completed_ids
 
     for lesson in lesson3_lessons:
+        lesson["node_title"] = lesson.get("node_title", lesson["title"])
         step = step_map.get(("mission-2-arduino-ide", lesson["slug"]))
         lesson["is_complete"] = False
         if step:
