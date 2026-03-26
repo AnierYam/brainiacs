@@ -1,13 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ site_lang }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BRAINIACS ACADEMY</title>
-    {% load static %}
+    <title>{{ copy.home.meta_title }}</title>
+    {% load static site_language %}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
-        
         :root {
             --primary: #2F04B9;
             --secondary: #79C93D;
@@ -124,6 +125,41 @@
         
         .nav-links a:not(.login-btn):not(.signup-btn):hover:after {
             width: 100%;
+        }
+
+        .nav-links .lang-switch {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            margin-left: 0.8rem;
+            padding: 0.24rem;
+            border: 1px solid rgba(255, 255, 255, 0.28);
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 18px rgba(6, 9, 34, 0.18);
+        }
+
+        .nav-links .lang-btn {
+            border: none;
+            border-radius: 999px;
+            background: transparent;
+            color: rgba(255, 255, 255, 0.82);
+            padding: 0.38rem 0.7rem;
+            font-size: 0.78rem;
+            font-weight: 700;
+            line-height: 1;
+            cursor: pointer;
+            transition: background 0.2s ease, color 0.2s ease;
+        }
+
+        .nav-links .lang-btn:hover {
+            background: rgba(255, 255, 255, 0.14);
+            color: white;
+        }
+
+        .nav-links .lang-btn.is-active {
+            background: white;
+            color: var(--primary);
         }
         
         .login-btn {
@@ -1190,43 +1226,57 @@
             display: flex;
             align-items: flex-start;
             justify-content: flex-start;
-            gap: 3.5rem;
+            gap: 2.25rem;
             background: #f8fafd;
             border-radius: 22px;
             box-shadow: 0 4px 32px rgba(47,4,185,0.10);
             padding: 48px 48px;
-            max-width: 900px;
+            max-width: 1040px;
             margin: 48px auto 0 auto;
         }
         .contact-image-side {
-            flex: 0 0 110px;
+            flex: 0 1 clamp(165px, 16vw, 190px);
             display: flex;
-            align-items: flex-start;
-            justify-content: flex-start;
+            align-items: center;
+            justify-content: center;
+            padding-top: 0.4rem;
         }
         .contact-image-side img {
-            max-width: 110px;
-            width: 100%;
-            border-radius: 12px;
+            width: clamp(165px, 16vw, 190px);
+            max-width: 100%;
+            aspect-ratio: 1 / 1;
+            object-fit: contain;
+            border-radius: 0;
             box-shadow: none;
             background: none;
             display: block;
             margin: 0;
         }
         .contact-content {
-            flex: 1 1 0;
+            flex: 1 1 560px;
             display: flex;
             flex-direction: column;
             align-items: flex-start;
             justify-content: flex-start;
-            min-width: 260px;
+            min-width: 380px;
             width: 100%;
-            max-width: 420px;
+            max-width: none;
         }
         .contact-intro {
+            width: 100%;
+            max-width: 560px;
             font-size: 1.08rem;
             color: #2F04B9;
             margin-bottom: 1.1rem;
+        }
+        .contact-form {
+            width: 100%;
+            max-width: 560px;
+            margin: 1.5rem 0 0;
+            align-self: stretch;
+        }
+        .contact-form .form-group {
+            width: 100%;
         }
         .whatsapp-link {
             color: #25D366;
@@ -1287,6 +1337,10 @@
                 width: 100%;
                 max-width: 100%;
             }
+            .contact-intro,
+            .contact-form {
+                max-width: 100%;
+            }
         }
         @media (max-width: 700px) {
             .header-container {
@@ -1345,6 +1399,16 @@
                 margin-left: 0;
                 margin-top: 0.2rem;
             }
+            .nav-links .lang-switch {
+                width: 100%;
+                justify-content: center;
+                margin-left: 0;
+                margin-top: 0.2rem;
+            }
+            .nav-links .lang-btn {
+                flex: 1 1 0;
+                max-width: 88px;
+            }
         }
         @media (min-width: 701px) {
             .nav-links {
@@ -1367,18 +1431,19 @@
     <header>
         <div class="container header-container">
             <div class="logo-text">
-                <h1>BRAINIACS ACADEMY</h1>
+                <h1>{{ copy.common.brand_display }}</h1>
             </div>
-            <button class="hamburger" id="hamburger-menu" aria-label="Open navigation" aria-expanded="false">
+            <button class="hamburger" id="hamburger-menu" aria-label="{{ copy.common.open_navigation }}" aria-expanded="false">
                 <span></span>
                 <span></span>
                 <span></span>
             </button>
             <div class="nav-links" id="nav-links">
-                <a href="{% url 'landing:buy' %}">Buy Kit</a>
-                <a href="#contact">Contact Us</a>
-                <a href="{% url 'login' %}?next=/lessons/" class="login-btn">Log In</a>
-                <a href="{% url 'landing:activate' %}" class="signup-btn">Activate Kit</a>
+                <a href="{% url 'landing:buy' %}">{{ copy.common.buy_kit }}</a>
+                <a href="#contact">{{ copy.common.contact_us }}</a>
+                <a href="{% url 'login' %}?next=/lessons/" class="login-btn">{{ copy.common.log_in }}</a>
+                <a href="{% url 'landing:activate' %}" class="signup-btn">{{ copy.common.activate_kit }}</a>
+                {% include "landing/includes/lang_switch.html" %}
             </div>
         </div>
     </header>
@@ -1418,17 +1483,15 @@
                     </div>
                     
                     <div class="hero-image">
-                        <img src="{% static 'landing/images/hero.png' %}" alt="Robot building kit">
+                        <img src="{% static 'landing/images/hero.webp' %}" alt="{{ copy.home.hero_image_alt }}" width="632" height="605" fetchpriority="high" decoding="async">
                         <div class="rocket-thrust"></div>
                     </div>
                 </div>
                 
                 <div class="hero-content">
-                    <h1>Robotics Made Simple</h1>
-                    <p>
-                        Our interactive robot kits turn curious minds into confident builders
-                    </p>
-                    <a href="#how-we-teach" class="cta-button">Learn How</a>
+                    <h1>{{ copy.home.hero_title }}</h1>
+                    <p>{{ copy.home.hero_description }}</p>
+                    <a href="#how-we-teach" class="cta-button">{{ copy.home.hero_cta }}</a>
                 </div>
             </div>
         </div>
@@ -1436,10 +1499,10 @@
         <div class="mission-section-wrapper">
             <section class="mission-section">
                 <div class="container">
-                    <h2>Our Mission</h2>
+                    <h2>{{ copy.home.mission_title }}</h2>
                     <p>
-                        <strong>Brainiacs was built on one belief: <br><span class="mission-highlight">With the right tools, learning robotics isn't hard.</span></strong><br>
-                        <span class="mission-main-text">We make it clear, hands-on, and fun, with just the right level of challenge.</span>
+                        <strong>{{ copy.home.mission_lead }} <br><span class="mission-highlight">{{ copy.home.mission_highlight }}</span></strong><br>
+                        <span class="mission-main-text">{{ copy.home.mission_text }}</span>
                     </p>
                 </div>
             </section>
@@ -1449,27 +1512,19 @@
         <section id="how-we-teach" class="how-we-teach-section">
             <div class="container">
                 <div class="how-we-teach-heading">
-                    <h2>How We Teach</h2>
+                    <h2>{{ copy.home.teach_title }}</h2>
                 </div>
                 <div class="how-we-teach-cards">
+                    {% for card in copy.home.teach_cards %}
                     <div class="how-we-teach-item">
-                        <h3>The Science</h3>
-                        <div class="how-we-teach-sub">Learn the Core Science Concepts First</div>
-                        <p>Each project begins by breaking down key robotics and engineering principles, so kids understand the science before they start building.</p>
+                        <h3>{{ card.title }}</h3>
+                        <div class="how-we-teach-sub">{{ card.subtitle }}</div>
+                        <p>{{ card.body }}</p>
                     </div>
-                    <div class="how-we-teach-item">
-                        <h3>The Build</h3>
-                        <div class="how-we-teach-sub">Turn Concepts into Real Robots</div>
-                        <p>Once they've learned the science, kids bring it to life with hands-on kits, building real robots that connect ideas to action.</p>
-                    </div>
-                    <div class="how-we-teach-item">
-                        <h3>The Guidance</h3>
-                        <div class="how-we-teach-sub">Follow Along with Step-by-Step Videos</div>
-                        <p>Guided video lessons walk kids through each build with clear, practical instruction, making every step easy to follow and fun to complete.</p>
-                    </div>
+                    {% endfor %}
                 </div>
                 <div class="how-we-teach-demo-btn-wrapper">
-                    <a href="{% url 'landing:demo' %}" class="cta-button">See Demo</a>
+                    <a href="{% url 'landing:demo' %}" class="cta-button">{{ copy.home.demo_cta }}</a>
                 </div>
             </div>
         </section>
@@ -1478,54 +1533,18 @@
         <section class="faq-section">
             <div class="container">
                 <div class="faq-section-heading">
-                    <h2>Frequently Asked Questions</h2>
+                    <h2>{{ copy.home.faq_title }}</h2>
                 </div>
                 <div class="faq-container">
+                    {% for faq in copy.home.faqs %}
                     <div class="faq-item">
                         <div class="faq-question">
-                            What age group is this program suitable for?
+                            {{ faq.question }}
                             <div class="faq-toggle"></div>
                         </div>
-                        <div class="faq-answer">
-                            Our robotics program is designed for children ages 8-14. We've carefully structured the curriculum to match different learning stages, ensuring each child can progress at their own pace while staying engaged and challenged.
-                        </div>
+                        <div class="faq-answer">{{ faq.answer }}</div>
                     </div>
-                    <div class="faq-item">
-                        <div class="faq-question">
-                            Do I need any prior experience with robotics?
-                            <div class="faq-toggle"></div>
-                        </div>
-                        <div class="faq-answer">
-                            No prior experience is needed! Our program starts with the basics and gradually builds up to more complex concepts. Each kit comes with detailed instructions and video guides that make learning robotics accessible to everyone.
-                        </div>
-                    </div>
-                    <div class="faq-item">
-                        <div class="faq-question">
-                            How long does it take to complete a project?
-                            <div class="faq-toggle"></div>
-                        </div>
-                        <div class="faq-answer">
-                            Each project typically takes 2-3 hours to complete, including both building and programming. The modular design allows students to work at their own pace, and they can always revisit projects to try new modifications or improvements.
-                        </div>
-                    </div>
-                    <div class="faq-item">
-                        <div class="faq-question">
-                            What's included in the robotics kit?
-                            <div class="faq-toggle"></div>
-                        </div>
-                        <div class="faq-answer">
-                            Each kit includes all necessary components: motors, sensors, microcontroller, building pieces, and detailed instructions. You'll also get access to our online learning platform with video tutorials and programming guides.
-                        </div>
-                    </div>
-                    <div class="faq-item">
-                        <div class="faq-question">
-                            Can I get help if I'm stuck?
-                            <div class="faq-toggle"></div>
-                        </div>
-                        <div class="faq-answer">
-                            Absolutely! We provide comprehensive support through our online platform. You can access step-by-step video guides, troubleshooting tips, and even connect with our support team for personalized assistance.
-                        </div>
-                    </div>
+                    {% endfor %}
                 </div>
             </div>
         </section>
@@ -1534,44 +1553,42 @@
         <section id="contact" class="contact-section">
             <div class="container">
                 <div class="contact-section-heading">
-                    <h2>Contact Us</h2>
+                    <h2>{{ copy.home.contact_title }}</h2>
                 </div>
                 <div class="contact-card-flex">
                     <div class="contact-image-side">
-                        <img src="{% static 'landing/images/contact_us.png' %}" alt="Contact Us">
+                        <img src="{% static 'landing/images/contact_us.webp' %}" alt="{{ copy.home.contact_image_alt }}" width="256" height="256" loading="lazy" decoding="async">
                     </div>
                     <div class="contact-content">
                         <div class="contact-intro">
-                            <strong>We'd love to hear from you!</strong><br>
-                            Fill out the form below or reach us on 
+                            <strong>{{ copy.home.contact_intro_title }}</strong><br>
+                            {{ copy.home.contact_intro_text }}
                             <a href="https://wa.me/33763980164" target="_blank" class="whatsapp-link">WhatsApp (+33 07 63 98 01 64)</a>.
                         </div>
                         <form class="contact-form">
                             <div class="form-group">
-                                <label for="contact-name">Your Name</label>
-                                <input id="contact-name" type="text" placeholder="Your Name" required>
+                                <label for="contact-name">{{ copy.home.contact_name }}</label>
+                                <input id="contact-name" type="text" placeholder="{{ copy.home.contact_name }}" required>
                             </div>
                             <div class="form-group">
-                                <label for="contact-email">Your Email</label>
-                                <input id="contact-email" type="email" placeholder="Your Email" required>
+                                <label for="contact-email">{{ copy.home.contact_email }}</label>
+                                <input id="contact-email" type="email" placeholder="{{ copy.home.contact_email }}" required>
                             </div>
                             <div class="form-group">
-                                <label for="contact-reason">Reason</label>
+                                <label for="contact-reason">{{ copy.home.contact_reason }}</label>
                                 <select id="contact-reason" required>
-                                    <option value="" disabled selected>Select a reason</option>
-                                    <option value="general">General Inquiry</option>
-                                    <option value="support">Support Request</option>
-                                    <option value="feedback">Feedback/Suggestion</option>
-                                    <option value="partnership">Partnership Opportunity</option>
-                                    <option value="other">Other</option>
+                                    <option value="" disabled selected>{{ copy.home.contact_reason_placeholder }}</option>
+                                    {% for option in copy.home.contact_reason_options %}
+                                    <option value="{{ option.value }}">{{ option.label }}</option>
+                                    {% endfor %}
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label for="contact-message">Your Message</label>
-                                <textarea id="contact-message" placeholder="Your Message" required></textarea>
+                                <label for="contact-message">{{ copy.home.contact_message }}</label>
+                                <textarea id="contact-message" placeholder="{{ copy.home.contact_message }}" required></textarea>
                             </div>
-                            <button type="submit" class="cta-button contact-btn">Send Message</button>
-                            <div class="contact-success" style="display:none; color:#79C93D; font-weight:600; margin-top:12px; text-align:center;">Thank you! Your message has been sent.</div>
+                            <button type="submit" class="cta-button contact-btn">{{ copy.home.contact_submit }}</button>
+                            <div class="contact-success" style="display:none; color:#79C93D; font-weight:600; margin-top:12px; text-align:center;">{{ copy.home.contact_success }}</div>
                         </form>
                     </div>
                 </div>
@@ -1579,6 +1596,7 @@
         </section>
     </main>
 
+    <script src="{% static 'landing/js/site_language.js' %}"></script>
     <script>
         // Header scroll effect
         window.addEventListener('scroll', function() {

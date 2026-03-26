@@ -1,12 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ site_lang }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Buy Kit - BRAINIACS ACADEMY</title>
-    {% load static %}
+    <title>{{ copy.buy.meta_title }}</title>
+    {% load static site_language %}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
         :root {
             --primary: #2F04B9;
             --secondary: #79C93D;
@@ -92,6 +94,37 @@
         }
         .nav-links a:not(.login-btn):not(.signup-btn):hover:after {
             width: 100%;
+        }
+        .nav-links .lang-switch {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            margin-left: 0.8rem;
+            padding: 0.24rem;
+            border: 1px solid rgba(255, 255, 255, 0.28);
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 18px rgba(6, 9, 34, 0.18);
+        }
+        .nav-links .lang-btn {
+            border: none;
+            border-radius: 999px;
+            background: transparent;
+            color: rgba(255, 255, 255, 0.82);
+            padding: 0.38rem 0.7rem;
+            font-size: 0.78rem;
+            font-weight: 700;
+            line-height: 1;
+            cursor: pointer;
+            transition: background 0.2s ease, color 0.2s ease;
+        }
+        .nav-links .lang-btn:hover {
+            background: rgba(255, 255, 255, 0.14);
+            color: white;
+        }
+        .nav-links .lang-btn.is-active {
+            background: white;
+            color: var(--primary);
         }
         .login-btn {
             background: var(--secondary);
@@ -350,6 +383,16 @@
                 margin-left: 0;
                 margin-top: 0.2rem;
             }
+            .nav-links .lang-switch {
+                width: 100%;
+                justify-content: center;
+                margin-left: 0;
+                margin-top: 0.2rem;
+            }
+            .nav-links .lang-btn {
+                flex: 1 1 0;
+                max-width: 88px;
+            }
             .footer-bar {
                 flex-direction: column !important;
                 align-items: center !important;
@@ -434,44 +477,46 @@
     <header>
         <div class="container header-container">
             <div class="logo-text">
-                <a href="{% url 'landing:home' %}" class="header-logo-link"><h1>BRAINIACS ACADEMY</h1></a>
+                <a href="{% url 'landing:home' %}" class="header-logo-link"><h1>{{ copy.common.brand_display }}</h1></a>
             </div>
-            <button class="hamburger" id="hamburger-menu" aria-label="Open navigation" aria-expanded="false">
+            <button class="hamburger" id="hamburger-menu" aria-label="{{ copy.common.open_navigation }}" aria-expanded="false">
                 <span></span>
                 <span></span>
                 <span></span>
             </button>
             <div class="nav-links" id="nav-links">
-                <a href="{% url 'landing:buy' %}">Buy Kit</a>
-                <a href="{% url 'landing:home' %}#contact">Contact Us</a>
-                <a href="{% url 'login' %}?next=/lessons/" class="login-btn">Log In</a>
-                <a href="{% url 'landing:activate' %}" class="signup-btn">Activate Kit</a>
+                <a href="{% url 'landing:buy' %}">{{ copy.common.buy_kit }}</a>
+                <a href="{% url 'landing:home' %}#contact">{{ copy.common.contact_us }}</a>
+                <a href="{% url 'login' %}?next=/lessons/" class="login-btn">{{ copy.common.log_in }}</a>
+                <a href="{% url 'landing:activate' %}" class="signup-btn">{{ copy.common.activate_kit }}</a>
+                {% include "landing/includes/lang_switch.html" %}
             </div>
         </div>
     </header>
     <main>
         <div class="buy-card">
-            <img src="{% static 'landing/images/buy.png' %}" alt="Buy Kit" class="buy-image">
+            <img src="{% static 'landing/images/buy.png' %}" alt="{{ copy.buy.image_alt }}" class="buy-image">
             <div class="buy-content">
-                <h2 class="buy-header">We're Partnering with Schools & Teaching Centers!</h2>
-                <div class="buy-subtext">For now, Brainiacs kits are only available through our educational partners.<br><strong>Want to be the first to know when kits are available for individuals?</strong><br>Sign up below and we'll notify you as soon as direct shipping opens!</div>
+                <h2 class="buy-header">{{ copy.buy.header }}</h2>
+                <div class="buy-subtext">{{ copy.buy.body_before_strong }}<br><strong>{{ copy.buy.body_strong }}</strong><br>{{ copy.buy.body_after_strong }}</div>
                 <form class="buy-signup-form">
                     <div class="buy-email-row">
-                        <input type="email" placeholder="Enter your email" required class="buy-email-input">
-                        <button type="submit" class="buy-submit-btn">Notify Me</button>
+                        <input type="email" placeholder="{{ copy.buy.email_placeholder }}" required class="buy-email-input">
+                        <button type="submit" class="buy-submit-btn">{{ copy.buy.notify_me }}</button>
                     </div>
                 </form>
-                <a href="{% url 'landing:home' %}#contact" class="buy-enquire-btn">Enquire</a>
+                <a href="{% url 'landing:home' %}#contact" class="buy-enquire-btn">{{ copy.buy.enquire }}</a>
             </div>
         </div>
     </main>
     <footer>
         <div class="footer-bar">
-            <a href="{% url 'landing:home' %}" class="footer-link">Back to Home</a>
+            <a href="{% url 'landing:home' %}" class="footer-link">{{ copy.common.back_to_home }}</a>
             <span class="footer-divider">|</span>
-            <span class="footer-copyright">&copy; 2025 BRAINIACS ACADEMY. All rights reserved.</span>
+            <span class="footer-copyright">&copy; {{ copy.common.footer_copyright }}</span>
         </div>
     </footer>
+    <script src="{% static 'landing/js/site_language.js' %}"></script>
     <script>
         // Hamburger menu toggle
         document.addEventListener('DOMContentLoaded', function() {

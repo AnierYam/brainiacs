@@ -1,13 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ site_lang }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Demo Page - BRAINIACS ACADEMY</title>
-    {% load static %}
+    <title>{{ copy.demo.meta_title }}</title>
+    {% load static site_language %}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
-        
         :root {
             --primary: #2F04B9;
             --secondary: #79C93D;
@@ -122,6 +123,37 @@
         
         .nav-links a:not(.login-btn):not(.signup-btn):hover:after {
             width: 100%;
+        }
+        .nav-links .lang-switch {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            margin-left: 0.8rem;
+            padding: 0.24rem;
+            border: 1px solid rgba(255, 255, 255, 0.28);
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 18px rgba(6, 9, 34, 0.18);
+        }
+        .nav-links .lang-btn {
+            border: none;
+            border-radius: 999px;
+            background: transparent;
+            color: rgba(255, 255, 255, 0.82);
+            padding: 0.38rem 0.7rem;
+            font-size: 0.78rem;
+            font-weight: 700;
+            line-height: 1;
+            cursor: pointer;
+            transition: background 0.2s ease, color 0.2s ease;
+        }
+        .nav-links .lang-btn:hover {
+            background: rgba(255, 255, 255, 0.14);
+            color: white;
+        }
+        .nav-links .lang-btn.is-active {
+            background: white;
+            color: var(--primary);
         }
         
         .login-btn {
@@ -589,6 +621,16 @@
                 margin-left: 0;
                 margin-top: 0.2rem;
             }
+            .nav-links .lang-switch {
+                width: 100%;
+                justify-content: center;
+                margin-left: 0;
+                margin-top: 0.2rem;
+            }
+            .nav-links .lang-btn {
+                flex: 1 1 0;
+                max-width: 88px;
+            }
             .grid {
                 flex-direction: column;
                 gap: 24px;
@@ -756,40 +798,41 @@
     <header>
         <div class="container header-container">
             <div class="logo-text">
-                <a href="{% url 'landing:home' %}" class="header-logo-link"><h1>BRAINIACS ACADEMY</h1></a>
+                <a href="{% url 'landing:home' %}" class="header-logo-link"><h1>{{ copy.common.brand_display }}</h1></a>
             </div>
-            <button class="hamburger" id="hamburger-menu" aria-label="Open navigation" aria-expanded="false">
+            <button class="hamburger" id="hamburger-menu" aria-label="{{ copy.common.open_navigation }}" aria-expanded="false">
                 <span></span>
                 <span></span>
                 <span></span>
             </button>
             <div class="nav-links" id="nav-links">
-                <a href="{% url 'landing:buy' %}">Buy Kit</a>
-                <a href="{% url 'landing:home' %}#contact">Contact Us</a>
-                <a href="{% url 'login' %}?next=/lessons/" class="login-btn">Log In</a>
-                <a href="{% url 'landing:activate' %}" class="signup-btn">Activate Kit</a>
+                <a href="{% url 'landing:buy' %}">{{ copy.common.buy_kit }}</a>
+                <a href="{% url 'landing:home' %}#contact">{{ copy.common.contact_us }}</a>
+                <a href="{% url 'login' %}?next=/lessons/" class="login-btn">{{ copy.common.log_in }}</a>
+                <a href="{% url 'landing:activate' %}" class="signup-btn">{{ copy.common.activate_kit }}</a>
+                {% include "landing/includes/lang_switch.html" %}
             </div>
         </div>
     </header>
     <main>
         <div class="container">
-            <h1>Meet Pedro the Dog</h1>
+            <h1>{{ copy.demo.hero_title }}</h1>
             <div class="grid">
                 <div class="intro">
-                    <p>Build Pedro, bring him to life with code, and discover the basics of programming, circuits, and movement through hands-on play.<br><span class="intro-break">Whether you're just starting out or leveling up your STEM skills, Pedro is the perfect companion.</span></p>
+                    <p>{{ copy.demo.hero_intro_main }}<br><span class="intro-break">{{ copy.demo.hero_intro_secondary }}</span></p>
                 </div>
                 <div class="carousel">
-                    <button class="carousel-arrow left" aria-label="Previous">
+                    <button class="carousel-arrow left" aria-label="{{ copy.demo.previous }}">
                         <svg viewBox="0 0 40 40"><polyline points="28,6 12,20 28,34"/></svg>
                     </button>
                     <div class="carousel-images">
-                        <img src="{% static 'landing/images/Pedro.png' %}" alt="Pedro the Dog" class="carousel-img" style="display: block;">
-                        <img src="{% static 'landing/images/building.png' %}" alt="Building" class="carousel-img" style="display: none;">
+                        <img src="{% static 'landing/images/Pedro.png' %}" alt="{{ copy.demo.pedro_image_alt }}" class="carousel-img" style="display: block;">
+                        <img src="{% static 'landing/images/building.png' %}" alt="{{ copy.demo.building_image_alt }}" class="carousel-img" style="display: none;">
                         <div class="carousel-img" style="display: none;">
                             <div class="ratio">
                                 <iframe
                                     src="https://www.youtube.com/embed/zcSuhBlRlU0?autoplay=0&mute=0&controls=1&rel=0&modestbranding=1&playsinline=1&origin=https%3A%2F%2Fbrainiacs.academy"
-                                    title="Pedro Demo Video"
+                                    title="{{ copy.demo.demo_video_title }}"
                                     referrerpolicy="strict-origin-when-cross-origin"
                                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                                     allowfullscreen>
@@ -797,7 +840,7 @@
                             </div>
                         </div>
                     </div>
-                    <button class="carousel-arrow right" aria-label="Next">
+                    <button class="carousel-arrow right" aria-label="{{ copy.demo.next }}">
                         <svg viewBox="0 0 40 40"><polyline points="12,6 28,20 12,34"/></svg>
                     </button>
                     <div class="carousel-dots">
@@ -808,107 +851,77 @@
                 </div>
             </div>
             <div class="intro-tabs">
-                <div class="tab-card active" id="tab-science">The Science</div>
-                <div class="tab-card" id="tab-build">The Build</div>
-                <div class="tab-card" id="tab-guidance">The Guidance</div>
+                <div class="tab-card active" id="tab-science">{{ copy.demo.tab_science }}</div>
+                <div class="tab-card" id="tab-build">{{ copy.demo.tab_build }}</div>
+                <div class="tab-card" id="tab-guidance">{{ copy.demo.tab_guidance }}</div>
             </div>
             <div id="science-section" class="science-section" style="display: block;">
-                <p class="tab-intro">Explore the core science and engineering concepts you'll master with Pedro the Dog.</p>
+                <p class="tab-intro">{{ copy.demo.science_intro }}</p>
                 <div class="science-grid">
+                    {% for card in copy.demo.science_cards %}
                     <div class="science-card">
-                        <h3>Engineering & Robotics</h3>
+                        <h3>{{ card.title }}</h3>
                         <ul>
-                            <li>Hands-on mechanical assembly</li>
-                            <li>Robotic movement through motors and servos</li>
-                            <li>Structural design and component integration</li>
+                            {% for item in card.items %}
+                            <li>{{ item }}</li>
+                            {% endfor %}
                         </ul>
                     </div>
-                    <div class="science-card">
-                        <h3>Electronics & Hardware</h3>
-                        <ul>
-                            <li>Arduino board basics</li>
-                            <li>Working with LEDs, resistors, motors, and sensors</li>
-                            <li>Power flow, breadboard wiring, and circuit logic</li>
-                        </ul>
-                    </div>
-                    <div class="science-card">
-                        <h3>Coding & Programming</h3>
-                        <ul>
-                            <li>Intro to code structure and logic</li>
-                            <li>Programming digital and analog inputs/outputs</li>
-                            <li>Real-time control of lights, motion, and sensors</li>
-                        </ul>
-                    </div>
-                    <div class="science-card">
-                        <h3>Core STEM Skills</h3>
-                        <ul>
-                            <li>Systems thinking</li>
-                            <li>Problem-solving and debugging</li>
-                            <li>Intro to digital vs analog signals</li>
-                            <li>Building, testing, and iterating like an engineer</li>
-                        </ul>
-                    </div>
+                    {% endfor %}
                 </div>
                 <div class="button-container">
-                    <a href="{% url 'landing:buy' %}" class="buy-button">Buy Pedro</a>
-                    <a href="{% url 'landing:home' %}#contact" class="inquire-button">Inquire</a>
+                    <a href="{% url 'landing:buy' %}" class="buy-button">{{ copy.demo.buy_pedro }}</a>
+                    <a href="{% url 'landing:home' %}#contact" class="inquire-button">{{ copy.demo.inquire }}</a>
                 </div>
             </div>
             <div id="build-section" class="science-section" style="display: none;">
-                <p class="tab-intro">See what's inside your kit and how each part helps bring Pedro to life.</p>
+                <p class="tab-intro">{{ copy.demo.build_intro }}</p>
                 <div class="science-grid">
                     <div class="science-card build-card">
-                        <h3>Kit Components</h3>
+                        <h3>{{ copy.demo.build_title }}</h3>
                         <ul class="multi-col-list">
-                            <li><strong>Arduino Uno R3 + USB cable</strong><br><span class="item-desc">The programmable brain that powers your robot.</span></li>
-                            <li><strong>Breadboard</strong><br><span class="item-desc">A tool to easily prototype and connect electronic components.</span></li>
-                            <li><strong>LEDs</strong><br><span class="item-desc">Light-emitting diodes used to signal activity or responses.</span></li>
-                            <li><strong>Resistors</strong><br><span class="item-desc">Control the flow of electrical current in circuits.</span></li>
-                            <li><strong>Capacitors</strong><br><span class="item-desc">Store and release small bursts of energy when needed.</span></li>
-                            <li><strong>Motors</strong><br><span class="item-desc">Enable movement and bring your robot to life.</span></li>
-                            <li><strong>IRF520 Transistor</strong><br><span class="item-desc">Acts as a switch to control high-power components.</span></li>
-                            <li><strong>1N4007 Diode</strong><br><span class="item-desc">Protects your circuits by blocking reverse current.</span></li>
-                            <li><strong>DC Motor</strong><br><span class="item-desc">Drives continuous motion like Pedro's legs.</span></li>
-                            <li><strong>Servo Motor</strong><br><span class="item-desc">Provides precise movement for parts like the neck or tail.</span></li>
-                            <li><strong>Unique lessons activation code</strong><br><span class="item-desc">Unlocks your interactive Brainiacs learning journey.</span></li>
+                            {% for component in copy.demo.components %}
+                            <li><strong>{{ component.name }}</strong><br><span class="item-desc">{{ component.description }}</span></li>
+                            {% endfor %}
                         </ul>
                     </div>
                 </div>
                 <div class="button-container">
-                    <a href="{% url 'landing:buy' %}" class="buy-button">Buy Pedro</a>
-                    <a href="{% url 'landing:home' %}#contact" class="inquire-button">Inquire</a>
+                    <a href="{% url 'landing:buy' %}" class="buy-button">{{ copy.demo.buy_pedro }}</a>
+                    <a href="{% url 'landing:home' %}#contact" class="inquire-button">{{ copy.demo.inquire }}</a>
                 </div>
             </div>
             <div id="guidance-section" class="science-section" style="display: none;">
-                <p class="tab-intro">Get step-by-step guidance and tips for building, coding, and exploring with Pedro.</p>
+                <p class="tab-intro">{{ copy.demo.guidance_intro }}</p>
                 <div class="video-container">
                     <div class="video-item">
                         <video controls autoplay loop muted playsinline>
                             <source src="{% static 'landing/images/demo1.mp4' %}" type="video/mp4">
-                            Your browser does not support the video tag.
+                            {{ copy.demo.video_not_supported }}
                         </video>
                     </div>
                     <div class="video-item">
                         <video controls autoplay loop muted playsinline>
                             <source src="{% static 'landing/images/demo2.mp4' %}" type="video/mp4">
-                            Your browser does not support the video tag.
+                            {{ copy.demo.video_not_supported }}
                         </video>
                     </div>
                 </div>
                 <div class="button-container">
-                    <a href="{% url 'landing:buy' %}" class="buy-button">Buy Pedro</a>
-                    <a href="{% url 'landing:home' %}#contact" class="inquire-button">Inquire</a>
+                    <a href="{% url 'landing:buy' %}" class="buy-button">{{ copy.demo.buy_pedro }}</a>
+                    <a href="{% url 'landing:home' %}#contact" class="inquire-button">{{ copy.demo.inquire }}</a>
                 </div>
             </div>
         </div>
     </main>
     <footer>
         <div class="footer-bar">
-            <a href="{% url 'landing:home' %}" class="footer-link">Back to Home</a>
+            <a href="{% url 'landing:home' %}" class="footer-link">{{ copy.common.back_to_home }}</a>
             <span class="footer-divider">|</span>
-            <span class="footer-copyright">&copy; 2025 BRAINIACS ACADEMY. All rights reserved.</span>
+            <span class="footer-copyright">&copy; {{ copy.common.footer_copyright }}</span>
         </div>
     </footer>
+    <script src="{% static 'landing/js/site_language.js' %}"></script>
     <script>
         // Simple JS carousel logic (no swipe/transition effects)
         const images = document.querySelectorAll('.carousel-img');

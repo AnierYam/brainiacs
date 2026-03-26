@@ -1,0 +1,4 @@
+<div class="lang-switch{% if lang_switch_class %} {{ lang_switch_class }}{% endif %}" role="group" aria-label="{{ copy.common.language_switch }}">
+    <button class="lang-btn{% if site_lang == 'en' %} is-active{% endif %}" type="button" data-lang="en" aria-pressed="{% if site_lang == 'en' %}true{% else %}false{% endif %}">EN</button>
+    <button class="lang-btn{% if site_lang == 'fr' %} is-active{% endif %}" type="button" data-lang="fr" aria-pressed="{% if site_lang == 'fr' %}true{% else %}false{% endif %}">FR</button>
+</div>

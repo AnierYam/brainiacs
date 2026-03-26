@@ -7,6 +7,12 @@ from django.urls import reverse
 
 from .forms import ActivationSignupForm, EmailVerificationForm
 from .models import ActivationCode
+from .site_language import (
+    get_site_copy,
+    get_site_language,
+    localize_form,
+    translate_site_message,
+)
 from .services import email_service
 
 
@@ -17,19 +23,28 @@ def _clear_pending_verification_session(request) -> None:
     request.session.pop("pending_verification_token", None)
     request.session.pop("pending_verification_delivery_failed", None)
 
+
+def _site_context(request):
+    lang = get_site_language(request)
+    return lang, {"site_lang": lang, "copy": get_site_copy(lang)}
+
 def home(request):
-    return render(request, 'landing/home.html')
+    _, context = _site_context(request)
+    return render(request, "landing/home.html", context)
 
 
 def demo(request):
-    return render(request, 'landing/demo.html')
+    _, context = _site_context(request)
+    return render(request, "landing/demo.html", context)
 
 
 def buy(request):
-    return render(request, 'landing/buy.html')
+    _, context = _site_context(request)
+    return render(request, "landing/buy.html", context)
 
 
 def activate(request):
+    lang, context = _site_context(request)
     if request.user.is_authenticated:
         return redirect("lessons:missions_home")
 
@@ -45,7 +60,10 @@ def activate(request):
             try:
                 user = form.save()
             except ValidationError as exc:
-                form.add_error("activation_code", exc.messages[0])
+                form.add_error(
+                    "activation_code",
+                    translate_site_message(exc.messages[0], lang),
+                )
             else:
                 activation = ActivationCode.objects.filter(user=user).first()
                 email_sent = email_service.send_verification_email(
@@ -85,10 +103,13 @@ def activate(request):
                 or request.session.get("activation_email", ""),
             }
         )
-    return render(request, "landing/activate.html", {"form": form, "next_url": next_url})
+    localize_form(form, lang, "activate_signup")
+    context.update({"form": form, "next_url": next_url})
+    return render(request, "landing/activate.html", context)
 
 
 def confirm_email(request):
+    lang, context = _site_context(request)
     if request.user.is_authenticated:
         return redirect("lessons:missions_home")
 
@@ -146,14 +167,16 @@ def confirm_email(request):
                 _clear_pending_verification_session(request)
                 signin_url = f"{reverse('login')}?{urlencode({'next': next_url})}"
                 return redirect(signin_url)
-            form.add_error("verification_code", "Invalid verification code.")
+            form.add_error(
+                "verification_code",
+                translate_site_message("Invalid verification code.", lang),
+            )
         delivery_warning = bool(request.session.get("pending_verification_delivery_failed"))
     else:
         form = EmailVerificationForm()
+    localize_form(form, lang, "verify_email")
 
-    return render(
-        request,
-        "landing/confirm_email.html",
+    context.update(
         {
             "form": form,
             "next_url": next_url,
@@ -161,5 +184,6 @@ def confirm_email(request):
             "email": user.email,
             "resent": resent,
             "delivery_warning": delivery_warning,
-        },
+        }
     )
+    return render(request, "landing/confirm_email.html", context)

@@ -1,12 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ site_lang }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Confirm Email - BRAINIACS ACADEMY</title>
-    {% load static %}
+    <title>{{ copy.confirm_email.meta_title }}</title>
+    {% load static site_language %}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
         :root {
             --primary: #2F04B9;
             --secondary: #79C93D;
@@ -120,53 +122,91 @@
             font-weight: 600;
         }
         .help a:hover { text-decoration: underline; }
+        .lang-switch {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.24rem;
+            border: 1px solid rgba(47, 4, 185, 0.16);
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.92);
+            box-shadow: 0 8px 20px rgba(30, 64, 175, 0.12);
+        }
+        .lang-switch--floating {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            z-index: 20;
+        }
+        .lang-btn {
+            border: none;
+            border-radius: 999px;
+            background: transparent;
+            color: rgba(31, 42, 55, 0.72);
+            padding: 0.38rem 0.7rem;
+            font-size: 0.78rem;
+            font-weight: 700;
+            line-height: 1;
+            cursor: pointer;
+            transition: background 0.2s ease, color 0.2s ease;
+        }
+        .lang-btn:hover {
+            background: rgba(47, 4, 185, 0.08);
+            color: var(--primary);
+        }
+        .lang-btn.is-active {
+            background: var(--primary);
+            color: #fff;
+        }
     </style>
 </head>
 <body>
+    {% include "landing/includes/lang_switch.html" with lang_switch_class="lang-switch--floating" %}
     <main class="card">
-        <h1>Confirm Your Email</h1>
-        <p>Check your inbox for the verification code sent to <strong>{{ email }}</strong>, then enter it below.</p>
+        <h1>{{ copy.confirm_email.heading }}</h1>
+        <p>{{ copy.confirm_email.intro_before_email }} <strong>{{ email }}</strong>, {{ copy.confirm_email.intro_after_email }}</p>
 
         {% if resent %}
-            <p class="success">A new verification code has been sent.</p>
+            <p class="success">{{ copy.confirm_email.resent_success }}</p>
         {% endif %}
         {% if messages %}
             {% for message in messages %}
                 {% if "warning" in message.tags %}
-                    <p class="warning">{{ message }}</p>
+                    <p class="warning">{{ message|site_translate:site_lang }}</p>
                 {% else %}
-                    <p class="success">{{ message }}</p>
+                    <p class="success">{{ message|site_translate:site_lang }}</p>
                 {% endif %}
             {% endfor %}
         {% endif %}
         {% if delivery_warning %}
             <p class="warning">
-                Verification email was not delivered. Please use <strong>Resend Code</strong> and check spam/promotions.
+                {{ copy.confirm_email.delivery_warning_prefix }} <strong>{{ copy.confirm_email.delivery_warning_button }}</strong> {{ copy.confirm_email.delivery_warning_suffix }}
             </p>
         {% endif %}
 
         {% if form.non_field_errors %}
-            <p class="errors">{{ form.non_field_errors|striptags }}</p>
+            <p class="errors">{{ form.non_field_errors|striptags|site_translate:site_lang }}</p>
         {% endif %}
 
         <form method="post" novalidate>
             {% csrf_token %}
             <input type="hidden" name="next" value="{{ next_url }}">
             <input type="hidden" name="token" value="{{ token }}">
-            <label for="{{ form.verification_code.id_for_label }}">Verification code</label>
+            <label for="{{ form.verification_code.id_for_label }}">{{ form.verification_code.label }}</label>
             {{ form.verification_code }}
             {% if form.verification_code.errors %}
-                <p class="errors">{{ form.verification_code.errors|striptags }}</p>
+                <p class="errors">{{ form.verification_code.errors|striptags|site_translate:site_lang }}</p>
             {% endif %}
             <div class="actions">
-                <button class="btn btn-primary" type="submit">Confirm Email</button>
-                <button class="btn btn-secondary" type="submit" name="resend" value="1" formnovalidate>Resend Code</button>
+                <button class="btn btn-primary" type="submit">{{ copy.confirm_email.confirm_email }}</button>
+                <button class="btn btn-secondary" type="submit" name="resend" value="1" formnovalidate>{{ copy.confirm_email.resend_code }}</button>
             </div>
         </form>
 
         <p class="help">
-            Wrong email? <a href="{% url 'landing:activate' %}?next={{ next_url|urlencode }}">Go back</a>
+            {{ copy.confirm_email.wrong_email }} <a href="{% url 'landing:activate' %}?next={{ next_url|urlencode }}">{{ copy.confirm_email.go_back }}</a>
         </p>
     </main>
+    <script src="{% static 'landing/js/site_language.js' %}"></script>
 </body>
 </html>

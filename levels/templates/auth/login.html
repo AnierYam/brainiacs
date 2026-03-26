@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ site_lang }}">
 <head>
+  {% load static site_language %}
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sign In | Brainiacs</title>
+  <title>{{ copy.login.meta_title }}</title>
   <style>
     :root {
       color-scheme: light;
@@ -151,15 +152,52 @@
       font-weight: 600;
     }
     .switch a:hover { text-decoration: underline; }
+    .lang-switch {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      padding: 0.24rem;
+      border: 1px solid rgba(29, 78, 216, 0.16);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.92);
+      box-shadow: 0 8px 20px rgba(30, 64, 175, 0.12);
+    }
+    .lang-switch--floating {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      z-index: 20;
+    }
+    .lang-btn {
+      border: none;
+      border-radius: 999px;
+      background: transparent;
+      color: rgba(31, 42, 55, 0.72);
+      padding: 0.38rem 0.7rem;
+      font-size: 0.78rem;
+      font-weight: 700;
+      line-height: 1;
+      cursor: pointer;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+    .lang-btn:hover {
+      background: rgba(29, 78, 216, 0.08);
+      color: var(--primary);
+    }
+    .lang-btn.is-active {
+      background: var(--primary);
+      color: #fff;
+    }
   </style>
 </head>
 <body>
+  {% include "landing/includes/lang_switch.html" with lang_switch_class="lang-switch--floating" %}
   <main class="card">
-    <h1>Welcome Back</h1>
-    <p class="subtitle">Sign in to access Brainiacs lessons and save progress.</p>
+    <h1>{{ copy.login.heading }}</h1>
+    <p class="subtitle">{{ copy.login.subtitle }}</p>
 
     {% if form.non_field_errors %}
-      <p class="errors">{{ form.non_field_errors|striptags }}</p>
+      <p class="errors">{{ form.non_field_errors|striptags|site_translate:site_lang }}</p>
     {% endif %}
 
     <form method="post">
@@ -167,24 +205,24 @@
       <input type="hidden" name="next" value="{{ next_url }}">
 
       <div class="field">
-        <label for="{{ form.username.id_for_label }}">Username</label>
+        <label for="{{ form.username.id_for_label }}">{{ form.username.label }}</label>
         {{ form.username }}
         {% if form.username.errors %}
-          <p class="errors">{{ form.username.errors|striptags }}</p>
+          <p class="errors">{{ form.username.errors|striptags|site_translate:site_lang }}</p>
         {% endif %}
       </div>
 
       <div class="field">
-        <label for="{{ form.password.id_for_label }}">Password</label>
+        <label for="{{ form.password.id_for_label }}">{{ form.password.label }}</label>
         <div class="password-row">
           {{ form.password }}
           <button
             class="password-toggle"
             type="button"
             data-target="{{ form.password.id_for_label }}"
-            aria-label="Show password"
+            aria-label="{{ copy.common.show_password }}"
             aria-pressed="false"
-            title="Show password"
+            title="{{ copy.common.show_password }}"
           >
             <svg class="icon-eye-closed" viewBox="0 0 24 24" aria-hidden="true">
               <path d="M3 3l18 18"></path>
@@ -196,29 +234,32 @@
               <path d="M2 12c1.8-4.2 5.3-7 10-7s8.2 2.8 10 7c-1.8 4.2-5.3 7-10 7s-8.2-2.8-10-7z"></path>
               <circle cx="12" cy="12" r="3"></circle>
             </svg>
-            <span class="sr-only">Toggle password visibility</span>
+            <span class="sr-only">{{ copy.common.toggle_password }}</span>
           </button>
         </div>
         {% if form.password.errors %}
-          <p class="errors">{{ form.password.errors|striptags }}</p>
+          <p class="errors">{{ form.password.errors|striptags|site_translate:site_lang }}</p>
         {% endif %}
       </div>
 
-      <button type="submit">Sign In</button>
+      <button type="submit">{{ copy.login.submit }}</button>
     </form>
 
     <p class="switch">
       {% if local_auth_bypass %}
-        Need an account?
-        <a href="{{ signup_url }}">Create a local account</a>
+        {{ copy.login.need_account }}
+        <a href="{{ signup_url }}">{{ copy.login.create_local_account }}</a>
       {% else %}
-        New here?
-        <a href="{{ activate_url }}">Activate your kit to create an account</a>
+        {{ copy.login.new_here }}
+        <a href="{{ activate_url }}">{{ copy.login.activate_kit_account }}</a>
       {% endif %}
     </p>
   </main>
+  <script src="{% static 'landing/js/site_language.js' %}"></script>
   <script>
     (function () {
+      const showPasswordLabel = "{{ copy.common.show_password|escapejs }}";
+      const hidePasswordLabel = "{{ copy.common.hide_password|escapejs }}";
       const toggles = document.querySelectorAll(".password-toggle");
       toggles.forEach((toggle) => {
         toggle.addEventListener("click", function () {
@@ -230,9 +271,9 @@
           this.setAttribute("aria-pressed", nextVisible ? "true" : "false");
           this.setAttribute(
             "aria-label",
-            nextVisible ? "Hide password" : "Show password"
+            nextVisible ? hidePasswordLabel : showPasswordLabel
           );
-          this.setAttribute("title", nextVisible ? "Hide password" : "Show password");
+          this.setAttribute("title", nextVisible ? hidePasswordLabel : showPasswordLabel);
         });
       });
     })();

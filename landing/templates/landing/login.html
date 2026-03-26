@@ -5,8 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Log In - BRAINIACS ACADEMY</title>
     {% load static %}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
         :root {
             --primary: #2F04B9;
             --secondary: #79C93D;
@@ -91,6 +93,37 @@
         }
         .nav-links a:not(.login-btn):not(.signup-btn):hover:after {
             width: 100%;
+        }
+        .nav-links .lang-switch {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            margin-left: 0.8rem;
+            padding: 0.24rem;
+            border: 1px solid rgba(255, 255, 255, 0.28);
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 18px rgba(6, 9, 34, 0.18);
+        }
+        .nav-links .lang-btn {
+            border: none;
+            border-radius: 999px;
+            background: transparent;
+            color: rgba(255, 255, 255, 0.82);
+            padding: 0.38rem 0.7rem;
+            font-size: 0.78rem;
+            font-weight: 700;
+            line-height: 1;
+            cursor: pointer;
+            transition: background 0.2s ease, color 0.2s ease;
+        }
+        .nav-links .lang-btn:hover {
+            background: rgba(255, 255, 255, 0.14);
+            color: white;
+        }
+        .nav-links .lang-btn.is-active {
+            background: white;
+            color: var(--primary);
         }
         .login-btn {
             background: var(--secondary);
@@ -327,6 +360,16 @@
                 margin-left: 0;
                 margin-top: 0.2rem;
             }
+            .nav-links .lang-switch {
+                width: 100%;
+                justify-content: center;
+                margin-left: 0;
+                margin-top: 0.2rem;
+            }
+            .nav-links .lang-btn {
+                flex: 1 1 0;
+                max-width: 88px;
+            }
             .login-container {
                 padding-top: 24px;
             }
@@ -391,6 +434,10 @@
                 <a href="{% url 'landing:home' %}#contact">Contact Us</a>
                 <a href="{% url 'login' %}?next=/lessons/" class="login-btn">Log In</a>
                 <a href="{% url 'landing:activate' %}" class="signup-btn">Activate Kit</a>
+                <div class="lang-switch" role="group" aria-label="Language switch">
+                    <button class="lang-btn is-active" type="button" data-lang="en" aria-pressed="true">EN</button>
+                    <button class="lang-btn" type="button" data-lang="fr" aria-pressed="false">FR</button>
+                </div>
             </div>
         </div>
     </header>
@@ -419,6 +466,7 @@
             <span class="footer-copyright">&copy; 2025 BRAINIACS ACADEMY. All rights reserved.</span>
         </div>
     </footer>
+    <script src="{% static 'lessons/js/language_switcher.js' %}?v=20260326g"></script>
     <script>
         // Hamburger menu toggle
         document.addEventListener('DOMContentLoaded', function() {

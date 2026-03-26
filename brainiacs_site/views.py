@@ -10,6 +10,12 @@ from django.urls import reverse
 
 from .forms import ActivationRequiredAuthenticationForm
 from landing.models import ActivationCode
+from landing.site_language import (
+    get_site_copy,
+    get_site_language,
+    localize_form,
+    translate_site_message,
+)
 from landing.services import email_service
 
 ONE_TIME_ACTIVATION_CODE = "OTP001"
@@ -30,7 +36,13 @@ class BrainiacsLoginView(LoginView):
     def form_valid(self, form):
         return super().form_valid(form)
 
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        localize_form(form, get_site_language(self.request), "login")
+        return form
+
     def form_invalid(self, form):
+        lang = get_site_language(self.request)
         if getattr(form, "requires_verification", False):
             user = getattr(form, "user_for_verification", None)
             if user:
@@ -53,12 +65,18 @@ class BrainiacsLoginView(LoginView):
                 if email_sent:
                     messages.info(
                         self.request,
-                        "We sent a new verification code to your email.",
+                        translate_site_message(
+                            "We sent a new verification code to your email.",
+                            lang,
+                        ),
                     )
                 else:
                     messages.warning(
                         self.request,
-                        "Could not send verification email. Please retry in a moment.",
+                        translate_site_message(
+                            "Could not send verification email. Please retry in a moment.",
+                            lang,
+                        ),
                     )
                 confirm_url = (
                     f"{reverse('landing:confirm_email')}?"
@@ -69,6 +87,7 @@ class BrainiacsLoginView(LoginView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        lang = get_site_language(self.request)
         next_url = self._next_url()
         context["next_url"] = next_url
         context["local_auth_bypass"] = settings.DEBUG
@@ -76,6 +95,8 @@ class BrainiacsLoginView(LoginView):
         context["activate_url"] = (
             f"{reverse('landing:activate')}?{urlencode({'next': next_url})}"
         )
+        context["site_lang"] = lang
+        context["copy"] = get_site_copy(lang)
         return context
 
 
@@ -106,6 +127,8 @@ def signup_view(request):
     if request.user.is_authenticated:
         return redirect("lessons:missions_home")
 
+    lang = get_site_language(request)
+    copy = get_site_copy(lang)
     next_url = (
         request.GET.get("next")
         or request.POST.get("next")
@@ -123,10 +146,13 @@ def signup_view(request):
         form.fields["username"].widget.attrs.update({"placeholder": "Username"})
         form.fields["password1"].widget.attrs.update({"placeholder": "Password"})
         form.fields["password2"].widget.attrs.update({"placeholder": "Confirm Password"})
+        localize_form(form, lang, "signup_local")
         return render(
             request,
             "auth/signup_local.html",
             {
+                "site_lang": lang,
+                "copy": copy,
                 "form": form,
                 "next_url": next_url,
                 "signin_url": f"{reverse('login')}?{urlencode({'next': next_url})}",

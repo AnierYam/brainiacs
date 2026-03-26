@@ -4,9 +4,231 @@
   var STORAGE_KEY = "lessons_language";
   var SUPPORTED = { en: true, fr: true };
   var currentLang = "en";
+  var BRAND_REGEX = /brainiacs/gi;
+  var BRAND_ACADEMY_REGEX = /brainiacs\s+academy/gi;
+  var BRAND_LOCK_SELECTOR = ".brainiacs-brand-lock,.notranslate,[translate='no']";
+  var FORM_LOCK_SELECTOR = "form,form label,form input,form select,form option,form textarea,form button";
+  var translateLoadScheduled = false;
+  var translateLoadLang = "";
+  var translateCleanupTimer = null;
 
   function isSupported(lang) {
     return !!SUPPORTED[lang];
+  }
+
+  function containsBrand(value) {
+    return /brainiacs/i.test(value || "");
+  }
+
+  function isAllUppercase(value) {
+    return !!value && value === value.toUpperCase() && value !== value.toLowerCase();
+  }
+
+  function isAllLowercase(value) {
+    return !!value && value === value.toLowerCase() && value !== value.toUpperCase();
+  }
+
+  function localizeBrainiacsAcademy(text, lang) {
+    var localized = lang === "fr" ? "Académie Brainiacs" : "Brainiacs Academy";
+    var sourceText = text || "";
+
+    if (isAllUppercase(sourceText)) {
+      return localized.toUpperCase();
+    }
+
+    if (isAllLowercase(sourceText)) {
+      return localized.toLowerCase();
+    }
+
+    return localized;
+  }
+
+  function shouldSkipBrandTextNode(node) {
+    if (!node || node.nodeType !== Node.TEXT_NODE || !containsBrand(node.nodeValue)) {
+      return true;
+    }
+
+    var parent = node.parentElement;
+    if (!parent) {
+      return true;
+    }
+
+    if (parent.closest && parent.closest(BRAND_LOCK_SELECTOR)) {
+      return true;
+    }
+
+    return /^(SCRIPT|STYLE|NOSCRIPT|TEXTAREA|OPTION)$/i.test(parent.tagName || "");
+  }
+
+  function createBrandLockNode(text) {
+    var span = document.createElement("span");
+    span.className = "notranslate brainiacs-brand-lock";
+    span.setAttribute("translate", "no");
+    span.textContent = text;
+    return span;
+  }
+
+  function createBrainiacsAcademyLockNode(text) {
+    var span = document.createElement("span");
+    span.className = "notranslate brainiacs-brand-lock brainiacs-academy-lock";
+    span.setAttribute("translate", "no");
+    span.setAttribute("data-source-text", text);
+    span.textContent = localizeBrainiacsAcademy(text, currentLang);
+    return span;
+  }
+
+  function updateLockedBrainiacsAcademy(lang) {
+    var safeLang = isSupported(lang) ? lang : "en";
+
+    document.querySelectorAll(".brainiacs-academy-lock").forEach(function (node) {
+      var sourceText = node.getAttribute("data-source-text") || node.textContent || "Brainiacs Academy";
+      node.textContent = localizeBrainiacsAcademy(sourceText, safeLang);
+    });
+  }
+
+  function protectBrandInTextNode(node) {
+    if (shouldSkipBrandTextNode(node)) {
+      return;
+    }
+
+    var text = node.nodeValue;
+    var regex = /brainiacs\s+academy|brainiacs/gi;
+    var match;
+    var lastIndex = 0;
+    var fragment = document.createDocumentFragment();
+    var hasMatch = false;
+
+    while ((match = regex.exec(text)) !== null) {
+      hasMatch = true;
+      if (match.index > lastIndex) {
+        fragment.appendChild(document.createTextNode(text.slice(lastIndex, match.index)));
+      }
+      if (/^brainiacs\s+academy$/i.test(match[0])) {
+        fragment.appendChild(createBrainiacsAcademyLockNode(match[0]));
+      } else {
+        fragment.appendChild(createBrandLockNode(match[0]));
+      }
+      lastIndex = regex.lastIndex;
+    }
+
+    if (!hasMatch) {
+      return;
+    }
+
+    if (lastIndex < text.length) {
+      fragment.appendChild(document.createTextNode(text.slice(lastIndex)));
+    }
+
+    node.parentNode.replaceChild(fragment, node);
+  }
+
+  function protectBrandAttributes(element) {
+    if (!element || element.nodeType !== Node.ELEMENT_NODE) {
+      return;
+    }
+
+    ["title", "aria-label", "placeholder", "alt"].forEach(function (attr) {
+      var value = element.getAttribute(attr);
+      if (containsBrand(value)) {
+        element.classList.add("notranslate");
+        element.setAttribute("translate", "no");
+      }
+    });
+  }
+
+  function protectBrandInTree(root) {
+    if (!root) {
+      return;
+    }
+
+    if (root.nodeType === Node.TEXT_NODE) {
+      protectBrandInTextNode(root);
+      return;
+    }
+
+    if (
+      root.nodeType !== Node.DOCUMENT_NODE &&
+      root.nodeType !== Node.DOCUMENT_FRAGMENT_NODE &&
+      root.nodeType !== Node.ELEMENT_NODE
+    ) {
+      return;
+    }
+
+    if (root.nodeType === Node.ELEMENT_NODE) {
+      protectBrandAttributes(root);
+      if (root.matches && root.matches(BRAND_LOCK_SELECTOR)) {
+        return;
+      }
+    }
+
+    if (root.querySelectorAll) {
+      root.querySelectorAll("[title],[aria-label],[placeholder],[alt]").forEach(function (element) {
+        protectBrandAttributes(element);
+      });
+    }
+
+    var walker = document.createTreeWalker(
+      root,
+      NodeFilter.SHOW_TEXT,
+      {
+        acceptNode: function (node) {
+          return shouldSkipBrandTextNode(node)
+            ? NodeFilter.FILTER_REJECT
+            : NodeFilter.FILTER_ACCEPT;
+        },
+      }
+    );
+
+    var textNodes = [];
+    while (walker.nextNode()) {
+      textNodes.push(walker.currentNode);
+    }
+
+    textNodes.forEach(function (node) {
+      protectBrandInTextNode(node);
+    });
+
+    updateLockedBrainiacsAcademy(currentLang);
+  }
+
+  function shouldSkipFormElement(element) {
+    if (!element || element.nodeType !== Node.ELEMENT_NODE || !element.matches) {
+      return true;
+    }
+
+    if (!element.matches(FORM_LOCK_SELECTOR)) {
+      return true;
+    }
+
+    return !!(
+      (element.closest && element.closest("#google_translate_element")) ||
+      /^(SCRIPT|STYLE|NOSCRIPT)$/i.test(element.tagName || "")
+    );
+  }
+
+  function protectFormElement(element) {
+    if (shouldSkipFormElement(element)) {
+      return;
+    }
+
+    element.classList.add("notranslate", "brainiacs-form-lock");
+    element.setAttribute("translate", "no");
+  }
+
+  function protectFormsInTree(root) {
+    if (!root) {
+      return;
+    }
+
+    if (root.nodeType === Node.ELEMENT_NODE) {
+      protectFormElement(root);
+    }
+
+    if (root.querySelectorAll) {
+      root.querySelectorAll(FORM_LOCK_SELECTOR).forEach(function (element) {
+        protectFormElement(element);
+      });
+    }
   }
 
   function readCookie(name) {
@@ -175,6 +397,43 @@
     }
   }
 
+  function removeGoogleTranslateArtifacts() {
+    var selectors = [
+      "iframe.goog-te-banner-frame",
+      "iframe.skiptranslate",
+      ".goog-te-banner-frame",
+      ".goog-te-banner-frame.skiptranslate",
+      ".goog-te-balloon-frame",
+      ".goog-te-spinner-pos",
+      ".VIpgJd-ZVi9od-ORHb-OEVmcd",
+      ".VIpgJd-ZVi9od-aZ2wEe-wOHMyf",
+      "#goog-gt-tt",
+      "#google-translate-script",
+      "#google_translate_element",
+    ];
+
+    selectors.forEach(function (selector) {
+      document.querySelectorAll(selector).forEach(function (node) {
+        if (node && node.parentNode) {
+          node.parentNode.removeChild(node);
+        }
+      });
+    });
+
+    hideGoogleBars();
+  }
+
+  function scheduleGoogleTranslateCleanup() {
+    if (translateCleanupTimer) {
+      window.clearTimeout(translateCleanupTimer);
+    }
+
+    translateCleanupTimer = window.setTimeout(function () {
+      removeGoogleTranslateArtifacts();
+      translateCleanupTimer = null;
+    }, 3500);
+  }
+
   function installHideObserver() {
     hideGoogleBars();
     var observer = new MutationObserver(function () {
@@ -191,10 +450,51 @@
     var timer = window.setInterval(function () {
       attempts += 1;
       hideGoogleBars();
-      if (attempts > 300) {
+      if (attempts > 40) {
         window.clearInterval(timer);
       }
-    }, 250);
+    }, 200);
+  }
+
+  function installBrandObserver() {
+    protectBrandInTree(document.body || document.documentElement);
+
+    var observer = new MutationObserver(function (mutations) {
+      mutations.forEach(function (mutation) {
+        if (mutation.type === "characterData") {
+          protectBrandInTree(mutation.target);
+        }
+
+        Array.prototype.forEach.call(mutation.addedNodes || [], function (node) {
+          protectBrandInTree(node);
+        });
+      });
+
+      updateLockedBrainiacsAcademy(currentLang);
+    });
+
+    observer.observe(document.body || document.documentElement, {
+      childList: true,
+      subtree: true,
+      characterData: true,
+    });
+  }
+
+  function installFormObserver() {
+    protectFormsInTree(document.body || document.documentElement);
+
+    var observer = new MutationObserver(function (mutations) {
+      mutations.forEach(function (mutation) {
+        Array.prototype.forEach.call(mutation.addedNodes || [], function (node) {
+          protectFormsInTree(node);
+        });
+      });
+    });
+
+    observer.observe(document.body || document.documentElement, {
+      childList: true,
+      subtree: true,
+    });
   }
 
   function applyGoogleTranslation(lang) {
@@ -202,7 +502,12 @@
     var attempts = 0;
     var timer = window.setInterval(function () {
       attempts += 1;
-      if (setComboLang(lang) || attempts > 40) {
+      if (setComboLang(lang)) {
+        scheduleGoogleTranslateCleanup();
+        window.clearInterval(timer);
+        return;
+      }
+      if (attempts > 40) {
         window.clearInterval(timer);
       }
     }, 150);
@@ -239,6 +544,45 @@
     document.head.appendChild(script);
   }
 
+  function scheduleGoogleTranslate(lang) {
+    var safeLang = isSupported(lang) ? lang : "en";
+    if (safeLang === "en") {
+      return;
+    }
+
+    if (translateLoadScheduled && translateLoadLang === safeLang) {
+      return;
+    }
+
+    translateLoadScheduled = true;
+    translateLoadLang = safeLang;
+
+    var start = function () {
+      var run = function () {
+        loadGoogleTranslate(safeLang);
+      };
+
+      if (window.requestIdleCallback) {
+        window.requestIdleCallback(run, { timeout: 1500 });
+      } else {
+        window.setTimeout(run, 250);
+      }
+    };
+
+    if (document.readyState === "complete") {
+      start();
+      return;
+    }
+
+    window.addEventListener(
+      "load",
+      function () {
+        start();
+      },
+      { once: true }
+    );
+  }
+
   function applyLang(lang, options) {
     var safeLang = isSupported(lang) ? lang : "en";
     currentLang = safeLang;
@@ -251,8 +595,10 @@
       setActive(buttons, safeLang);
     }
 
+    updateLockedBrainiacsAcademy(safeLang);
+
     if (safeLang !== "en") {
-      loadGoogleTranslate(safeLang);
+      scheduleGoogleTranslate(safeLang);
     }
 
     if (options && options.reload) {
@@ -280,14 +626,11 @@
   function init() {
     initSwitch();
     alignPageControls();
+    installBrandObserver();
+    installFormObserver();
     installHideObserver();
 
-    var initial =
-      getStoredLang() ||
-      getCookieLang() ||
-      (isSupported((navigator.language || "en").slice(0, 2).toLowerCase())
-        ? (navigator.language || "en").slice(0, 2).toLowerCase()
-        : "en");
+    var initial = getStoredLang() || getCookieLang() || "en";
 
     applyLang(initial, { reload: false });
   }
